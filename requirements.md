@@ -15,7 +15,8 @@ _Failure to make an attendance check will result in an unexcused absence for bot
 
 ## Project Details
 ### &#x1F534; Mandatory To Pass:
-#### MVP - Minimum Viable Product
+
+#### :white_check_mark: MVP - Minimum Viable Product
 Your game must meet these requirements:
 1. Built with HTML, CSS and JavaScript (this game will be played using the DOM, not the console)<br>
 2. Hosted on Github pages<br>
@@ -24,7 +25,7 @@ Your game must meet these requirements:
 
 <hr>
 
-#### Game must have:<br>
+#### :white_check_mark: Game must have:<br>
   1. **Must be a two player game** (either against the computer or against another player)<br>
         - Example: Blackjack: A player plays against the dealer. The dealer is the computer
         - Example: Connect Four: Two players pass the game between themselves to take turns<br>
@@ -39,19 +40,25 @@ Your game must meet these requirements:
    5.  **Multiple rounds to play** - a round must begin, end, and there must be a way to check if the game should continue or the overall game is won or lost<br>
          - Example: Blackjack: a player takes turns playing a hand versus a computer - the player's hand can either win, lose or tie the dealer. If the player has enough money in their bankroll they can keep playing. A player must be able to win several rounds and increase their bankroll
          - Example: Connect Four: two (non-computer) players take turns adding chips to the board. The game will check if a player won or if the board is full and there are no more plays possible. A player gets four chips in a row (vertically or horizontally)- one person wins, one loses, there are no further plays in this case<br><br>
+
+<hr>
+
 ### &#x1F535; Stretch Goals (Not Mandatory):
 #### Recommended Features
 - A way to reset the board and play again
 - CSS to give your game a personal and fun style
 - Responsive mobile design
 - Work with your instructor to determine additional stretch goals
+
+<hr>
+
 ## Make A New Repo
 
 :heavy_exclamation_mark: You will be using GitHub, **not** GitHub Enterprise!
 
-:heavy_exclamation_mark: **Do not** begin your project within the class repo.
+:heavy_exclamation_mark: **Do not** begin your project within a class repo.
 
-:heavy_exclamation_mark: **Do not** clone your project into the class repo.
+:heavy_exclamation_mark: **Do not** clone your project into a class repo.
 
 1. After your project has been approved, [make a new Github repo for your project](https://help.github.com/articles/create-a-repo/). Remember to keep your repo set to public so you can deploy it.
 
@@ -67,6 +74,8 @@ Note: You can create your index.html on Github or you can create it from the ter
 You can also host your Github pages with your own domain name. [Here is a walktrhough from namecheap, one of many web hosting services](https://www.namecheap.com/support/knowledgebase/article.aspx/9645/2208/how-do-i-link-my-domain-to-github-pages)
 </details>
 
+<hr>
+
 ## Technical Demonstration
 All projects will be presented to the class.  Your presentation should:
 * Be approximately 5 minutes in length
@@ -76,31 +85,36 @@ All projects will be presented to the class.  Your presentation should:
 * Explain which improvements you might make
 You will be sharing your game and your code.  Be prepared to answer questions from the instructors and other students.
 
+<hr>
+
 ## Meetings with instructors
 
 _An instructor will contact you to setup a meeting time to approve your project._
 
-**Friday, May 1st (Tomorrow!) - Mandatory**<br>
+**Friday, Nov 13 - Mandatory**<br>
 
 You will meet with an instructor for 15 minutes to get your game idea approved. Be sure to write out what features you will need to build in order to meet MVP and some stretch goal ideas.
 
+<hr>
+
 ## How to Submit Your Project
 
-Your project is due on Thursday, May 7th at 10:00 AM ET. You will present your project and show your code to classmates and instructors.
+Your project is due on Thursday, Nov 19th at 10:00 AM ET. You will present your project and show your code to classmates and instructors.
 
 :heavy_check_mark: Add your project to [this google sheet](https://docs.google.com/spreadsheets/d/1y11MHrxXu736MjfJ4x5s_4Kd-tSXRPAdsx78cJJXzmU/edit?usp=sharing). Note that this will be the order you present your projects!
 
-## Where to go for help during project week
+<hr>
+
+## :heavy_exclamation_mark: Where to go for help during project week
 1. Seek out help online
 2. Seek out help with your classmates
 3. Seek out help with our class TA
 
-**TA Hours**
+**:heavy_exclamation_mark: TA Hours**
 1. Monday, Tuesday, Thursday with Yanny 6:30 PM - 9:00 PM ET `#seir-office-hours-413`
-1. Saturdays with Dan (1:00 PM - 3:00 PM ET _and_ 7:00 PM - 10:30 PM ET) `#sei-danlawrence-officehours
-`
-1. Sundays with Dan (1:45 PM - 5:15 PM ET) `#sei-danlawrence-officehours`
-`
+1. Saturdays with Dan (1:00 PM - 3:00 PM ET _and_ 7:00 PM - 10:30 PM ET) `#sei-danlawrence-officehours`
+
+<hr>
 
 ## Suggested Ways to Get Started
 * **Wireframe** Make a drawing of what your app will look like in all of the stages of the game (what does it look like as soon as you log on to the site? What does it look like while the player is playing? What does it look like when the player wins / loses?).
