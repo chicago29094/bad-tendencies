@@ -97,7 +97,7 @@ You will meet with an instructor for 15 minutes to get your game idea approved. 
 
 <hr>
 
-## How to Submit Your Project
+## :round_pushpin: How to Submit Your Project
 
 Your project is due on Thursday, Nov 19th at 10:00 AM ET. You will present your project and show your code to classmates and instructors.
 
@@ -111,12 +111,13 @@ Your project is due on Thursday, Nov 19th at 10:00 AM ET. You will present your 
 3. Seek out help with our class TA
 
 **:heavy_exclamation_mark: TA Hours**
-1. Monday, Tuesday, Thursday with Yanny 6:30 PM - 9:00 PM ET `#seir-office-hours-413`
-1. Saturdays with Dan (1:00 PM - 3:00 PM ET _and_ 7:00 PM - 10:30 PM ET) `#sei-danlawrence-officehours`
+1. Kay - Tuesdays: 8 - 10 pm ET || 5 - 7 pm PT `seir-margaret-evan-office-hours`
+1. Evan - Saturdays: 2 - 4 pm ET || 11 am - 1 pm PT  `seir-margaret-kay-office-hours`
+1. Aegean - Sundays: 4 - 9 pm ET || 1 - 6 pm PT `seir-officehours` 
 
 <hr>
 
-## Suggested Ways to Get Started
+## :round_pushpin: Suggested Ways to Get Started
 * **Wireframe** Make a drawing of what your app will look like in all of the stages of the game (what does it look like as soon as you log on to the site? What does it look like while the player is playing? What does it look like when the player wins / loses?).
 * **Break the project down into different components** (data, presentation, views, style, DOM manipulation) and brainstorm each component individually.
 * **Commit early, commit often.** Don’t be afraid to break something because you can always go back in time to a previous version.
