@@ -1,6 +1,9 @@
 [![General Assembly Logo](https://camo.githubusercontent.com/1a91b05b8f4d44b5bbfb83abac2b0996d8e26c92/687474703a2f2f692e696d6775722e636f6d2f6b6538555354712e706e67)](https://generalassemb.ly)
 
 # Project #1: The Game
+
+<img src="https://storage.googleapis.com/pr-newsroom-wp/1/2020/04/Gaming-header-2.png" width="500">
+
 ## Attendance
 There are no full day classes during project weeks, but we do expect you to be working on your project daily and be available during the usual class times (10AM - 6PM Eastern) for TA hours or any meetings with instructors as needed.  
 
