@@ -14,7 +14,7 @@ _Failure to make an attendance check will result in an unexcused absence for bot
 ### &#x1F534; Mandatory To Pass:
 #### MVP - Minimum Viable Product
 Your game must meet these requirements:
-1. Built with HTML, CSS, JavaScript and jQuery (this game will be played using the DOM, not the console)<br>
+1. Built with HTML, CSS and JavaScript (this game will be played using the DOM, not the console)<br>
 2. Hosted on Github pages<br>
 3. Commits to Github every day<br>
 4. A `README.md` file with explanations of the technologies used, the approach taken, a link to your live site, installation instructions, unsolved problems, etc.
