@@ -20,7 +20,10 @@ Your game must meet these requirements:
 1. Built with HTML, CSS and JavaScript (this game will be played using the DOM, not the console)<br>
 2. Hosted on Github pages<br>
 3. Commits to Github every day<br>
-4. A `README.md` file with explanations of the technologies used, the approach taken, a link to your live site, installation instructions, unsolved problems, etc.
+4. A `README.md` file with explanations of the technologies used, the approach taken, a link to your live site, installation instructions, unsolved problems, etc. [Here is a great guide on how to write a readme](https://medium.com/@meakaakka/a-beginners-guide-to-writing-a-kickass-readme-7ac01da88ab3)
+
+<hr>
+
 #### Game must have:<br>
   1. **Must be a two player game** (either against the computer or against another player)<br>
         - Example: Blackjack: A player plays against the dealer. The dealer is the computer
