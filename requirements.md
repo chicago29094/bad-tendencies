@@ -4,7 +4,7 @@
 
 <img src="https://storage.googleapis.com/pr-newsroom-wp/1/2020/04/Gaming-header-2.png" width="800">
 
-## Attendance
+## :round_pushpin: Attendance
 There are no full day classes during project weeks, but we do expect you to be working on your project daily and be available during the usual class times (10AM - 6PM Eastern) for TA hours or any meetings with instructors as needed.  
 
 There are **no attendance checks during this project week, except:**
@@ -13,8 +13,8 @@ There are **no attendance checks during this project week, except:**
 
 _Failure to make an attendance check will result in an unexcused absence for both morning and afternoon for that day_.
 
-## Project Details
-### &#x1F534; Mandatory To Pass:
+## :round_pushpin: Project Details
+### Mandatory To Pass:
 
 #### :white_check_mark: MVP - Minimum Viable Product
 Your game must meet these requirements:
@@ -43,7 +43,7 @@ Your game must meet these requirements:
 
 <hr>
 
-### &#x1F535; Stretch Goals (Not Mandatory):
+### :round_pushpin: Stretch Goals (Not Mandatory):
 #### Recommended Features
 - A way to reset the board and play again
 - CSS to give your game a personal and fun style
@@ -52,7 +52,7 @@ Your game must meet these requirements:
 
 <hr>
 
-## Make A New Repo
+## :round_pushpin: Make A New Repo
 
 :heavy_exclamation_mark: You will be using GitHub, **not** GitHub Enterprise!
 
@@ -76,7 +76,7 @@ You can also host your Github pages with your own domain name. [Here is a walktr
 
 <hr>
 
-## Technical Demonstration
+## :round_pushpin: Technical Demonstration
 All projects will be presented to the class.  Your presentation should:
 * Be approximately 5 minutes in length
 * Show off all features of the app
@@ -87,7 +87,7 @@ You will be sharing your game and your code.  Be prepared to answer questions fr
 
 <hr>
 
-## Meetings with instructors
+## :round_pushpin: Meetings with instructors
 
 _An instructor will contact you to setup a meeting time to approve your project._
 
