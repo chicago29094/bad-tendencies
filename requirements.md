@@ -2,7 +2,7 @@
 
 # Project #1: The Game
 
-<img src="https://storage.googleapis.com/pr-newsroom-wp/1/2020/04/Gaming-header-2.png" width="500">
+<img src="https://storage.googleapis.com/pr-newsroom-wp/1/2020/04/Gaming-header-2.png" width="800">
 
 ## Attendance
 There are no full day classes during project weeks, but we do expect you to be working on your project daily and be available during the usual class times (10AM - 6PM Eastern) for TA hours or any meetings with instructors as needed.  
