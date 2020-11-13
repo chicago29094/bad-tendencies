@@ -2,10 +2,11 @@
 
 #  Project 1
 
+1. [Project Worksheet due Monday Nov 16](project-worksheet.md)
+1. [Requirements](requirements.md)
+
+
 ### Key Project 1 Dates
 - Nov 16 - Project Approvals
 - Nov 17 - Nov 22 - :party-blob: !!Project Week!! :partygopher: We will not meet during normal class times. You will be meeting with your squad at the times instructed by your Squad lead.
 - Nov 23 - Project Presentations
-
-1. [Project Worksheet due Monday Nov 16](project-worksheet.md)
-1. [Requirements](requirements.md)
