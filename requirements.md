@@ -9,7 +9,7 @@ There are no full day classes during project weeks, but we do expect you to be w
 
 There are **no attendance checks during this project week, except:**
 
-  - **Thursday, Nov 19**: Project presentation day! You're required to be in the class zoom starting at 10:00 AM Eastern
+  - **Monday, Nov 23**: Project presentation day! You're required to be in the class zoom starting at 10:00 AM Eastern
 
 _Failure to make an attendance check will result in an unexcused absence for both morning and afternoon for that day_.
 
