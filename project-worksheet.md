@@ -51,10 +51,12 @@ The functionality will then be divided into two separate lists: MPV and PostMVP.
 
 #### MVP (examples)
 
-- Pull data using google json api
-- Render data on page 
-- Allow user to choose favorites 
-- Save their choices in firebase
+- Add game player stats to the dom
+- Render html on the page
+- Allow user to choose player 
+- Restart the game when the user loses
+
+You shhould have at least 10 items here
 
 #### PostMVP 
 
@@ -69,21 +71,19 @@ Time frames are also key in the development cycle.  You have limited time to cod
 #### MVP
 | Component | Priority | Estimated Time | Time Invetsted | Actual Time |
 | --- | :---: |  :---: | :---: | :---: |
-| Hamburger | H | 1hr | 1.5hr | -hr|
-| Project Previews | H | 3hr | -hr | -hr|
-| Regular Nav | H | H | -hr | -hr|
+| Modal | H | 1hr | 1.5hr | -hr|
+| Carousel | H | 3hr | -hr | -hr|
 | Adding Form | H | 1.5hr| -hr | -hr |
-| Other sections and flex| M | 4hr | 2hr | -hr|
-| Working with API | H | 3hrs| 2hr | -hr |
-| Responsive | H | 3hr | -hr | -hr|
-| Social Media Icons | L | 1hr | -hr | -hr|
+| Other sections and flex | M | 4hr | 2hr | -hr|
+| Game Player HTML & CSS | H | 3hrs| 2hr | -hr |
+| Create Classes in JS for Enemies | H | 3hr | -hr | -hr|
+| Game play main function | L | 1hr | -hr | -hr|
 | Total | H | 15.5hrs| -hrs | -hrs |
 
 #### PostMVP
 | Component | Priority | Estimated Time | Time Invetsted | Actual Time |
 | --- | :---: |  :---: | :---: | :---: |
-| Project Hover | L | 3hr | -hr | -hr|
-| Banner letters wiggle | L | 1hr | -hr | -hr|
+| Play game for 3 rounds | L | 3hr | -hr | -hr|
 | Interactive Banner | M | 4hr | -hr | -hr|
 | Materialize | H | 4hr | -hr | -hr|
 | Bootstrap | H | 4hr | -hr | -hr|
