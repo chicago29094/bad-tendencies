@@ -2,5 +2,5 @@
 
 #  Project 1
 
-1. [Project Proposal due Monday Nov 16](approvals.md)
+1. [Project Worksheet due Monday Nov 16](project-worksheet.md)
 1. [Requirements](requirements.md)
