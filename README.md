@@ -8,5 +8,5 @@
 
 ### Key Project 1 Dates
 - Nov 16 - Project Approvals
-- Nov 17 - Nov 22 - :party-blob: !!Project Week!! :partygopher: We will not meet during normal class times. You will be meeting with your squad at the times instructed by your Squad lead.
+- Nov 17 - Nov 22 - Project Week! We will not meet during normal class times. You will be meeting with your squad at the times instructed by your Squad lead.
 - Nov 23 - Project Presentations
