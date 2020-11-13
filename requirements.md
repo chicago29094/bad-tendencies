@@ -91,7 +91,7 @@ You will be sharing your game and your code.  Be prepared to answer questions fr
 
 _An instructor will contact you to setup a meeting time to approve your project._
 
-**Friday, Nov 13 - Mandatory**<br>
+**Monday, Nov 16 - Mandatory**<br>
 
 You will meet with an instructor for 15 minutes to get your game idea approved. Be sure to write out what features you will need to build in order to meet MVP and some stretch goal ideas.
 
@@ -99,9 +99,9 @@ You will meet with an instructor for 15 minutes to get your game idea approved. 
 
 ## :round_pushpin: How to Submit Your Project
 
-Your project is due on Thursday, Nov 19th at 10:00 AM ET. You will present your project and show your code to classmates and instructors.
+Your project is due on Monday, Nov 23rd at 10:00 AM ET. You will present your project and show your code to classmates and instructors.
 
-:heavy_check_mark: Add your project to [this google sheet](https://docs.google.com/spreadsheets/d/1y11MHrxXu736MjfJ4x5s_4Kd-tSXRPAdsx78cJJXzmU/edit?usp=sharing). Note that this will be the order you present your projects!
+:heavy_check_mark: Add your project to [this google sheet](https://docs.google.com/spreadsheets/d/1MnNJdKH2IWbDN3WYbTdbmqacAv5cUqvFBWS25DA5KSs/edit?usp=sharing). Note that this will be the order you present your projects!
 
 <hr>
 
