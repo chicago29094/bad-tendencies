@@ -1,5 +1,11 @@
 # Project Overview
 
+
+### Key Project 1 Dates
+- Nov 16 - Project Approvals
+- Nov 17 - Nov 22 - :party-blob: !!Project Week!! :partygopher: We will not meet during normal class times. You will be meeting with your squad at the times instructed by your Squad lead.
+- Nov 23 - Project Presentations
+
 ## Project Schedule
 
 This schedule will be used to keep track of your progress throughout the week and align with our expectations.  
@@ -56,7 +62,7 @@ The functionality will then be divided into two separate lists: MVP and PostMVP.
 - Allow user to choose player 
 - Restart the game when the user loses
 
-You shhould have at least 10 items here
+You should have at least 10 items here
 
 #### PostMVP 
 
