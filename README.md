@@ -2,6 +2,5 @@
 
 #  Project 1
 
-## Tasks
-
+1. [Project Approvals](approvals.md)
 1. [Requirements](requirements.md)
