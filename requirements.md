@@ -111,9 +111,9 @@ Your project is due on Monday, Nov 23rd at 10:00 AM ET. You will present your pr
 3. Seek out help with our class TA
 
 **:heavy_exclamation_mark: TA Hours**
-1. Kay - Tuesdays: 8 - 10 pm ET || 5 - 7 pm PT `seir-margaret-evan-office-hours`
-1. Evan - Saturdays: 2 - 4 pm ET || 11 am - 1 pm PT  `seir-margaret-kay-office-hours`
-1. Aegean - Sundays: 4 - 9 pm ET || 1 - 6 pm PT `seir-officehours` 
+1. Evan - Saturdays: 2 - 4 pm ET || 11 am - 1 pm PT  `seir-erica-evan-office-hours`
+1. Mathilda - Wednesdays: 7 - 9 pm ET || 4 - 6 pm PT `seir-erica-mathilda-office-hours`
+1. Madeline - Thursdays: 7 - 9 pm ET || 4 - 6 pm PT `seir-erica-madeline-office-hours`
 
 <hr>
 
