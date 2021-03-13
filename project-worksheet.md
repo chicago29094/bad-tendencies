@@ -2,9 +2,9 @@
 
 
 ### Key Project 1 Dates
-- Nov 16 - Project Approvals
-- Nov 17 - Nov 22 - Project Week! We will not meet during normal class times. You will be meeting with your squad at the times instructed by your Squad lead.
-- Nov 23 - Project Presentations
+- March 19 - Project Approvals
+- March 19 - Nov 26 - Project Week! We will not meet during normal class times. You will be meeting with your squad at the times instructed by your Squad lead.
+- March 26 - Project Presentations
 
 ## Project Schedule
 
