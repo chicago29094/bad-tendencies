@@ -134,7 +134,7 @@ Are you able to defend why you implemented your solution in a certain way? Can y
 * **[MDN Javascript Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript)**
 * **[jQuery Docs](http://api.jquery.com)**
 * **[GitHub Pages](https://pages.github.com)**
-* **[Trello](trello.com)**
+* **[Trello](https://trello.com)**
 <hr>  
 
 ## Inspiration - Projects by Previous SEI Students
@@ -143,7 +143,6 @@ Are you able to defend why you implemented your solution in a certain way? Can y
 * [Baseball Triva](https://bwilson19.github.io/baseballtrivia/)
 * [Blackjack](https://cardosi.github.io/)
 * [Connect Four](http://katiezhou.github.io/connectfour.html)
-* [Pan Dulce Connect Four](https://edoorn.github.io/pandulce/)
 * [Simon](http://alexandraalday.com/SimonUniverse/)
 * [Savage Sailors](https://tg970.github.io/savage_sailors/)
 * [Ancient Wizards](https://benpeterswake.github.io/)
