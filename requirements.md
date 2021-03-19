@@ -71,7 +71,7 @@ Note: You can create your index.html on Github or you can create it from the ter
 
 <details><summary>Extra: want your own domain name?</summary>
 
-You can also host your Github pages with your own domain name. [Here is a walktrhough from namecheap, one of many web hosting services](https://www.namecheap.com/support/knowledgebase/article.aspx/9645/2208/how-do-i-link-my-domain-to-github-pages)
+You can also host your Github pages with your own domain name. [Here is a walktrhough from namecheap, one of many domain registrars](https://www.namecheap.com/support/knowledgebase/article.aspx/9645/2208/how-do-i-link-my-domain-to-github-pages)
 </details>
 
 <hr>
