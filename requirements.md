@@ -101,7 +101,7 @@ You will meet with an instructor for 15 minutes to get your game idea approved. 
 
 Your project is due on Friday, March 26th at 10:00 AM ET. You will present your project and show your code to classmates and instructors.
 
-:heavy_check_mark: Add your project to [this google sheet](https://docs.google.com/spreadsheets/d/1MnNJdKH2IWbDN3WYbTdbmqacAv5cUqvFBWS25DA5KSs/edit?usp=sharing). Note that this will be the order you present your projects!
+:heavy_check_mark: Add your project to [this google sheet](https://docs.google.com/spreadsheets/d/1QVoqPWXvdsRhK0kZXqce_qk3Fvlvu_QbGMAFQBsokt4/edit?usp=sharing). Note that this will be the order you present your projects!
 
 <hr>
 
