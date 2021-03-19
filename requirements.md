@@ -9,7 +9,7 @@ There are no full day classes during project weeks, but we do expect you to be w
 
 There are **no attendance checks during this project week, except:**
 
-  - **Monday, Nov 23**: Project presentation day! You're required to be in the class zoom starting at 10:00 AM Eastern
+  - **Friday, March 26th**: Project presentation day! You're required to be in the class zoom starting at 10:00 AM Eastern
 
 _Failure to make an attendance check will result in an unexcused absence for both morning and afternoon for that day_.
 
@@ -91,7 +91,7 @@ You will be sharing your game and your code.  Be prepared to answer questions fr
 
 _An instructor will contact you to setup a meeting time to approve your project._
 
-**Monday, Nov 16 - Mandatory**<br>
+**Monday, March 22nd - Mandatory**<br>
 
 You will meet with an instructor for 15 minutes to get your game idea approved. Be sure to write out what features you will need to build in order to meet MVP and some stretch goal ideas.
 
@@ -99,7 +99,7 @@ You will meet with an instructor for 15 minutes to get your game idea approved. 
 
 ## :round_pushpin: How to Submit Your Project
 
-Your project is due on Monday, Nov 23rd at 10:00 AM ET. You will present your project and show your code to classmates and instructors.
+Your project is due on Friday, March 26th at 10:00 AM ET. You will present your project and show your code to classmates and instructors.
 
 :heavy_check_mark: Add your project to [this google sheet](https://docs.google.com/spreadsheets/d/1MnNJdKH2IWbDN3WYbTdbmqacAv5cUqvFBWS25DA5KSs/edit?usp=sharing). Note that this will be the order you present your projects!
 
