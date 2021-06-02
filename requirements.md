@@ -5,13 +5,11 @@
 <img src="https://storage.googleapis.com/pr-newsroom-wp/1/2020/04/Gaming-header-2.png" width="800">
 
 ## :round_pushpin: Attendance
-There are no full day classes during project weeks, but we do expect you to be working on your project daily and be available during the usual class times (10AM - 6PM Eastern) for TA hours or any meetings with instructors as needed.  
+There are no full day classes during project weeks, but we do expect you to be working on your project daily and be available during the usual class times (9am - 5pm EST) for for any meetings with instructors, as needed.  
 
-There are **no attendance checks during this project week, except:**
+**We will continue to check attendence** by posting an attendence thread in the classroom Slack channel *both* in the morning (~9am EST) and afternoon (~1pm EST).
 
-  - **Friday, March 26th**: Project presentation day! You're required to be in the class zoom starting at 10:00 AM Eastern
-
-_Failure to make an attendance check will result in an unexcused absence for both morning and afternoon for that day_.
+_Failure to make an attendance check will result in an unexcused absence_.
 
 ## :round_pushpin: Project Details
 ### Mandatory To Pass:
