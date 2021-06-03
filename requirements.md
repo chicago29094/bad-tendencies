@@ -9,7 +9,7 @@ There are no full day classes during project weeks, but we do expect you to be w
 
 **We will continue to check attendence** by posting an attendence thread in the classroom Slack channel *both* in the morning (~9am EST) and afternoon (~1pm EST).
 
-_Failure to make an attendance check will result in an unexcused absence_.
+_Failure to make an attendance check will result in an unexcused absence_. Responding more than 10 minutes late will result in a tardy, as with regular class sessions.
 
 ## :round_pushpin: Project Details
 ### Mandatory To Pass:
