@@ -2,9 +2,9 @@
 
 
 ### Key Project 1 Dates
-- March 22 - Project Approvals
-- March 22 - Nov 25 - Project Week! We will not meet during normal class times. You will be meeting with your squad at the times instructed by your Squad lead.
-- March 26 - Project Presentations
+- June 7 - Project Approvals
+- June 7 - June 11 - Project Week! We will not meet during normal class times. You will be meeting with your squad at the times instructed by your Squad lead.
+- June 11 - Project Presentations
 
 ## Project Schedule
 
@@ -75,7 +75,7 @@ Based on the initial logic defined in the previous sections try and breakdown th
 Time frames are also key in the development cycle.  You have limited time to code all phases of the game.  Your estimates can then be used to evalute game possibilities based on time needed and the actual time you have before game must be submitted. It's always best to pad the time by a few hours so that you account for the unknown so add and additional hour or two to each component to play it safe.
 
 #### MVP
-| Component | Priority | Estimated Time | Time Invetsted | Actual Time |
+| Component | Priority | Estimated Time | Time Invested | Actual Time |
 | --- | :---: |  :---: | :---: | :---: |
 | Modal | H | 1hr | 1.5hr | -hr|
 | Carousel | H | 3hr | -hr | -hr|
