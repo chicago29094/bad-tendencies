@@ -69,7 +69,7 @@ Note: You can create your index.html on Github or you can create it from the ter
 
 <details><summary>Extra: want your own domain name?</summary>
 
-You can also host your Github pages with your own domain name. [Here is a walktrhough from namecheap, one of many domain registrars](https://www.namecheap.com/support/knowledgebase/article.aspx/9645/2208/how-do-i-link-my-domain-to-github-pages)
+You can also host your Github pages with your own domain name. [Here is a walkthrough from namecheap, one of many domain registrars](https://www.namecheap.com/support/knowledgebase/article.aspx/9645/2208/how-do-i-link-my-domain-to-github-pages)
 </details>
 
 <hr>
@@ -89,15 +89,15 @@ You will be sharing your game and your code.  Be prepared to answer questions fr
 
 _An instructor will contact you to setup a meeting time to approve your project._
 
-**Monday, March 22nd - Mandatory**<br>
+**Monday, June 7th - Mandatory**<br>
 
-You will meet with an instructor for 15 minutes to get your game idea approved. Be sure to write out what features you will need to build in order to meet MVP and some stretch goal ideas.
+You will meet with your squad lead to get your game idea approved. Be sure to write out what features you will need to build in order to meet MVP and some stretch goal ideas.
 
 <hr>
 
 ## :round_pushpin: How to Submit Your Project
 
-Your project is due on Friday, March 26th at 10:00 AM ET. You will present your project and show your code to classmates and instructors.
+Your project is due on Friday, June 11th at 10:00 AM ET. You will present your project and show your code to classmates and instructors beginning at 10:00 AM ET.
 
 :heavy_check_mark: Add your project to [this google sheet](https://docs.google.com/spreadsheets/d/1tOl_JYPuED9MXKpU-qTJlQdSxGdag6MH-W3TEZdAl7c/edit?usp=sharing). Note that this will be the order you present your projects!
 
@@ -106,12 +106,23 @@ Your project is due on Friday, March 26th at 10:00 AM ET. You will present your 
 ## :heavy_exclamation_mark: Where to go for help during project week
 1. Seek out help online
 2. Seek out help with your classmates
-3. Seek out help with our class TA
+3. Seek out help with our class IA
 
-**:heavy_exclamation_mark: TA Hours**
-1. Evan - Saturdays: 2 - 4 pm ET || 11 am - 1 pm PT  `seir-erica-evan-office-hours`
-1. Mathilda - Wednesdays: 7 - 9 pm ET || 4 - 6 pm PT `seir-erica-mathilda-office-hours`
-1. Madeline - Thursdays: 7 - 9 pm ET || 4 - 6 pm PT `seir-erica-madeline-office-hours`
+**:heavy_exclamation_mark: Instructor Office Hours**
+1. Esin - Tuesday 6-8 pm ET
+2. Madeline - Thursday 7-9 pm ET
+3. Mathilda - Saturday 3-5 pm ET
+4. Doug & Michael - Monday-Thursday 7-10 pm ET/Sunday 4-9 pm ET
+
+<hr>
+
+## :round_pushpin: Suggested Project Ideas
+
+- **[Flash Cards](project_choices.md#flash-cards)**
+- **[Trivia (Self-scoring)](project_choices.md#self-scoring-trivia)**
+- **[Spaceman](project_choices.md#spaceman)**
+- **[Tower of Hanoi](project_choices.md#tower-of-hanoi)**
+- **[Simon](project_choices.md#simon)**
 
 <hr>
 
