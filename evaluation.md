@@ -44,3 +44,4 @@ considered complete:
 - Built with HTML, CSS and JS
 - The application renders in the browser and runs without errors
 - The GitHub repo shows daily commits and has a README that adequately documents the project
+- Two-player game (against computer or another player), with win state/lose state, continue playing, and multiple rounds
