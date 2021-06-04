@@ -2,7 +2,7 @@
 
 #  Project 1
 
-1. [Project Worksheet due Monday June 7](project-worksheet.md)
+1. [Project Worksheet](project-worksheet.md)
 1. [Requirements](requirements.md)
 
 
