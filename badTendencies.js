@@ -7,6 +7,10 @@ const gameStatus='Splash Screen';
 const BANDMEMBER_DEFAULT_STATE="wander";
 const PLAYER_DEFAULT_STATE="chase";
 
+// Grab and cache fixed DOM elements
+
+const gameContainer = document.querySelector('#game-container');
+
 /*==========================================================================
 Band Member Characters
 ===========================================================================*/
@@ -77,7 +81,7 @@ const playerCharacters =[
 Game Level Definitions
 ===========================================================================*/
 
-const gameLevel1[][] = [
+const gameLevel1 = [
     ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
@@ -184,7 +188,32 @@ Utility Functions
 Display Functions
 ===========================================================================*/
 
+function displayGameBoard(level) {
 
+    const gamePlayfield = document.createElement('div');
+    gamePlayfield.setAttribute('id', 'game-playfield');
+    gameContainer.appendChild(gamePlayfield);
+
+    for (let i=0; i<level.length; i++) {
+        for (let j=0; j<level[i].length; j++) {
+            const gameSquare = document.createElement('div');
+            gameSquare.setAttribute('class', "game-square");            
+            gameSquare.setAttribute('data-gsx', (i).toString());
+            gameSquare.setAttribute('data-gsy', (j).toString());
+            gameSquare.setAttribute('data-gst', level[i][j]);
+
+            if (level[i][j]==='W') {
+                gameSquare.innerHTML=`<p style="background-color:#cccccc">W</p>`;
+            }
+            else if (level[i][j]===' ') {
+                gameSquare.innerHTML=`<p style="background-color:#000000">W</p>`;
+            }
+
+ 
+            gamePlayfield.appendChild(gameSquare);            
+        }
+    }    
+}
 
 /*==========================================================================
 Motion
@@ -205,6 +234,8 @@ Initialize a New Game
 /*==========================================================================
 Main Game Loop
 ===========================================================================*/
+
+displayGameBoard(gameLevel1);
 
 
 
