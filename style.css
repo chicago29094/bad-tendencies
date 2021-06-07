@@ -1,7 +1,12 @@
 
+body {
+    background-color: #4a4848;
+}
+
 #game-container {
     width: 1024px;
     height: 1024px;
+    margin: auto auto;
 }
 
 #game-playfield {
@@ -13,6 +18,8 @@
 }
 
 .game-square, .game-square p {
+    width: 32px;
+    height: 32px;
     padding: 0px;
     margin: 0px;    
 }
