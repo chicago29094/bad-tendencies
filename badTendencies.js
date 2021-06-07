@@ -3,6 +3,8 @@
 Global Game Settings
 ===========================================================================*/
 
+const gameStatus='Splash Screen';
+
 
 /*==========================================================================
 Game Level Definitions
@@ -46,6 +48,17 @@ gameLevel1[][] = [
 /*==========================================================================
 Classes
 ===========================================================================*/
+
+class BandMember {
+    constructor (bandMemberCharacter) {
+        this._name=bandMemberCharacter.name;
+        this._health=bandMemberCharacter.health;
+        this._sober=bandMemberCharacter.sober;
+        this._speed=bandMemberCharacter.speed;
+        this._state=BANDMEMBER_DEFAULT_STATE;
+        this._image=bandMemberCharacter.image;
+    }
+}
 
 /*==========================================================================
 Utility Functions
