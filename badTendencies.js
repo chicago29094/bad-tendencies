@@ -6,6 +6,7 @@ Global Game Settings
 const gameStatus='Splash Screen';
 const BANDMEMBER_DEFAULT_STATE="wander";
 const PLAYER_DEFAULT_STATE="chase";
+let mainGameLoopIntervalID;
 
 // Grab and cache fixed DOM elements
 
@@ -51,7 +52,18 @@ const playerCharacters =[
         "name" : 'Player 1',
         "health" : 100,
         "speed" : 1,
-        "image" : '/assets/player1.png',
+        "image" : {
+                    "src": '/assets/player1.png',
+                    "Walk Left": [0, 9, 0],  // Sprite Row, Total Frames, Current Frame
+                    "Walk RIght": [1, 9, 0],  
+                    "Idle": [2, 11,0 ],  
+                    "Die": [3, 11, 0],  
+                    "Dizzy": [4, 3, 0], 
+                    "Hurt": [5, 3, 0],  
+                    "Throwing Right": [6, 5, 0], 
+                    "Throwing Left": [6, 5, 0],
+                },
+        "imageState" : "Idle",
     },
 ];
 
@@ -103,13 +115,15 @@ Classes
 // BandMember Class
 
 class BandMember {
-    constructor (bandMemberCharacter) {
+    constructor (bandMemberCharacter, positionX, positionY) {
         this._name=bandMemberCharacter.name;
         this._health=bandMemberCharacter.health;
         this._sober=bandMemberCharacter.sober;
         this._speed=bandMemberCharacter.speed;
+        this._posX=positionX;
+        this._posY=positionY;        
         this._state=BANDMEMBER_DEFAULT_STATE;
-        this._image=bandMemberCharacter.image_left;
+        this._image=Object.assign({}, bandMemberCharacter.image);
     }
 
     get name() { return this._name; }
@@ -124,6 +138,15 @@ class BandMember {
     get speed() { return this._speed; }
     set speed(setSpeed) { this._speed=setSpeed; }
 
+    get posX() { return this._posX; }
+    set posX(setPosX) { this._posX=setPosX; }
+
+    get posY() { return this._posY; }
+    set posY(setPosY) { this._posY=setPosY; }
+
+    get posXY() { return [this._posX, this.posY];}
+    set posXY([setPosX, setPosY]) { this._posX=setPosX; this._posY=setPosY; }
+
     get state() { return this._state; }
     set state(setState) { this._state=setState; }
 
@@ -133,13 +156,15 @@ class BandMember {
 // Player Class
 
 class Player {
-    constructor (playerCharacter, setName) {
+    constructor (playerCharacter, setName, positionX, positionY) {
         this._name=setName;
         this._health=playerCharacter.health;
         this._sober=playerCharacter.sober;
         this._speed=playerCharacter.speed;
+        this._posX=positionX;
+        this._posY=positionY;
         this._state=PLAYER_DEFAULT_STATE;
-        this._image=playerCharacter.image_right;
+        this._image=Object.assign({}, playerCharacter.image);
     }
 
     get name() { return this._name; }
@@ -150,6 +175,15 @@ class Player {
 
     get speed() { return this._speed; }
     set speed(setSpeed) { this._speed=setSpeed; }
+
+    get posX() { return this._posX; }
+    set posX(setPosX) { this._posX=setPosX; }
+
+    get posY() { return this._posY; }
+    set posY(setPosY) { this._posY=setPosY; }
+
+    get posXY() { return [this._posX, this.posY];}
+    set posXY([setPosX, setPosY]) { this._posX=setPosX; this._posY=setPosY; }
 
     get state() { return this._state; }
     set state(setState) { this._state=setState; }
@@ -189,7 +223,6 @@ function displayGameBoard(level) {
                 gameSquare.innerHTML=`<p style="background-color:#000000">W</p>`;
             }
 
- 
             gamePlayfield.appendChild(gameSquare);            
         }
     }    
@@ -210,12 +243,21 @@ Collision Detection
 Initialize a New Game
 ===========================================================================*/
 
+displayGameBoard(gameLevel1);
+mainGameLoopIntervalId = window.setInterval(mainGameLoop, 1000);
 
 /*==========================================================================
 Main Game Loop
 ===========================================================================*/
 
-displayGameBoard(gameLevel1);
+function mainGameLoop(event) {
+
+console.log("Hola!!!!");
+
+clearInterval(mainGameLoopIntervalId);
+
+} 
+
 
 
 
