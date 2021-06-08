@@ -10,6 +10,7 @@ let mainGameLoopIntervalID;
 
 // Grab and cache fixed DOM elements
 
+const body = document.querySelector('body');
 const gameContainer = document.querySelector('#game-container');
 
 /*==========================================================================
@@ -196,7 +197,29 @@ class Player {
 Utility Functions
 ===========================================================================*/
 
+function displayModalDialog(style, target, width, height, htmlMessage) {
 
+    const underModal = document.createElement("div");
+    underModal.setAttribute('class', 'under-modal');
+    body.appendChild(underModal);
+
+    const modalWindow = document.createElement("div");
+    modalWindow.setAttribute('class', 'modal-window');
+
+    if (width!==0)  modalWindow.style.width=width;
+    if (height!==0) modalWindow.style.height=height;
+    
+    modalWindow.innerHTML = `<div class="close-modal"><img src="/assets/skull_04.png"></div>`;
+    modalWindow.innerHTML = modalWindow.innerHTML + htmlMessage;
+    underModal.appendChild(modalWindow);
+
+    const closeWindow = document.querySelector('.close-modal');
+    closeWindow.addEventListener('click', (event) => {
+            console.log(event.target);
+            body.removeChild(underModal);
+        }
+    );
+}
 
 /*==========================================================================
 Display Functions
@@ -253,6 +276,10 @@ Main Game Loop
 function mainGameLoop(event) {
 
 console.log("Hola!!!!");
+
+const htmlMessage = `<p>What's up Harry!!!!</p>`;
+
+displayModalDialog("", body, "300px", "500px", htmlMessage);
 
 clearInterval(mainGameLoopIntervalId);
 
