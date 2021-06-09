@@ -13,6 +13,7 @@ let mainGameLoopIntervalID;
 
 const body = document.querySelector('body');
 const gameContainer = document.querySelector('#game-container');
+const gameDom = [] ; // Use an array to cache and reference commonly accessed DOM elements
 
 /*==========================================================================
 Band Member Characters
@@ -195,7 +196,7 @@ class Player {
         this._imagePtag.style.height="64px";
         this._imagePtag.style.background=`url('${this._image.src}') 0px 0px`
         this._imageDiv.appendChild(this._imagePtag);
-        gameContainer.appendChild(this._imageDiv);
+        gameDom["gameContainerPlayfield"].appendChild(this._imageDiv);
     }
 
     get name() { return this._name; }
@@ -299,7 +300,7 @@ function displayGameBoard(level) {
 
     const gamePlayfield = document.createElement('div');
     gamePlayfield.setAttribute('id', 'game-playfield');
-    gameContainer.appendChild(gamePlayfield);
+    gameDom["gameContainerPlayfield"].appendChild(gamePlayfield);
 
     for (let i=0; i<level.length; i++) {
         for (let j=0; j<level[i].length; j++) {
@@ -338,6 +339,8 @@ Start Bad Tendencies and Initialize a New Game
 
 const promptGameStartId = setTimeout(promptGameStart, 5000);
 
+// Prompt Player for Game Start
+
 function promptGameStart() {
     const divSplash = document.querySelector('#outerSplash');
 
@@ -372,10 +375,78 @@ function promptGameStart() {
 }
 
 
+// Start New Game
+
 function startNewGame(event) {
     event.preventDefault();
     const underModal = document.querySelector("div.under-modal");
     body.removeChild(underModal);
+
+    const divSplash = document.querySelector('#outerSplash');
+    gameContainer.removeChild(divSplash);
+
+    gameContainer.style.display="grid";
+    gameContainer.style.gridTemplateColumns="1fr 1fr 1fr";
+    gameContainer.style.gridTemplateRows="1fr 1fr 1fr 1fr 1fr 1fr";
+    gameContainer.style.padding="0";
+    gameContainer.style.margin="auto auto";
+    gameDom["gameContainer"]=gameContainer;
+
+    const gameContainerHeader=document.createElement('div');
+    gameContainerHeader.setAttribute('class', 'game-container-header');
+    gameContainerHeader.style.gridColumn="1 / span 3";
+    gameContainerHeader.style.gridRow="1 / span 1";
+    gameDom["gameContainerHeader"]=gameContainerHeader;
+    gameContainer.appendChild(gameContainerHeader);
+
+    const gameContainerScoreboard=document.createElement('div');
+    gameContainerScoreboard.setAttribute('class', 'game-container-scoreboard');
+    gameContainerScoreboard.style.gridColumn="2 / span 2";
+    gameContainerScoreboard.style.gridRow="2 / span 1";
+    gameDom["gameContainerScoreboard"]=gameContainerScoreboard;
+    gameContainer.appendChild(gameContainerScoreboard);
+
+    const gameContainerBandMember1=document.createElement('div');
+    gameContainerBandMember1.setAttribute('class', 'game-container-bandmember1');
+    gameContainerBandMember1.style.gridColumn="1 / span 1";
+    gameContainerBandMember1.style.gridRow="2 / span 1";
+    gameDom["gameContainerBandMember1"]=gameContainerBandMember1;
+    gameContainer.appendChild(gameContainerBandMember1);
+    
+    const gameContainerBandMember2=document.createElement('div');
+    gameContainerBandMember2.setAttribute('class', 'game-container-bandmember2');
+    gameContainerBandMember2.style.gridColumn="1 / span 1";
+    gameContainerBandMember2.style.gridRow="3 / span 1";
+    gameDom["gameContainerBandMember2"]=gameContainerBandMember1;
+    gameContainer.appendChild(gameContainerBandMember2);
+    
+    const gameContainerBandMember3=document.createElement('div');
+    gameContainerBandMember3.setAttribute('class', 'game-container-bandmember3');
+    gameContainerBandMember3.style.gridColumn="1 / span 1";
+    gameContainerBandMember3.style.gridRow="4 / span 1";
+    gameDom["gameContainerBandMember3"]=gameContainerBandMember3;
+    gameContainer.appendChild(gameContainerBandMember3);
+    
+    const gameContainerBandMember4=document.createElement('div');
+    gameContainerBandMember4.setAttribute('class', 'game-container-bandmember4');
+    gameContainerBandMember4.style.gridColumn="1 / span 1";
+    gameContainerBandMember4.style.gridRow="5 / span 1";
+    gameDom["gameContainerBandMember1"]=gameContainerBandMember4;
+    gameContainer.appendChild(gameContainerBandMember4);
+    
+    const gameContainerPlayer1=document.createElement('div');
+    gameContainerPlayer1.setAttribute('class', 'game-container-player1');
+    gameContainerPlayer1.style.gridColumn="1 / span 1";
+    gameContainerPlayer1.style.gridRow="6 / span 1";
+    gameDom["gameContainerPlayer1"]=gameContainerPlayer1;
+    gameContainer.appendChild(gameContainerPlayer1);
+    
+    const gameContainerPlayfield=document.createElement('div');
+    gameContainerPlayfield.setAttribute('class', 'game-container-playfield');
+    gameContainerPlayfield.style.gridColumn="2 / span 2";
+    gameContainerPlayfield.style.gridRow="3 / span 5";
+    gameDom["gameContainerPlayfield"]=gameContainerPlayfield;
+    gameContainer.appendChild(gameContainerPlayfield);
 
     displayGameBoard(gameLevel1);
     player1 = new Player(playerCharacters[0], "Harry", 200, 200);
@@ -397,7 +468,7 @@ const htmlMessage = `<p>What's up Harry!!!!</p>`;
 
 player1.incrementImageAnimation();
 
-clearInterval(mainGameLoopIntervalId);
+// clearInterval(mainGameLoopIntervalId);
 
 } 
 

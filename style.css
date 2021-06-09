@@ -84,6 +84,10 @@ body {
 /*===========================================================================*/
 /* Game Container and Playfield */
 
+#game-container > * {
+    border: 1px solid #00ff00;
+}
+
 #game-container {
     position:relative;
     width: 1024px;
