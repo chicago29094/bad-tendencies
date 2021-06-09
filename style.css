@@ -1,7 +1,88 @@
+/**
+ * @license
+ * MyFonts Webfont Build ID 4100272, 2021-06-09T01:05:30-0400
+ * 
+ * The fonts listed in this notice are subject to the End User License
+ * Agreement(s) entered into by the website owner. All other parties are 
+ * explicitly restricted from using the Licensed Webfonts(s).
+ * 
+ * You may obtain a valid license at the URLs below.
+ * 
+ * Webfont: Graveblade-Regular by Typodermic
+ * URL: https://www.myfonts.com/fonts/typodermic/graveblade/regular/
+ * Copyright: Copyright (c) 2008-2010 Typodermic Fonts. This font is not freely distributable. Visit typodermic.com for more info.
+ * 
+ * Webfont: Hedgerow-Regular by Typodermic
+ * URL: https://www.myfonts.com/fonts/typodermic/hedgerow/regular/
+ * Copyright: Copyright (c) 2008-2021 Typodermic Fonts Inc. All rights reserved.
+ * 
+ * 
+ * 
+ * © 2021 MyFonts Inc
+*/
+
+/* @import must be at top of file, otherwise CSS will not work */
+@import url("//hello.myfonts.net/count/3e90b0");
+@import url('https://fonts.googleapis.com/css2?family=Bevan&family=Saira+Stencil+One&family=Squada+One&family=UnifrakturCook:wght@700&display=swap');
+
+
+@font-face {
+  font-family: "Graveblade-Regular";
+  src: url('webFonts/GravebladeRegular/font.woff2') format('woff2'), url('webFonts/GravebladeRegular/font.woff') format('woff');
+}
+@font-face {
+  font-family: "Hedgerow-Regular";
+  src: url('webFonts/HedgerowRegular/font.woff2') format('woff2'), url('webFonts/HedgerowRegular/font.woff') format('woff');
+}
+
+
+/*===========================================================================*/
 
 body {
-    background-color: #4a4848;
+    background-color: #000000;
+    background: url('/assets/city_1.jpg');
 }
+
+
+/*===========================================================================*/
+/* Start Screen Splash Content */
+
+#outerSplash {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;      
+}
+
+.innerSplash h1 {
+    font-family: "Graveblade-Regular";
+    -webkit-text-stroke: 1px red; /* width and color */    
+    color: #ffffff;
+    font-size: 8rem;
+    text-align: center;
+    letter-spacing: .2rem;
+    margin: 0px auto 20px auto;
+}
+
+.innerSplash h2 {
+    font-family: "Hedgerow-Regular";    
+    color: #ffffff;      
+    text-shadow: 8px 8px rgba(0, 0, 0, 0.7);    
+    font-size: 4rem;
+    text-align: center;
+    letter-spacing: .2rem;
+    margin: 0px auto 20px auto;
+}
+
+/*===========================================================================*/
+/* Game Container and Playfield */
 
 #game-container {
     position:relative;
@@ -25,6 +106,9 @@ body {
     margin: 0px;    
 }
 
+/*===========================================================================*/
+/* Flexible dynamic modal dialog */
+
 .under-modal {
     position: fixed;
     z-index: 1;
@@ -33,7 +117,7 @@ body {
     width: 100vw;
     height: 100vh;
     background-color: rgb(128, 128, 128);
-    background-color: rgba(255, 0, 0, 0.5);
+    background-color: rgba(255, 0, 0, 0.1);
     overflow: hidden;
     margin: 0;
     padding: 0;
@@ -44,8 +128,10 @@ body {
 }
 
 div.modal-window {
-    background-color: #c0c0c0;
-    padding: 20px;
+    background-color: #d7d7d7;
+    border-radius: 5%;
+    box-shadow: 8px 8px 2px 1px rgba(0, 0, 0, 0.4);
+    padding: 20px 40px;
 }
 
 .close-modal {
@@ -56,6 +142,40 @@ div.modal-window {
     height: 40px;
 }
 
+/*===========================================================================*/
+/* Game Instructions */
 
+.game-instructions p, label, input {
+/* font-family: 'UnifrakturCook', cursive;  */
+font-family: 'Squada One', cursive; 
+color: #000000;      
+font-size: 1.7rem;
+text-align: left;
+}
 
+.game-instructions input {
+    margin-left: 10px;
+}
+#startGameButton {
+    font-family: 'Squada One', cursive; 
+    color: #ffffff;  
+    background-color: #760c0c;
+    font-size: 1.7rem;
+    text-align: left;  
+    letter-spacing: .1rem;  
+    text-transform: uppercase;
+    border-radius: 10%;
+    padding: 5px 10px 5px 10px;
+    margin: 10px 0px;
+}
 
+.game-instructions h3 {
+    /* font-family: "Graveblade-Regular"; */
+    font-family: "Hedgerow-Regular"; 
+    /* font-family: 'Squada One', cursive; */
+    color: #6a0b0b;      
+    font-size: 3rem;
+    text-align: left;
+    margin: 0px 0px 0px 0px;
+    }
+    

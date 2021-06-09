@@ -6,7 +6,7 @@ Global Game Settings
 const gameStatus='Splash Screen';
 const BANDMEMBER_DEFAULT_STATE="wander";
 const PLAYER_DEFAULT_STATE="chase";
-const ANIMATION_FRAME_DELAY=500;
+const ANIMATION_FRAME_DELAY=100;
 let mainGameLoopIntervalID;
 
 // Grab and cache fixed DOM elements
@@ -60,7 +60,7 @@ const playerCharacters =[
         "health" : 100,
         "speed" : 1,
         "image" : {
-                    "src": '/assets/player1.png',
+                    "src": '/assets/player1_64x64.png',
                     "Walk Left": [0, 9, 0],  // Sprite Row, Total Frames, Current Frame
                     "Walk Right": [1, 9, 0],  
                     "Walk Down": [0, 9, 0],
@@ -71,7 +71,7 @@ const playerCharacters =[
                     "Hurt": [5, 3, 0],  
                     "Throwing Right": [6, 5, 0], 
                     "Throwing Left": [6, 5, 0],
-                    "imageState" : "Idle",
+                    "imageState" : "Walk Left",
                     "lastUpdate" : 0,
         },
     },
@@ -191,8 +191,8 @@ class Player {
         this._imagePtag=document.createElement("p");
         this._imagePtag.setAttribute('class', "player-ptag");
         this._imagePtag.setAttribute('id', this._id + '-ptag');
-        this._imagePtag.style.width="32px";
-        this._imagePtag.style.height="32px";
+        this._imagePtag.style.width="64px";
+        this._imagePtag.style.height="64px";
         this._imagePtag.style.background=`url('${this._image.src}') 0px 0px`
         this._imageDiv.appendChild(this._imagePtag);
         gameContainer.appendChild(this._imageDiv);
@@ -241,8 +241,8 @@ class Player {
 
             this._image[this._image["imageState"]][2]=curCol;
 
-            newPosX=(curCol*-32);
-            newPosY=(row*-32);
+            newPosX=(curCol*-64);
+            newPosY=(row*-64);
 
             this._imagePtag.style.backgroundPosition=`${newPosX}px ${newPosY}px`;
         }
@@ -333,13 +333,47 @@ Collision Detection
 
 
 /*==========================================================================
-Initialize a New Game
+Start Bad Tendencies and Initialize a New Game
 ===========================================================================*/
 
-displayGameBoard(gameLevel1);
-player1 = new Player(playerCharacters[0], "Harry", 200, 200);
+const promptGameStartId = setTimeout(promptGameStart, 5000);
 
-mainGameLoopIntervalId = window.setInterval(mainGameLoop, 1000);
+function promptGameStart() {
+    const divSplash = document.querySelector('#outerSplash');
+
+    //gameContainer.removeChild(divSplash);
+
+    const htmlMessage = `<div class="game-instructions">
+        <h3>Game Instructions</h3>
+           
+        <p>You are the band member for the rock band <em><u>Bad Tendencies</u></em>.
+        Your job is to get the band members on stage and to keep them out of 
+        trouble.  If you get close to a band member they will follow you to
+        the stage, unless they are distracted or under the influence.  You 
+        can also collect money as you move along, otherwise the band members
+        will grab it and likely waste it to support their Rock-n-Roll 
+        lifestyle.  Use the keyboard arrow keys to move around.
+        <em>Good Luck!!!</em>.</p>
+
+        <form>
+        <label for="playerName">Player's Name</labeL>
+        <input type="text" class="nameInput" name="player1" value="" placeholder="Enter Your Name">
+
+        <button id="startGameButton">Start New Game</button>
+        </form>
+    </div>
+    `;
+
+    displayModalDialog("", body, "500px", "500px", htmlMessage);
+}
+
+
+function startNewGame() {
+    displayGameBoard(gameLevel1);
+    player1 = new Player(playerCharacters[0], "Harry", 200, 200);
+
+    mainGameLoopIntervalId = window.setInterval(mainGameLoop, 100);
+}
 
 /*==========================================================================
 Main Game Loop
