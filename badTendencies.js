@@ -336,6 +336,7 @@ const debug = {
 Display Functions
 ===========================================================================*/
 
+
 // Display a modal dialog box
 
 function displayModalDialog(style, target, width, height, htmlMessage) {
@@ -361,6 +362,7 @@ function displayModalDialog(style, target, width, height, htmlMessage) {
         }
     );
 }
+
 
 // Display the Game Board
 
@@ -468,6 +470,20 @@ function startNewGame(event) {
     gameDom["gameContainerHeader"]=gameContainerHeader;
     gameContainer.appendChild(gameContainerHeader);
 
+    // Setup Game Header    
+    gameContainerHeader.innerHTML = `
+        <h1>Bad Tendencies</h1>
+        <div class="header-buttons">
+            <div><button id="headerStartGameButton">New Game</button></div>
+            <div><button id="headerQuitGameButton">Quit GAME</button></div>
+        </div>
+    `;
+    const headerStartGameButton=gameContainerHeader.querySelector('#headerStartGameButton');
+    headerStartGameButton.addEventListener('click', startNewGame);
+
+    const headerQuitGameButton=gameContainerHeader.querySelector('#headerQuitGameButton');
+    headerQuitGameButton.addEventListener('click', gameOver);
+
     const gameContainerScoreboard=document.createElement('div');
     gameContainerScoreboard.setAttribute('class', 'game-container-scoreboard');
     gameContainerScoreboard.style.gridColumn="2 / span 2";
@@ -543,8 +559,8 @@ function displayCharacterStatus(action) {
         gameDom["gameContainerBandMember1"].innerHTML = `
             <div class="bt-character-outer">
                 <img src="${bandMember1.image.thumbnail}" alt="Band Member 1" class="bt-character">
-                <div class="bt-character-status"></div>
-                <p class="bt-character">${bandMember1.name}</p>
+                 <div class="bt-character-status"></div>
+                <p class="bt-character">${bandMember1.name}</p>                
             </div>`;
 
         gameDom["gameContainerBandMember2"].innerHTML = `    
@@ -578,7 +594,13 @@ function displayCharacterStatus(action) {
 
 }
 
+/*==========================
+    Game Over
+===========================*/
 
+function gameOver() {
+
+}
 
 /*==========================================================================
 Main Game Loop

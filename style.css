@@ -197,3 +197,39 @@ p.bt-character {
 div.bt-character {
     margin: 20px 0px 0px 0px;
 }
+
+/*===========================================================================*/
+/* Game Main Header RowFormatting */
+
+.game-container-header {
+    position: relative;
+}
+
+.game-container-header h1 {
+    font-family: "Graveblade-Regular";
+    -webkit-text-stroke: 1px red; /* width and color */    
+    color: #ffffff;
+    font-size: 5rem;
+    text-align: center;
+    letter-spacing: .2rem;
+    margin: 0px auto 20px auto;
+}
+
+#headerStartGameButton, #headerQuitGameButton {
+    font-family: 'Squada One', cursive; 
+    color: #ffffff;  
+    background-color: #820606;
+    font-size: 1rem;
+    text-align: center;  
+    letter-spacing: .1rem;  
+    text-transform: uppercase;
+    border-radius: 10%;
+    padding: 5px 10px 5px 10px;
+    margin: 5px 0px;
+}
+
+div.header-buttons {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
