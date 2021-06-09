@@ -6,6 +6,7 @@ Global Game Settings
 const gameStatus='Splash Screen';
 const BANDMEMBER_DEFAULT_STATE="wander";
 const PLAYER_DEFAULT_STATE="chase";
+const ANIMATION_FRAME_DELAY=500;
 let mainGameLoopIntervalID;
 
 // Grab and cache fixed DOM elements
@@ -165,9 +166,6 @@ class BandMember {
     get imageState() { return this._image["imageState"]}
     set imageState(setImageState) { this._image["imageState"]=setImageState; } 
 
-    incrementImageAnimation() {
-
-    }
 }
 
 // Player Class
@@ -196,6 +194,7 @@ class Player {
         this._imagePtag.style.width="32px";
         this._imagePtag.style.height="32px";
         this._imagePtag.style.background=`url('${this._image.src}') 0px 0px`
+        this._imageDiv.appendChild(this._imagePtag);
         gameContainer.appendChild(this._imageDiv);
     }
 
@@ -224,6 +223,34 @@ class Player {
 
     get imageState() { return this._image["imageState"]}
     set imageState(setImageState) { this._image["imageState"]=setImageState; } 
+
+    incrementImageAnimation() {
+        const row=this._image[this._image["imageState"]][0];
+        const maxCol=this._image[this._image["imageState"]][1];
+        let curCol=this._image[this._image["imageState"]][2];
+        const lastUpdate=this._image.lastUpdate;
+        const currentTime=Date.now();
+        let newPosX=0;
+        let newPosY=0;
+
+        console.log(`${currentTime} ${lastUpdate}  ${(currentTime-lastUpdate)} ${ANIMATION_FRAME_DELAY}`);
+        console.log(`imageState = ${this._image["imageState"]}`)
+        console.log(`row=${row} maxCol=${maxCol} curCol=${curCol}`);
+
+        if ( (currentTime-lastUpdate) > ANIMATION_FRAME_DELAY ) {
+            this._image.lastUpdate=currentTime;
+
+            if (curCol===maxCol) curCol=0;
+            else curCol=curCol+1;
+
+            this._image[this._image["imageState"]][2]=curCol;
+
+            newPosX=(curCol*-32);
+            newPosY=(row*-32);
+
+            this._imagePtag.style.backgroundPosition=`${newPosX}px ${newPosY}px`;
+        }
+    }
 }
 
 
@@ -231,6 +258,13 @@ class Player {
 Utility Functions
 ===========================================================================*/
 
+const debug = {
+    "console" : {
+            "log" : (pthis, str) => {
+                    console.log(pthis, str);
+            }
+    }
+}
 
 
 /*==========================================================================
@@ -307,6 +341,8 @@ Initialize a New Game
 ===========================================================================*/
 
 displayGameBoard(gameLevel1);
+player1 = new Player(playerCharacters[0], "Harry", 200, 200);
+
 mainGameLoopIntervalId = window.setInterval(mainGameLoop, 1000);
 
 /*==========================================================================
@@ -315,13 +351,15 @@ Main Game Loop
 
 function mainGameLoop(event) {
 
-console.log("Hola!!!!");
+console.log("Starting mainGameLoop");
 
 const htmlMessage = `<p>What's up Harry!!!!</p>`;
 
-displayModalDialog("", body, "300px", "500px", htmlMessage);
+// displayModalDialog("", body, "300px", "500px", htmlMessage);
 
-clearInterval(mainGameLoopIntervalId);
+player1.incrementImageAnimation();
+
+//clearInterval(mainGameLoopIntervalId);
 
 } 
 
