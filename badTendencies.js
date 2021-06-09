@@ -9,6 +9,13 @@ const PLAYER_DEFAULT_STATE="chase";
 const ANIMATION_FRAME_DELAY=100;
 let mainGameLoopIntervalID;
 
+let player1 = {};
+let player2 = {};
+let bandMember1 = {};
+let bandMember2 = {};
+let bandMember3 = {};
+let bandMember4 = {};
+
 // Grab and cache fixed DOM elements
 
 const body = document.querySelector('body');
@@ -26,31 +33,91 @@ const bandMemberCharacters=[
         "health" : 100,
         "sober" : 100,
         "speed" : 1,
-        "image" : '/assets/axl.png',
+        "image" : {
+            "thumbnail" : '/assets/bandmember_262_128.png',
+            "src": '/assets/player1_64x64.png',
+            "Walk Left": [0, 9, 0],  // Sprite Row, Total Frames, Current Frame
+            "Walk Right": [1, 9, 0],  
+            "Walk Down": [0, 9, 0],
+            "Walk Up": [1, 9, 0],  
+            "Idle": [2, 11,0 ],  
+            "Die": [3, 11, 0],  
+            "Dizzy": [4, 3, 0], 
+            "Hurt": [5, 3, 0],  
+            "Throwing Right": [6, 5, 0], 
+            "Throwing Left": [6, 5, 0],
+            "imageState" : "Walk Left",
+            "lastUpdate" : 0,
+        },
     },
     {
-        "name" : 'Vince',
+        "name" : 'Thor',
         "id" : "bandchar2",
         "health" : 100,
         "sober" : 100,
         "speed" : 1,
-        "image" : '/assets/vince.png',
+        "image" : {
+            "thumbnail" : '/assets/bandmember_236_128.png',
+            "src": '/assets/player1_64x64.png',
+            "Walk Left": [0, 9, 0],  // Sprite Row, Total Frames, Current Frame
+            "Walk Right": [1, 9, 0],  
+            "Walk Down": [0, 9, 0],
+            "Walk Up": [1, 9, 0],  
+            "Idle": [2, 11,0 ],  
+            "Die": [3, 11, 0],  
+            "Dizzy": [4, 3, 0], 
+            "Hurt": [5, 3, 0],  
+            "Throwing Right": [6, 5, 0], 
+            "Throwing Left": [6, 5, 0],
+            "imageState" : "Walk Left",
+            "lastUpdate" : 0,
+        },
     },
     {
-        "name" : 'Johnny Fear',
+        "name" : 'Vince',
         "id" : "bandchar3",
         "health" : 100,
         "sober" : 100,
         "speed" : 1,
-        "image" : '/assets/jonnyfear.png',
+        "image" : {
+            "thumbnail" : '/assets/bandmember_011_128.png',
+            "src": '/assets/player1_64x64.png',
+            "Walk Left": [0, 9, 0],  // Sprite Row, Total Frames, Current Frame
+            "Walk Right": [1, 9, 0],  
+            "Walk Down": [0, 9, 0],
+            "Walk Up": [1, 9, 0],  
+            "Idle": [2, 11,0 ],  
+            "Die": [3, 11, 0],  
+            "Dizzy": [4, 3, 0], 
+            "Hurt": [5, 3, 0],  
+            "Throwing Right": [6, 5, 0], 
+            "Throwing Left": [6, 5, 0],
+            "imageState" : "Walk Left",
+            "lastUpdate" : 0,
+        },
     },
     {
-        "name" : 'Hans',
+        "name" : 'Johnny Fear',
         "id" : "bandchar4",
         "health" : 100,
         "sober" : 100,
         "speed" : 1,
-        "image" : '/assets/hans.png',
+        "image" : {
+            "thumbnail" : '/assets/bandmember_003_128.png',
+            "src": '/assets/player1_64x64.png',
+            "Walk Left": [0, 9, 0],  // Sprite Row, Total Frames, Current Frame
+            "Walk Right": [1, 9, 0],  
+            "Walk Down": [0, 9, 0],
+            "Walk Up": [1, 9, 0],  
+            "Idle": [2, 11,0 ],  
+            "Die": [3, 11, 0],  
+            "Dizzy": [4, 3, 0], 
+            "Hurt": [5, 3, 0],  
+            "Throwing Right": [6, 5, 0], 
+            "Throwing Left": [6, 5, 0],
+            "imageState" : "Walk Left",
+            "lastUpdate" : 0,
+        },
     },
 ];
 
@@ -61,6 +128,7 @@ const playerCharacters =[
         "health" : 100,
         "speed" : 1,
         "image" : {
+                    "thumbnail" : '/assets/player_001_128.png',
                     "src": '/assets/player1_64x64.png',
                     "Walk Left": [0, 9, 0],  // Sprite Row, Total Frames, Current Frame
                     "Walk Right": [1, 9, 0],  
@@ -334,10 +402,10 @@ Collision Detection
 
 
 /*==========================================================================
-Start Bad Tendencies and Initialize a New Game
+Start Bad Tendencies Game and Initialize a New Game
 ===========================================================================*/
 
-const promptGameStartId = setTimeout(promptGameStart, 5000);
+const promptGameStartId = setTimeout(promptGameStart, 1000);
 
 // Prompt Player for Game Start
 
@@ -374,8 +442,9 @@ function promptGameStart() {
 
 }
 
-
-// Start New Game
+/*==========================
+    Start New Game
+===========================*/
 
 function startNewGame(event) {
     event.preventDefault();
@@ -386,8 +455,8 @@ function startNewGame(event) {
     gameContainer.removeChild(divSplash);
 
     gameContainer.style.display="grid";
-    gameContainer.style.gridTemplateColumns="1fr 1fr 1fr";
-    gameContainer.style.gridTemplateRows="1fr 1fr 1fr 1fr 1fr 1fr";
+    gameContainer.style.gridTemplateColumns="128px 1fr 1fr";
+    gameContainer.style.gridTemplateRows="100px 75px 1fr";
     gameContainer.style.padding="0";
     gameContainer.style.margin="auto auto";
     gameDom["gameContainer"]=gameContainer;
@@ -406,53 +475,110 @@ function startNewGame(event) {
     gameDom["gameContainerScoreboard"]=gameContainerScoreboard;
     gameContainer.appendChild(gameContainerScoreboard);
 
+    const gameContainerCharacters=document.createElement('div');
+    gameContainerCharacters.setAttribute('class', 'game-container-characters');
+    gameContainerCharacters.style.gridColumn="1 / span 1";
+    gameContainerCharacters.style.gridRow="2 / span 2";
+    gameContainerCharacters.style.display="flex";
+    gameContainerCharacters.style.flexDirection="column";
+    gameContainerCharacters.style.justifyContent="start";
+    gameContainerCharacters.style.alignItems="center";           
+    gameDom["gameContainerCharacters"]=gameContainerCharacters;
+    gameContainer.appendChild(gameContainerCharacters);
+
     const gameContainerBandMember1=document.createElement('div');
     gameContainerBandMember1.setAttribute('class', 'game-container-bandmember1');
-    gameContainerBandMember1.style.gridColumn="1 / span 1";
-    gameContainerBandMember1.style.gridRow="2 / span 1";
     gameDom["gameContainerBandMember1"]=gameContainerBandMember1;
-    gameContainer.appendChild(gameContainerBandMember1);
+    gameContainerCharacters.appendChild(gameContainerBandMember1);
     
     const gameContainerBandMember2=document.createElement('div');
     gameContainerBandMember2.setAttribute('class', 'game-container-bandmember2');
-    gameContainerBandMember2.style.gridColumn="1 / span 1";
-    gameContainerBandMember2.style.gridRow="3 / span 1";
-    gameDom["gameContainerBandMember2"]=gameContainerBandMember1;
-    gameContainer.appendChild(gameContainerBandMember2);
+    gameDom["gameContainerBandMember2"]=gameContainerBandMember2;
+    gameContainerCharacters.appendChild(gameContainerBandMember2);
     
     const gameContainerBandMember3=document.createElement('div');
     gameContainerBandMember3.setAttribute('class', 'game-container-bandmember3');
-    gameContainerBandMember3.style.gridColumn="1 / span 1";
-    gameContainerBandMember3.style.gridRow="4 / span 1";
     gameDom["gameContainerBandMember3"]=gameContainerBandMember3;
-    gameContainer.appendChild(gameContainerBandMember3);
+    gameContainerCharacters.appendChild(gameContainerBandMember3);
     
     const gameContainerBandMember4=document.createElement('div');
     gameContainerBandMember4.setAttribute('class', 'game-container-bandmember4');
-    gameContainerBandMember4.style.gridColumn="1 / span 1";
-    gameContainerBandMember4.style.gridRow="5 / span 1";
-    gameDom["gameContainerBandMember1"]=gameContainerBandMember4;
-    gameContainer.appendChild(gameContainerBandMember4);
+    gameDom["gameContainerBandMember4"]=gameContainerBandMember4;
+    gameContainerCharacters.appendChild(gameContainerBandMember4);
     
     const gameContainerPlayer1=document.createElement('div');
     gameContainerPlayer1.setAttribute('class', 'game-container-player1');
-    gameContainerPlayer1.style.gridColumn="1 / span 1";
-    gameContainerPlayer1.style.gridRow="6 / span 1";
     gameDom["gameContainerPlayer1"]=gameContainerPlayer1;
-    gameContainer.appendChild(gameContainerPlayer1);
+    gameContainerCharacters.appendChild(gameContainerPlayer1);
     
     const gameContainerPlayfield=document.createElement('div');
     gameContainerPlayfield.setAttribute('class', 'game-container-playfield');
     gameContainerPlayfield.style.gridColumn="2 / span 2";
-    gameContainerPlayfield.style.gridRow="3 / span 5";
+    gameContainerPlayfield.style.gridRow="3 / span 1";
+    gameContainerPlayfield.style.position="relative";
     gameDom["gameContainerPlayfield"]=gameContainerPlayfield;
     gameContainer.appendChild(gameContainerPlayfield);
 
     displayGameBoard(gameLevel1);
-    player1 = new Player(playerCharacters[0], "Harry", 200, 200);
+    player1 = new Player(playerCharacters[0], "Harry", 250, 250);
+    bandMember1 = new BandMember(bandMemberCharacters[0], 250, 250);
+    bandMember2 = new BandMember(bandMemberCharacters[1], 350, 350);
+    bandMember3 = new BandMember(bandMemberCharacters[2], 450, 450);
+    bandMember4 = new BandMember(bandMemberCharacters[3], 550, 550);
+
+    displayCharacterStatus("initialize");
 
     mainGameLoopIntervalId = window.setInterval(mainGameLoop, 100);
 }
+
+
+/*======================================
+    Display Character Status
+=======================================*/
+
+function displayCharacterStatus(action) {
+
+    if (action==="initialize") {
+
+        gameDom["gameContainerBandMember1"].innerHTML = `
+            <div class="bt-character-outer">
+                <img src="${bandMember1.image.thumbnail}" alt="Band Member 1" class="bt-character">
+                <div class="bt-character-status"></div>
+                <p class="bt-character">${bandMember1.name}</p>
+            </div>`;
+
+        gameDom["gameContainerBandMember2"].innerHTML = `    
+            <div class="bt-character-outer">
+                <img src="${bandMember2.image.thumbnail}" alt="Band Member 2" class="bt-character">
+                <div class="bt-character-status"></div>
+                <p class="bt-character">${bandMember2.name}</p>
+            </div>`;
+
+        gameDom["gameContainerBandMember3"].innerHTML = `
+            <div class="bt-character-outer">
+                <img src="${bandMember3.image.thumbnail}" alt="Band Member 3" class="bt-character">
+                <div class="bt-character-status"></div>
+                <p class="bt-character">${bandMember3.name}</p>
+            </div>`;
+
+        gameDom["gameContainerBandMember4"].innerHTML = `
+            <div class="bt-character-outer">
+                <img src="${bandMember4.image.thumbnail}" alt="Band Member 4" class="bt-character">
+                <div class="bt-character-status"></div>
+                <p class="bt-character">${bandMember4.name}</p>
+            </div>`;
+
+        gameDom["gameContainerPlayer1"].innerHTML = `
+            <div class="bt-character-outer">
+                <img src="${player1.image.thumbnail}" alt="Player 1" class="bt-character">
+                <div class="bt-character-status"></div>
+                <p class="bt-character">${player1.name}</p>
+            </div>`;
+    }
+
+}
+
+
 
 /*==========================================================================
 Main Game Loop
@@ -468,9 +594,12 @@ const htmlMessage = `<p>What's up Harry!!!!</p>`;
 
 player1.incrementImageAnimation();
 
-// clearInterval(mainGameLoopIntervalId);
+clearInterval(mainGameLoopIntervalId);
 
 } 
+
+
+
 
 
 
