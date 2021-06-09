@@ -152,6 +152,12 @@ const playerCharacters =[
 Game Level Definitions
 ===========================================================================*/
 
+const playFieldAssets = {
+    "W" : `url('/assets/wall_6.png') 0px 0px`,
+    " " : `url('/assets/floor_3.png') 0px 0px`,
+    "S" : `url('/assets/exit_4.png') 0px 0px`,
+}
+
 const gameLevel1 = [
     ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
@@ -179,8 +185,8 @@ const gameLevel1 = [
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W',' ',' ','W',' ',' ','W',' ',' ','W'],
-    ['W',' ','S',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W','W','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ','S','S',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ','S','S',' ',' ',' ','W',' ',' ',' ','W','W','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
@@ -363,8 +369,9 @@ function displayModalDialog(style, target, width, height, htmlMessage) {
     );
 }
 
-
+/*======================================
 // Display the Game Board
+=======================================*/
 
 function displayGameBoard(level) {
 
@@ -380,13 +387,17 @@ function displayGameBoard(level) {
             gameSquare.setAttribute('data-gsy', (j).toString());
             gameSquare.setAttribute('data-gst', level[i][j]);
 
-            if (level[i][j]==='W') {
-                gameSquare.innerHTML=`<p style="background-color:#cccccc">W</p>`;
-            }
-            else if (level[i][j]===' ') {
-                gameSquare.innerHTML=`<p style="background-color:#000000">W</p>`;
+            const pTag = document.createElement('p');
+            pTag.style.backgroundColor="#000000";
+            pTag.style.background=playFieldAssets[level[i][j]];
+            
+            console.log(playFieldAssets[level[i][j]]);
+
+            if (level[i][j]==='S') {
+                // gameSquare.innerHTML=`<p style="background-color:#cccccc">S</p>`;
             }
 
+            gameSquare.appendChild(pTag);    
             gamePlayfield.appendChild(gameSquare);            
         }
     }    
