@@ -20,6 +20,7 @@ Band Member Characters
 const bandMemberCharacters=[
     {
         "name" : 'AXL',
+        "id" : "bandchar1",
         "health" : 100,
         "sober" : 100,
         "speed" : 1,
@@ -27,6 +28,7 @@ const bandMemberCharacters=[
     },
     {
         "name" : 'Vince',
+        "id" : "bandchar2",
         "health" : 100,
         "sober" : 100,
         "speed" : 1,
@@ -34,6 +36,7 @@ const bandMemberCharacters=[
     },
     {
         "name" : 'Johnny Fear',
+        "id" : "bandchar3",
         "health" : 100,
         "sober" : 100,
         "speed" : 1,
@@ -41,6 +44,7 @@ const bandMemberCharacters=[
     },
     {
         "name" : 'Hans',
+        "id" : "bandchar4",
         "health" : 100,
         "sober" : 100,
         "speed" : 1,
@@ -51,20 +55,24 @@ const bandMemberCharacters=[
 const playerCharacters =[
     {
         "name" : 'Player 1',
+        "id" : "player1",
         "health" : 100,
         "speed" : 1,
         "image" : {
                     "src": '/assets/player1.png',
                     "Walk Left": [0, 9, 0],  // Sprite Row, Total Frames, Current Frame
-                    "Walk RIght": [1, 9, 0],  
+                    "Walk Right": [1, 9, 0],  
+                    "Walk Down": [0, 9, 0],
+                    "Walk Up": [1, 9, 0],  
                     "Idle": [2, 11,0 ],  
                     "Die": [3, 11, 0],  
                     "Dizzy": [4, 3, 0], 
                     "Hurt": [5, 3, 0],  
                     "Throwing Right": [6, 5, 0], 
                     "Throwing Left": [6, 5, 0],
-                },
-        "imageState" : "Idle",
+                    "imageState" : "Idle",
+                    "lastUpdate" : 0,
+        },
     },
 ];
 
@@ -118,6 +126,7 @@ Classes
 class BandMember {
     constructor (bandMemberCharacter, positionX, positionY) {
         this._name=bandMemberCharacter.name;
+        this._id=bandMemberCharacter.id;
         this._health=bandMemberCharacter.health;
         this._sober=bandMemberCharacter.sober;
         this._speed=bandMemberCharacter.speed;
@@ -152,6 +161,13 @@ class BandMember {
     set state(setState) { this._state=setState; }
 
     get image() { return this._image; }
+
+    get imageState() { return this._image["imageState"]}
+    set imageState(setImageState) { this._image["imageState"]=setImageState; } 
+
+    incrementImageAnimation() {
+
+    }
 }
 
 // Player Class
@@ -159,6 +175,7 @@ class BandMember {
 class Player {
     constructor (playerCharacter, setName, positionX, positionY) {
         this._name=setName;
+        this._id=playerCharacter.id;
         this._health=playerCharacter.health;
         this._sober=playerCharacter.sober;
         this._speed=playerCharacter.speed;
@@ -166,6 +183,20 @@ class Player {
         this._posY=positionY;
         this._state=PLAYER_DEFAULT_STATE;
         this._image=Object.assign({}, playerCharacter.image);
+
+        this._imageDiv=document.createElement("div");
+        this._imageDiv.setAttribute('class', 'player-div');
+        this._imageDiv.setAttribute('id', this._id);
+        this._imageDiv.style.position="relative";
+        this._imageDiv.style.left=this._posX+"px";
+        this._imageDiv.style.top=this._posY+"px";
+        this._imagePtag=document.createElement("p");
+        this._imagePtag.setAttribute('class', "player-ptag");
+        this._imagePtag.setAttribute('id', this._id + '-ptag');
+        this._imagePtag.style.width="32px";
+        this._imagePtag.style.height="32px";
+        this._imagePtag.style.background=`url('${this._image.src}') 0px 0px`
+        gameContainer.appendChild(this._imageDiv);
     }
 
     get name() { return this._name; }
@@ -190,12 +221,23 @@ class Player {
     set state(setState) { this._state=setState; }
 
     get image() { return this._image; }
+
+    get imageState() { return this._image["imageState"]}
+    set imageState(setImageState) { this._image["imageState"]=setImageState; } 
 }
 
 
 /*==========================================================================
 Utility Functions
 ===========================================================================*/
+
+
+
+/*==========================================================================
+Display Functions
+===========================================================================*/
+
+// Display a modal dialog box
 
 function displayModalDialog(style, target, width, height, htmlMessage) {
 
@@ -221,9 +263,7 @@ function displayModalDialog(style, target, width, height, htmlMessage) {
     );
 }
 
-/*==========================================================================
-Display Functions
-===========================================================================*/
+// Display the Game Board
 
 function displayGameBoard(level) {
 
