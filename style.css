@@ -4,6 +4,7 @@ body {
 }
 
 #game-container {
+    position:relative;
     width: 1024px;
     height: 1024px;
     margin: auto auto;

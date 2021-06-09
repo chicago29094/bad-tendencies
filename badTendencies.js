@@ -185,7 +185,7 @@ class Player {
         this._imageDiv=document.createElement("div");
         this._imageDiv.setAttribute('class', 'player-div');
         this._imageDiv.setAttribute('id', this._id);
-        this._imageDiv.style.position="relative";
+        this._imageDiv.style.position="absolute";
         this._imageDiv.style.left=this._posX+"px";
         this._imageDiv.style.top=this._posY+"px";
         this._imagePtag=document.createElement("p");
@@ -232,10 +232,6 @@ class Player {
         const currentTime=Date.now();
         let newPosX=0;
         let newPosY=0;
-
-        console.log(`${currentTime} ${lastUpdate}  ${(currentTime-lastUpdate)} ${ANIMATION_FRAME_DELAY}`);
-        console.log(`imageState = ${this._image["imageState"]}`)
-        console.log(`row=${row} maxCol=${maxCol} curCol=${curCol}`);
 
         if ( (currentTime-lastUpdate) > ANIMATION_FRAME_DELAY ) {
             this._image.lastUpdate=currentTime;
@@ -359,7 +355,7 @@ const htmlMessage = `<p>What's up Harry!!!!</p>`;
 
 player1.incrementImageAnimation();
 
-//clearInterval(mainGameLoopIntervalId);
+clearInterval(mainGameLoopIntervalId);
 
 } 
 
