@@ -346,11 +346,11 @@ function promptGameStart() {
     const htmlMessage = `<div class="game-instructions">
         <h3>Game Instructions</h3>
            
-        <p>You are the band member for the rock band <em><u>Bad Tendencies</u></em>.
+        <p>You are the band member for the rock band <nobr><em><u>Bad Tendencies</u></em></nobr>.
         Your job is to get the band members on stage and to keep them out of 
         trouble.  If you get close to a band member they will follow you to
         the stage, unless they are distracted or under the influence.  You 
-        can also collect money as you move along, otherwise the band members
+        can collect money as you move along, otherwise the band members
         will grab it and likely waste it to support their Rock-n-Roll 
         lifestyle.  Use the keyboard arrow keys to move around.
         <em>Good Luck!!!</em>.</p>
@@ -364,11 +364,19 @@ function promptGameStart() {
     </div>
     `;
 
-    displayModalDialog("", body, "500px", "500px", htmlMessage);
+    displayModalDialog("", body, "500px", "", htmlMessage);
+
+    const starGameButton = document.querySelector('#startGameButton');
+    startGameButton.addEventListener('click', startNewGame)
+
 }
 
 
-function startNewGame() {
+function startNewGame(event) {
+    event.preventDefault();
+    const underModal = document.querySelector("div.under-modal");
+    body.removeChild(underModal);
+
     displayGameBoard(gameLevel1);
     player1 = new Player(playerCharacters[0], "Harry", 200, 200);
 
