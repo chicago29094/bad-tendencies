@@ -6,8 +6,17 @@ Global Game Settings
 const gameStatus='Splash Screen';
 const BANDMEMBER_DEFAULT_STATE="wander";
 const PLAYER_DEFAULT_STATE="chase";
-const ANIMATION_FRAME_DELAY=100;
+const ANIMATION_FRAME_DELAY=100; // milliseconds
 let mainGameLoopIntervalID;
+
+// Keyboard key press data structure
+const KEY_PRESSED_CYCLE=100; // milliseconds 
+const pressedKeySet = new Set();
+const currentKeysPressed={
+    pressedKeys: pressedKeySet,
+    setCreated: 0,
+};
+
 
 let player1 = {};
 let player2 = {};
@@ -46,7 +55,7 @@ const bandMemberCharacters=[
             "Hurt": [5, 3, 0],  
             "Throwing Right": [6, 5, 0], 
             "Throwing Left": [6, 5, 0],
-            "imageState" : "Walk Left",
+            "imageState" : "Idle",
             "lastUpdate" : 0,
         },
     },
@@ -69,7 +78,7 @@ const bandMemberCharacters=[
             "Hurt": [5, 3, 0],  
             "Throwing Right": [6, 5, 0], 
             "Throwing Left": [6, 5, 0],
-            "imageState" : "Walk Left",
+            "imageState" : "Idle",
             "lastUpdate" : 0,
         },
     },
@@ -92,7 +101,7 @@ const bandMemberCharacters=[
             "Hurt": [5, 3, 0],  
             "Throwing Right": [6, 5, 0], 
             "Throwing Left": [6, 5, 0],
-            "imageState" : "Walk Left",
+            "imageState" : "Idle",
             "lastUpdate" : 0,
         },
     },
@@ -115,7 +124,7 @@ const bandMemberCharacters=[
             "Hurt": [5, 3, 0],  
             "Throwing Right": [6, 5, 0], 
             "Throwing Left": [6, 5, 0],
-            "imageState" : "Walk Left",
+            "imageState" : "Idle",
             "lastUpdate" : 0,
         },
     },
@@ -140,7 +149,7 @@ const playerCharacters =[
                     "Hurt": [5, 3, 0],  
                     "Throwing Right": [6, 5, 0], 
                     "Throwing Left": [6, 5, 0],
-                    "imageState" : "Walk Left",
+                    "imageState" : "Idle",
                     "lastUpdate" : 0,
         },
     },
@@ -152,10 +161,16 @@ const playerCharacters =[
 Game Level Definitions
 ===========================================================================*/
 
+// const playFieldAssets = {
+//     "W" : `url('/assets/wall_6.png') 0px 0px`,
+//     " " : `url('/assets/floor_3.png') 0px 0px`,
+//     "S" : `url('/assets/exit_4.png') 0px 0px`,
+// }
+
 const playFieldAssets = {
-    "W" : `url('/assets/wall_6.png') 0px 0px`,
-    " " : `url('/assets/floor_3.png') 0px 0px`,
-    "S" : `url('/assets/exit_4.png') 0px 0px`,
+    "W" : `playfield-wall`,
+    " " : `playfield-floor`,
+    "S" : `playfield-exit`,
 }
 
 const gameLevel1 = [
@@ -206,8 +221,9 @@ class BandMember {
         this._health=bandMemberCharacter.health;
         this._sober=bandMemberCharacter.sober;
         this._speed=bandMemberCharacter.speed;
+        this._direction='';
         this._posX=positionX;
-        this._posY=positionY;        
+        this._posY=positionY;
         this._state=BANDMEMBER_DEFAULT_STATE;
         this._image=Object.assign({}, bandMemberCharacter.image);
     }
@@ -223,15 +239,28 @@ class BandMember {
 
     get speed() { return this._speed; }
     set speed(setSpeed) { this._speed=setSpeed; }
+    
+    get direction() { return this._direction; }
+    set direction(setDirection) { this._direction=setDirection; }
 
     get posX() { return this._posX; }
-    set posX(setPosX) { this._posX=setPosX; }
-
+    set posX(setPosX) { 
+        this._posX=setPosX; 
+        this._imageDiv.style.left=this._posX+"px";
+    }
+        
     get posY() { return this._posY; }
-    set posY(setPosY) { this._posY=setPosY; }
+    set posY(setPosY) { 
+        this._posY=setPosY; 
+        this._imageDiv.style.top=this._posY+"px";
+    }
 
     get posXY() { return [this._posX, this.posY];}
-    set posXY([setPosX, setPosY]) { this._posX=setPosX; this._posY=setPosY; }
+    set posXY([setPosX, setPosY]) { 
+        this._posX=setPosX; this._posY=setPosY; 
+        this._imageDiv.style.left=this._posX+"px";
+        this._imageDiv.style.top=this._posY+"px";
+    }
 
     get state() { return this._state; }
     set state(setState) { this._state=setState; }
@@ -239,8 +268,12 @@ class BandMember {
     get image() { return this._image; }
 
     get imageState() { return this._image["imageState"]}
-    set imageState(setImageState) { this._image["imageState"]=setImageState; } 
-
+    set imageState(setImageState) { 
+        if (this._image["imageState"]!==setImageState) {
+            this._image["imageState"]=setImageState; 
+            this._image[setImageState][2]=0;
+        }
+    } 
 }
 
 // Player Class
@@ -252,6 +285,7 @@ class Player {
         this._health=playerCharacter.health;
         this._sober=playerCharacter.sober;
         this._speed=playerCharacter.speed;
+        this._direction="";
         this._posX=positionX;
         this._posY=positionY;
         this._state=PLAYER_DEFAULT_STATE;
@@ -282,14 +316,27 @@ class Player {
     get speed() { return this._speed; }
     set speed(setSpeed) { this._speed=setSpeed; }
 
+    get direction() { return this._direction; }
+    set direction(setDirection) { this._direction=setDirection; }
+
     get posX() { return this._posX; }
-    set posX(setPosX) { this._posX=setPosX; }
+    set posX(setPosX) { 
+        this._posX=setPosX; 
+        this._imageDiv.style.left=this._posX+"px";
+    }
 
     get posY() { return this._posY; }
-    set posY(setPosY) { this._posY=setPosY; }
+    set posY(setPosY) { 
+        this._posY=setPosY; 
+        this._imageDiv.style.top=this._posY+"px";
+    }
 
     get posXY() { return [this._posX, this.posY];}
-    set posXY([setPosX, setPosY]) { this._posX=setPosX; this._posY=setPosY; }
+    set posXY([setPosX, setPosY]) { 
+        this._posX=setPosX; this._posY=setPosY; 
+        this._imageDiv.style.left=this._posX+"px";
+        this._imageDiv.style.top=this._posY+"px";
+    }
 
     get state() { return this._state; }
     set state(setState) { this._state=setState; }
@@ -297,7 +344,12 @@ class Player {
     get image() { return this._image; }
 
     get imageState() { return this._image["imageState"]}
-    set imageState(setImageState) { this._image["imageState"]=setImageState; } 
+    set imageState(setImageState) { 
+            if (this._image["imageState"]!==setImageState) {
+                this._image["imageState"]=setImageState; 
+                this._image[setImageState][2]=0;
+            }
+    }
 
     incrementImageAnimation() {
         const row=this._image[this._image["imageState"]][0];
@@ -387,25 +439,52 @@ function displayGameBoard(level) {
             gameSquare.setAttribute('data-gsy', (j).toString());
             gameSquare.setAttribute('data-gst', level[i][j]);
 
-            const pTag = document.createElement('p');
-            pTag.style.backgroundColor="#000000";
-            pTag.style.background=playFieldAssets[level[i][j]];
+            // const pTag = document.createElement('p');
+            gameSquare.classList.add(playFieldAssets[level[i][j]]);
             
-            console.log(playFieldAssets[level[i][j]]);
-
             if (level[i][j]==='S') {
                 // gameSquare.innerHTML=`<p style="background-color:#cccccc">S</p>`;
             }
 
-            gameSquare.appendChild(pTag);    
+            // gameSquare.appendChild(pTag);    
             gamePlayfield.appendChild(gameSquare);            
         }
     }    
 }
 
 /*==========================================================================
+Keyboard Detection
+===========================================================================*/
+
+function handleKeyboardEvents(event) {
+
+const currentTime=Date.now();
+
+if (!event) {
+    document.addEventListener('keydown', handleKeyboardEvents);
+    return;
+}
+
+if (event.type==="keydown") currentKeysPressed.pressedKeys.add(event.key);
+
+// console.log(event);
+// console.log(event.key);
+// console.log(currentKeysPressed.pressedKeys);
+
+return;
+
+}
+
+/*==========================================================================
 Motion
 ===========================================================================*/
+
+movePlayer1() {
+    if (player1.direction==='N') player1.posY = player1.posY - player1.speed;
+    if (player1.direction==='S') player1.posY = player1.posY + player1.speed;
+    if (player1.direction==='W') player1.posX = player1.posX - player1.speed;
+    if (player1.direction==='E') player1.posX = player1.posX + player1.speed;
+}
 
 
 
@@ -555,7 +634,9 @@ function startNewGame(event) {
 
     displayCharacterStatus("initialize");
 
-    mainGameLoopIntervalId = window.setInterval(mainGameLoop, 100);
+    handleKeyboardEvents("");
+
+    mainGameLoopIntervalId = window.setInterval(mainGameLoop, 1000);
 }
 
 
@@ -619,13 +700,35 @@ Main Game Loop
 
 function mainGameLoop(event) {
 
-console.log("Starting mainGameLoop");
+// console.log("Starting mainGameLoop");
 
-const htmlMessage = `<p>What's up Harry!!!!</p>`;
+// First check the player's actions
 
-// displayModalDialog("", body, "300px", "500px", htmlMessage);
+if (currentKeysPressed.pressedKeys.has('ArrowUp')) { 
+    player1.direction='N'; 
+    player1.imageState='Walk Up';
+}
+else if (currentKeysPressed.pressedKeys.has('ArrowDown')) {
+    player1.direction='S';
+    player1.imageState='Walk Down';
+}
+else if (currentKeysPressed.pressedKeys.has('ArrowLeft')) {
+    player1.direction='W';
+    player1.imageState='Walk Left';
+}
+else if (currentKeysPressed.pressedKeys.has('ArrowRight')) {
+    player1.direction='E';
+    player1.imageState='Walk Right';
+}
+else {
+    player1.direction='';
+    player1.imageState='Idle';
+}
 
+movePlayer1();
 player1.incrementImageAnimation();
+
+currentKeysPressed.pressedKeys.clear();
 
 clearInterval(mainGameLoopIntervalId);
 

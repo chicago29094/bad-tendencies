@@ -110,6 +110,22 @@ body {
     margin: 0px;    
 }
 
+.playfield-wall {
+    background-color: #000000;
+    background: url('/assets/wall_6.png') 0px 0px;
+}
+
+.playfield-floor {
+    background-color: #000000;
+    background: url('/assets/floor_3.png') 0px 0px;
+}
+
+.playfield-exit {
+    background-color: #000000;
+    background: url('/assets/exit_4.png') 0px 0px;
+}
+
+
 /*===========================================================================*/
 /* Flexible dynamic modal dialog */
 
