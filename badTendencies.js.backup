@@ -8,7 +8,7 @@ const BANDMEMBER_DEFAULT_STATE="wander";
 const PLAYER_DEFAULT_STATE="chase";
 const ANIMATION_FRAME_DELAY=100; // milliseconds
 let mainGameLoopIntervalID;
-let currentGameLevel="";
+let currentGameLevel;
 let currentLevel=1;
 
 // Keyboard key press data structure
@@ -51,8 +51,8 @@ const bandMemberCharacters=[
             "Walk Right": [1, 9, 0],  
             "Walk Down": [0, 9, 0],
             "Walk Up": [1, 9, 0],  
-            "Idle Right": [2, 2,0 ],  
-            "Idle Left": [3, 2,0 ],  
+            "Idle Left": [2, 2,0 ],  
+            "Idle Right": [3, 2,0 ],  
             "Die": [4, 11, 0],  
             "Dizzy": [5, 3, 0], 
             "Hurt": [6, 3, 0],  
@@ -75,8 +75,8 @@ const bandMemberCharacters=[
             "Walk Right": [1, 9, 0],  
             "Walk Down": [0, 9, 0],
             "Walk Up": [1, 9, 0],  
-            "Idle Right": [2, 2,0 ],  
-            "Idle Left": [3, 2,0 ],  
+            "Idle Left": [2, 2,0 ],  
+            "Idle Right": [3, 2,0 ],  
             "Die": [4, 11, 0],  
             "Dizzy": [5, 3, 0], 
             "Hurt": [6, 3, 0],  
@@ -99,8 +99,8 @@ const bandMemberCharacters=[
             "Walk Right": [1, 9, 0],  
             "Walk Down": [0, 9, 0],
             "Walk Up": [1, 9, 0],  
-            "Idle Right": [2, 2,0 ],  
-            "Idle Left": [3, 2,0 ],  
+            "Idle Left": [2, 2,0 ],  
+            "Idle Right": [3, 2,0 ],  
             "Die": [4, 11, 0],  
             "Dizzy": [5, 3, 0], 
             "Hurt": [6, 3, 0],  
@@ -123,8 +123,8 @@ const bandMemberCharacters=[
             "Walk Right": [1, 9, 0],  
             "Walk Down": [0, 9, 0],
             "Walk Up": [1, 9, 0],  
-            "Idle Right": [2, 2,0 ],  
-            "Idle Left": [3, 2,0 ],  
+            "Idle Left": [2, 2,0 ],  
+            "Idle Right": [3, 2,0 ],  
             "Die": [4, 11, 0],  
             "Dizzy": [5, 3, 0], 
             "Hurt": [6, 3, 0],  
@@ -149,8 +149,8 @@ const playerCharacters =[
                     "Walk Right": [1, 9, 0],  
                     "Walk Down": [0, 9, 0],
                     "Walk Up": [1, 9, 0],  
-                    "Idle Right": [2, 2, 0],
-                    "Idle Left": [3, 2, 0],  
+                    "Idle Left": [2, 2, 0],
+                    "Idle Right": [3, 2, 0],  
                     "Die": [4, 11, 0],  
                     "Dizzy": [5, 3, 0], 
                     "Hurt": [6, 3, 0],  
@@ -384,22 +384,31 @@ class Player {
 }
 
 /*----------------------------------
-// Game Display List
+// Game Level Class
 ------------------------------------*/
 
-class DisplayList {
+class GameLevel {
 
-    constructor() {
-        this._displayObjects = new Set();
+    constructor(level) {
+        this._level = Array.from(level);
+
+        for (let i=0; i<this._level.length; i++) {
+            for (let j=0; j<this._level[i].length; j++) {
+                const objectSet = new Set(); 
+                this._level[i][j].objectSet=objectSet;
+            }
+        }
     }
 
-    get displayObjects() { return this._displayObjects; }
+    get level() { return this._level; }
 
-    add(obj) { this._displayObjects.add(obj); }
+    getObjectSet(x,y) { return this._level[x][y].objectSet; }
+ 
+    addObjectSetObject(x,y,obj) { this._level[x][y].objectSet.add(obj); }
 
-    delete(obj) { this._displayObjects.delete(obj); }
+    deleteObjectSetObject(x,y,obj) { this._level[x][y].objectSet.delete(obj); }
 
-    clear() { this._displayObjects.clear(); }
+    clearObjectSet(x,y) { this._level[x][y].objectSet.clear(); }
 
 }
 
@@ -462,8 +471,8 @@ function displayGameBoard(level) {
         for (let j=0; j<level[i].length; j++) {
             const gameSquare = document.createElement('div');
             gameSquare.setAttribute('class', "game-square");            
-            gameSquare.setAttribute('data-gsy', (i).toString());
-            gameSquare.setAttribute('data-gsx', (j).toString());
+            gameSquare.setAttribute('data-gsx', (i).toString());
+            gameSquare.setAttribute('data-gsy', (j).toString());
             gameSquare.setAttribute('data-gst', level[i][j]);
 
             // const pTag = document.createElement('p');
@@ -508,10 +517,9 @@ Motion
 
 function movePlayer1() {
 
-
     const currentPosX = player1.posX;
     const currentPosY = player1.posY;
-    const stepwiseCollisionXY = [];
+    const preCollisionXY = [];
     let newPosX = currentPosX;
     let newPosY = currentPosY;
 
@@ -520,14 +528,16 @@ function movePlayer1() {
     if (player1.direction==='W') newPosX = player1.posX - player1.speed;
     if (player1.direction==='E') newPosX = player1.posX + player1.speed;
     
-    stepwiseCollisionXY[0]=currentPosX;
-    stepwiseCollisionXY[1]=currentPosY;
-    const willCollide=checkCollisions(currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
+    preCollisionXY[0]=currentPosX;
+    preCollisionXY[1]=currentPosY;
+    const willCollide=checkCollisions(currentPosX, currentPosY, newPosX, newPosY, preCollisionXY);
 
-    if (player1.direction==='N') player1.posY = stepwiseCollisionXY[1];
-    if (player1.direction==='S') player1.posY = stepwiseCollisionXY[1];
-    if (player1.direction==='W') player1.posX = stepwiseCollisionXY[0];
-    if (player1.direction==='E') player1.posX = stepwiseCollisionXY[0];
+    if (player1.direction==='N') player1.posY = player1.posY - player1.speed;
+    if (player1.direction==='S') player1.posY = player1.posY + player1.speed;
+    if (player1.direction==='W') player1.posX = player1.posX - player1.speed;
+    if (player1.direction==='E') player1.posX = player1.posX + player1.speed;
+
+
 
 }
 
@@ -536,11 +546,7 @@ function movePlayer1() {
 Collision Detection
 ===========================================================================*/
 
-function checkCollisions(currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY) {
-
-    // console.log("Here:00000");
-    let stepwiseX=0;
-    let stepwiseY=0;
+function checkCollisions(currentPosX, currentPosY, newPosX, newPosY, preCollisionXY) {
 
     let collisionResults={
             "collision": false,
@@ -550,73 +556,27 @@ function checkCollisions(currentPosX, currentPosY, newPosX, newPosY, stepwiseCol
 
     if (currentPosX-newPosX!==0) {
         if (currentPosX<newPosX) {
-            let stepwiseX=currentPosX;
-            console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
-            while ( collisionResults.isAllowed && (stepwiseX<newPosX) )  {
-                stepwiseX++;
+            let stepWiseX=currentPosX;
+            while ( collisionResults.isAllowed && (stepWiseX<newPosX) )  {
+                stepWiseX++;
                 checkPlayfieldCollisions(stepwiseX+16, currentPosY+8, 32, 52, collisionResults);
             }
-            if (!collisionResults.isAllowed) {
-                stepwiseX--;
-            }
-            stepwiseCollisionXY[0]=stepwiseX;
-            stepwiseCollisionXY[1]=newPosY;
-            // console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
-            if (collisionResults.isAllowed) return false;
-            else return true;
         }
         else {
-            let stepwiseX=currentPosX;
-            while ( collisionResults.isAllowed && (stepwiseX>newPosX) ) {
-                stepwiseX--;
+            let stepWiseX=currentPosX;
+            while ( collisionResults.isAllowed && (stepWiseX>newPosX) ) {
+                stepWiseX--;
                 checkPlayfieldCollisions(stepwiseX+16, currentPosY+8, 32, 52, collisionResults);
             }
-            if (!collisionResults.isAllowed) {
-                stepwiseX++;
-            }
-            stepwiseCollisionXY[0]=stepwiseX;
-            stepwiseCollisionXY[1]=newPosY;
-            if (collisionResults.isAllowed) return false;
-            else return true;
         }
     }
-    else if (currentPosY-newPosY!==0) {
-        if (currentPosY<newPosY) {
-            let stepwiseY=currentPosY;
-            console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
-            while ( collisionResults.isAllowed && (stepwiseY<newPosY) )  {
-                stepwiseY++;
-                checkPlayfieldCollisions(currentPosX+16, stepwiseY+8, 32, 52, collisionResults);
-            }
-            if (!collisionResults.isAllowed) {
-                stepwiseY--;
-            }
-            stepwiseCollisionXY[0]=newPosX;
-            stepwiseCollisionXY[1]=stepwiseY;
-            // console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
-            if (collisionResults.isAllowed) return false;
-            else return true;
-        }
-        else {
-            let stepwiseY=currentPosY;
-            while ( collisionResults.isAllowed && (stepwiseY>newPosY) ) {
-                stepwiseY--;
-                checkPlayfieldCollisions(currentPosX+16, stepwiseY+8, 32, 52, collisionResults);
-            }
-            if (!collisionResults.isAllowed) {
-                stepwiseY++;
-            }
-            stepwiseCollisionXY[0]=newPosX;
-            stepwiseCollisionXY[1]=stepwiseY;
-            if (collisionResults.isAllowed) return false;
-            else return true;
-        }
+    else if (currentPosY-newsPosY!==0) {
 
 
 
     }
     else {
-        stepwiseCollisionXY[0, 1]=[newPosX, newPosY];
+        preCollisionXY[0, 1]=[newPosX, newPosY];
         return false;
     }
 
@@ -628,47 +588,29 @@ function checkCollisions(currentPosX, currentPosY, newPosX, newPosY, stepwiseCol
 
 function checkPlayfieldCollisions(posX, posY, width, height, collisionResults) {
 
-    collisionResults.collision=false;
-    collisionResults.collisionType="";
-    collisionResults.isAllowed=true;
-
-    let gameGridStartRow=Math.floor(posY/32)-2; 
+    let gameGridStartRow=Math.floor(posX/32)-1; 
     if (gameGridStartRow<0) gameGridStartRow=0;
 
-    let gameGridEndRow=Math.floor(posY/32)+2;
+    let gameGridEndRow=Math.floor(posX/32)+4;
     if (gameGridEndRow>31) gameGridEndRow=31;
 
-    gameGridStartColumn = Math.floor(posX/32)-2;
+    gameGridStartColumn = Math.floor(posX/32)-1;
     if (gameGridStartColumn<0) gameGridStartColumn=0;
 
-    gameGridEndColumn = Math.floor(posX/32)+2;
+    gameGridEndColumn = Math.floor(posX/32)+1;
     if (gameGridEndColumn>31) gameGridEndColumn=31;
 
-    // console.log(`${gameGridStartColumn} ${gameGridEndColumn} ${gameGridStartRow} ${gameGridEndRow} `);
-
     for (let row=gameGridStartRow; row<=gameGridEndRow; row++) {
-        for (let col=gameGridStartColumn; col<=gameGridEndColumn; col++) {
+        for (let col=gameGridStartColumn; col<-gameGridEndColumn; col++) {
 
-            const gridSquare = document.querySelector(`div[data-gsx='${col}'][data-gsy='${row}']`)
-            
-            // console.log(`${col} ${row} ${gridSquare}`);
-            // gridSquare.style.borderTop="1px solid #ff0000";
-            gridPosX=col*32;
-            gridPosY=row*32;
-            gridWidth=32;
-            gridHeight=32;
-            
-            if (posX < (gridPosX + gridWidth)  && (posX + width) > gridPosX &&
-                posY < (gridPosY + gridHeight) && (posY + height) > gridPosY) {
-                    if (gridSquare.classList.contains('playfield-wall')) {
-                    // gridSquare.style.borderTop="1px solid #00ff00";
-                    collisionResults.collision=true;
-                    collisionResults.collisionType="Wall";
-                    collisionResults.isAllowed=false;
-                    return;
-                }
+            const gridSquare = document.querySelector(`.game-square div[data-gsx='${col}'][data-gsy='${row}']`)
 
-            }
+            gridSquare.style.border="1px solid #ff0000";
+
+            // if (posX < rect2.x + 32 && posX + width > rect2.x &&
+            //     posY < rect2.y + 32 && posY + height > rect2.y) {
+            //     // collision detected!
+            // }
         }
     }
 }
@@ -807,7 +749,7 @@ function startNewGame(event) {
     gameDom["gameContainerPlayfield"]=gameContainerPlayfield;
     gameContainer.appendChild(gameContainerPlayfield);
 
-    if (currentLevel===1) currentGameLevel=gameLevel1;
+    currentGameLevel = new GameLevel(gameLevel1);
     displayGameBoard(currentGameLevel);
     player1 = new Player(playerCharacters[0], "Harry", 250, 250);
     bandMember1 = new BandMember(bandMemberCharacters[0], 250, 250);
@@ -819,7 +761,7 @@ function startNewGame(event) {
 
     handleKeyboardEvents("");
 
-    mainGameLoopIntervalId = window.setInterval(mainGameLoop, 100);
+    mainGameLoopIntervalId = window.setInterval(mainGameLoop, 1000);
 }
 
 
@@ -918,7 +860,7 @@ player1.incrementImageAnimation();
 
 currentKeysPressed.pressedKeys.clear();
 
-// clearInterval(mainGameLoopIntervalId);
+//clearInterval(mainGameLoopIntervalId);
 
 } 
 
