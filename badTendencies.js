@@ -41,7 +41,7 @@ const bandMemberCharacters=[
         "id" : "bandchar1",
         "health" : 100,
         "sober" : 100,
-        "speed" : 1,
+        "speed" : 5,
         "image" : {
             "thumbnail" : '/assets/bandmember_262_128.png',
             "src": '/assets/player1_64x64.png',
@@ -49,13 +49,14 @@ const bandMemberCharacters=[
             "Walk Right": [1, 9, 0],  
             "Walk Down": [0, 9, 0],
             "Walk Up": [1, 9, 0],  
-            "Idle": [2, 11,0 ],  
-            "Die": [3, 11, 0],  
-            "Dizzy": [4, 3, 0], 
-            "Hurt": [5, 3, 0],  
-            "Throwing Right": [6, 5, 0], 
-            "Throwing Left": [6, 5, 0],
-            "imageState" : "Idle",
+            "Idle Left": [2, 2,0 ],  
+            "Idle Right": [3, 2,0 ],  
+            "Die": [4, 11, 0],  
+            "Dizzy": [5, 3, 0], 
+            "Hurt": [6, 3, 0],  
+            "Throwing Right": [7, 5, 0], 
+            "Throwing Left": [8, 5, 0],
+            "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
     },
@@ -64,7 +65,7 @@ const bandMemberCharacters=[
         "id" : "bandchar2",
         "health" : 100,
         "sober" : 100,
-        "speed" : 1,
+        "speed" : 5,
         "image" : {
             "thumbnail" : '/assets/bandmember_236_128.png',
             "src": '/assets/player1_64x64.png',
@@ -72,13 +73,14 @@ const bandMemberCharacters=[
             "Walk Right": [1, 9, 0],  
             "Walk Down": [0, 9, 0],
             "Walk Up": [1, 9, 0],  
-            "Idle": [2, 11,0 ],  
-            "Die": [3, 11, 0],  
-            "Dizzy": [4, 3, 0], 
-            "Hurt": [5, 3, 0],  
-            "Throwing Right": [6, 5, 0], 
-            "Throwing Left": [6, 5, 0],
-            "imageState" : "Idle",
+            "Idle Left": [2, 2,0 ],  
+            "Idle Right": [3, 2,0 ],  
+            "Die": [4, 11, 0],  
+            "Dizzy": [5, 3, 0], 
+            "Hurt": [6, 3, 0],  
+            "Throwing Right": [7, 5, 0], 
+            "Throwing Left": [8, 5, 0],
+            "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
     },
@@ -87,7 +89,7 @@ const bandMemberCharacters=[
         "id" : "bandchar3",
         "health" : 100,
         "sober" : 100,
-        "speed" : 1,
+        "speed" : 5,
         "image" : {
             "thumbnail" : '/assets/bandmember_011_128.png',
             "src": '/assets/player1_64x64.png',
@@ -95,13 +97,14 @@ const bandMemberCharacters=[
             "Walk Right": [1, 9, 0],  
             "Walk Down": [0, 9, 0],
             "Walk Up": [1, 9, 0],  
-            "Idle": [2, 11,0 ],  
-            "Die": [3, 11, 0],  
-            "Dizzy": [4, 3, 0], 
-            "Hurt": [5, 3, 0],  
-            "Throwing Right": [6, 5, 0], 
-            "Throwing Left": [6, 5, 0],
-            "imageState" : "Idle",
+            "Idle Left": [2, 2,0 ],  
+            "Idle Right": [3, 2,0 ],  
+            "Die": [4, 11, 0],  
+            "Dizzy": [5, 3, 0], 
+            "Hurt": [6, 3, 0],  
+            "Throwing Right": [7, 5, 0], 
+            "Throwing Left": [8, 5, 0],
+            "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
     },
@@ -110,7 +113,7 @@ const bandMemberCharacters=[
         "id" : "bandchar4",
         "health" : 100,
         "sober" : 100,
-        "speed" : 1,
+        "speed" : 5,
         "image" : {
             "thumbnail" : '/assets/bandmember_003_128.png',
             "src": '/assets/player1_64x64.png',
@@ -118,13 +121,14 @@ const bandMemberCharacters=[
             "Walk Right": [1, 9, 0],  
             "Walk Down": [0, 9, 0],
             "Walk Up": [1, 9, 0],  
-            "Idle": [2, 11,0 ],  
-            "Die": [3, 11, 0],  
-            "Dizzy": [4, 3, 0], 
-            "Hurt": [5, 3, 0],  
-            "Throwing Right": [6, 5, 0], 
-            "Throwing Left": [6, 5, 0],
-            "imageState" : "Idle",
+            "Idle Left": [2, 2,0 ],  
+            "Idle Right": [3, 2,0 ],  
+            "Die": [4, 11, 0],  
+            "Dizzy": [5, 3, 0], 
+            "Hurt": [6, 3, 0],  
+            "Throwing Right": [7, 5, 0], 
+            "Throwing Left": [8, 5, 0],
+            "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
     },
@@ -135,7 +139,7 @@ const playerCharacters =[
         "name" : 'Player 1',
         "id" : "player1",
         "health" : 100,
-        "speed" : 1,
+        "speed" : 5,
         "image" : {
                     "thumbnail" : '/assets/player_001_128.png',
                     "src": '/assets/player1_64x64.png',
@@ -143,13 +147,14 @@ const playerCharacters =[
                     "Walk Right": [1, 9, 0],  
                     "Walk Down": [0, 9, 0],
                     "Walk Up": [1, 9, 0],  
-                    "Idle": [2, 11,0 ],  
-                    "Die": [3, 11, 0],  
-                    "Dizzy": [4, 3, 0], 
-                    "Hurt": [5, 3, 0],  
-                    "Throwing Right": [6, 5, 0], 
-                    "Throwing Left": [6, 5, 0],
-                    "imageState" : "Idle",
+                    "Idle Left": [2, 2, 0],
+                    "Idle Right": [3, 2, 0],  
+                    "Die": [4, 11, 0],  
+                    "Dizzy": [5, 3, 0], 
+                    "Hurt": [6, 3, 0],  
+                    "Throwing Right": [7, 5, 0], 
+                    "Throwing Left": [8, 5, 0],
+                    "imageState" : "Idle Right",
                     "lastUpdate" : 0,
         },
     },
@@ -479,18 +484,71 @@ return;
 Motion
 ===========================================================================*/
 
-movePlayer1() {
+function movePlayer1() {
+
+    const currentPosX = player1.posX;
+    const currentPosY = player1.posY;
+    const preCollisionXY = [];
+    let newPosX = currentPosX;
+    let newPosY = currentPosY;
+
+    if (player1.direction==='N') newPosY = player1.posY - player1.speed;
+    if (player1.direction==='S') newPosY = player1.posY + player1.speed;
+    if (player1.direction==='W') newPosX = player1.posX - player1.speed;
+    if (player1.direction==='E') newPosX = player1.posX + player1.speed;
+    
+    preCollisionXY[0]=currentPosX;
+    preCollisionXY[1]=currentPosY;
+    const willCollide=checkCollision(currentPosX, currentPosY, newPosX, newPosY, preCollisionXY);
+
     if (player1.direction==='N') player1.posY = player1.posY - player1.speed;
     if (player1.direction==='S') player1.posY = player1.posY + player1.speed;
     if (player1.direction==='W') player1.posX = player1.posX - player1.speed;
     if (player1.direction==='E') player1.posX = player1.posX + player1.speed;
-}
 
+
+
+}
 
 
 /*==========================================================================
 Collision Detection
 ===========================================================================*/
+
+function checkCollision(currentPosX, currentPosY, newPosX, newPosY, preCollisionXY) {
+
+    // First Check for out of bounds 
+
+    if (currentPosX-newPosX!==0) {
+        if (currentPosX<newPosX) {
+            let collision=false;
+            let incrX=currentPosX;
+            while ( !collision && (incrX<newPosX) ) 
+                if (incrX>=1024) 
+            }
+        }
+        else {
+
+        }
+    }
+    else if (currentPosY-newsPosY!==0)
+
+
+
+    }
+    else {
+        preCollisionXY[0]=newPosX;
+        preCollisionXY[1]=newPosY;
+        return false;
+    }
+
+    // Then, check for collision with the game board walls and elements
+    // Next, iterate through the display list of all playField objects
+        // If an object is within 64 pixels of the Player, check if collision will occur
+
+
+}
+
 
 
 /*==========================================================================
@@ -722,7 +780,12 @@ else if (currentKeysPressed.pressedKeys.has('ArrowRight')) {
 }
 else {
     player1.direction='';
-    player1.imageState='Idle';
+    if ( player1.imageState==='Walk Left' || player1.imageState==='Walk Down' ) {
+        player1.imageState='Idle Left';
+    }
+    else {
+        player1.imageState='Idle Right';
+    }
 }
 
 movePlayer1();
