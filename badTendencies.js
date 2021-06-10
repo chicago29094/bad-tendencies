@@ -46,18 +46,20 @@ const bandMemberCharacters=[
         "speed" : 5,
         "image" : {
             "thumbnail" : '/assets/bandmember_262_128.png',
-            "src": '/assets/player1_64x64.png',
+            "src": '/assets/bandmember_262_64x64.png',
             "Walk Left": [0, 9, 0],  // Sprite Row, Total Frames, Current Frame
             "Walk Right": [1, 9, 0],  
             "Walk Down": [0, 9, 0],
             "Walk Up": [1, 9, 0],  
-            "Idle Right": [2, 2,0 ],  
-            "Idle Left": [3, 2,0 ],  
-            "Die": [4, 11, 0],  
-            "Dizzy": [5, 3, 0], 
-            "Hurt": [6, 3, 0],  
-            "Throwing Right": [7, 5, 0], 
-            "Throwing Left": [8, 5, 0],
+            "Idle Left": [2, 3, 0 ],  
+            "Idle Right": [3, 3, 0 ],  
+            "Die": [4, 9, 0],  
+            "Dizzy": [5, 2, 0], 
+            "Hurt": [6, 2, 0],  
+            "Throwing Left": [7, 7, 0], 
+            "Throwing Right": [8, 7, 0],
+            "Shoot Left": [9, 3, 0], 
+            "Shoot Right": [10, 3, 0],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
@@ -70,18 +72,20 @@ const bandMemberCharacters=[
         "speed" : 5,
         "image" : {
             "thumbnail" : '/assets/bandmember_236_128.png',
-            "src": '/assets/player1_64x64.png',
-            "Walk Left": [0, 9, 0],  // Sprite Row, Total Frames, Current Frame
-            "Walk Right": [1, 9, 0],  
-            "Walk Down": [0, 9, 0],
-            "Walk Up": [1, 9, 0],  
-            "Idle Right": [2, 2,0 ],  
-            "Idle Left": [3, 2,0 ],  
-            "Die": [4, 11, 0],  
-            "Dizzy": [5, 3, 0], 
+            "src": '/assets/bandmember_236_64x64.png',
+            "Walk Left": [0, 7, 0],  // Sprite Row, Total Frames, Current Frame
+            "Walk Right": [1, 7, 0],  
+            "Walk Down": [0, 7, 0],
+            "Walk Up": [1, 7, 0],  
+            "Idle Left": [2, 3, 0 ],  
+            "Idle Right": [3, 3, 0 ],  
+            "Die": [4, 9, 0],  
+            "Dizzy": [5, 2, 0], 
             "Hurt": [6, 3, 0],  
-            "Throwing Right": [7, 5, 0], 
-            "Throwing Left": [8, 5, 0],
+            "Throwing Left": [7, 7, 0], 
+            "Throwing Right": [8, 7, 0],
+            "Shoot Left": [9, 3, 0], 
+            "Shoot Right": [10, 3, 0],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
@@ -94,18 +98,20 @@ const bandMemberCharacters=[
         "speed" : 5,
         "image" : {
             "thumbnail" : '/assets/bandmember_011_128.png',
-            "src": '/assets/player1_64x64.png',
+            "src": '/assets/bandmember_011_64x64.png',
             "Walk Left": [0, 9, 0],  // Sprite Row, Total Frames, Current Frame
             "Walk Right": [1, 9, 0],  
             "Walk Down": [0, 9, 0],
             "Walk Up": [1, 9, 0],  
-            "Idle Right": [2, 2,0 ],  
-            "Idle Left": [3, 2,0 ],  
+            "Idle Left": [2, 3, 0 ],  
+            "Idle Right": [3, 3, 0 ],  
             "Die": [4, 11, 0],  
             "Dizzy": [5, 3, 0], 
             "Hurt": [6, 3, 0],  
-            "Throwing Right": [7, 5, 0], 
-            "Throwing Left": [8, 5, 0],
+            "Throwing Left": [7, 4, 0], 
+            "Throwing Right": [8, 4, 0],
+            "Shoot Left": [9, 4, 0], 
+            "Shoot Right": [10, 4, 0],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
@@ -118,18 +124,20 @@ const bandMemberCharacters=[
         "speed" : 5,
         "image" : {
             "thumbnail" : '/assets/bandmember_003_128.png',
-            "src": '/assets/player1_64x64.png',
+            "src": '/assets/bandmember_003_64x64.png',
             "Walk Left": [0, 9, 0],  // Sprite Row, Total Frames, Current Frame
             "Walk Right": [1, 9, 0],  
             "Walk Down": [0, 9, 0],
             "Walk Up": [1, 9, 0],  
-            "Idle Right": [2, 2,0 ],  
-            "Idle Left": [3, 2,0 ],  
+            "Idle Left": [2, 3, 0 ],  
+            "Idle Right": [3, 3, 0 ],  
             "Die": [4, 11, 0],  
             "Dizzy": [5, 3, 0], 
             "Hurt": [6, 3, 0],  
-            "Throwing Right": [7, 5, 0], 
-            "Throwing Left": [8, 5, 0],
+            "Throwing Left": [7, 6, 0], 
+            "Throwing Right": [8, 6, 0],
+            "Shoot Left": [9, 4, 0], 
+            "Shoot Right": [10, 4, 0],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
@@ -144,13 +152,13 @@ const playerCharacters =[
         "speed" : 5,
         "image" : {
                     "thumbnail" : '/assets/player_001_128.png',
-                    "src": '/assets/player1_64x64.png',
+                    "src": '/assets/player_001_64x64.png',
                     "Walk Left": [0, 9, 0],  // Sprite Row, Total Frames, Current Frame
                     "Walk Right": [1, 9, 0],  
                     "Walk Down": [0, 9, 0],
                     "Walk Up": [1, 9, 0],  
-                    "Idle Right": [2, 2, 0],
-                    "Idle Left": [3, 2, 0],  
+                    "Idle Right": [2, 1, 0],
+                    "Idle Left": [3, 1, 0],  
                     "Die": [4, 11, 0],  
                     "Dizzy": [5, 3, 0], 
                     "Hurt": [6, 3, 0],  
@@ -233,6 +241,21 @@ class BandMember {
         this._posY=positionY;
         this._state=BANDMEMBER_DEFAULT_STATE;
         this._image=Object.assign({}, bandMemberCharacter.image);
+
+        this._imageDiv=document.createElement("div");
+        this._imageDiv.setAttribute('class', 'bandmember-div');
+        this._imageDiv.setAttribute('id', this._id);
+        this._imageDiv.style.position="absolute";
+        this._imageDiv.style.left=this._posX+"px";
+        this._imageDiv.style.top=this._posY+"px";
+        this._imagePtag=document.createElement("p");
+        this._imagePtag.setAttribute('class', "bandmember-ptag");
+        this._imagePtag.setAttribute('id', this._id + '-ptag');
+        this._imagePtag.style.width="64px";
+        this._imagePtag.style.height="64px";
+        this._imagePtag.style.background=`url('${this._image.src}') 0px 0px`
+        this._imageDiv.appendChild(this._imagePtag);
+        gameDom["gameContainerPlayfield"].appendChild(this._imageDiv);        
     }
 
     get name() { return this._name; }
@@ -281,6 +304,31 @@ class BandMember {
             this._image[setImageState][2]=0;
         }
     } 
+
+    incrementImageAnimation() {
+        const row=this._image[this._image["imageState"]][0];
+        const maxCol=this._image[this._image["imageState"]][1];
+        let curCol=this._image[this._image["imageState"]][2];
+        const lastUpdate=this._image.lastUpdate;
+        const currentTime=Date.now();
+        let newPosX=0;
+        let newPosY=0;
+
+        if ( (currentTime-lastUpdate) > ANIMATION_FRAME_DELAY ) {
+            this._image.lastUpdate=currentTime;
+
+            if (curCol===maxCol) curCol=0;
+            else curCol=curCol+1;
+
+            this._image[this._image["imageState"]][2]=curCol;
+
+            newPosX=(curCol*-64);
+            newPosY=(row*-64);
+
+            this._imagePtag.style.backgroundPosition=`${newPosX}px ${newPosY}px`;
+        }
+    }
+
 }
 
 // Player Class
@@ -492,7 +540,14 @@ if (!event) {
     return;
 }
 
-if (event.type==="keydown") currentKeysPressed.pressedKeys.add(event.key);
+if (event.type==="keydown") {
+    currentKeysPressed.pressedKeys.add(event.key);
+
+    if ( (event.key==="ArrowLeft") || (event.key==="ArrowRight") || 
+         (event.key==="ArrowUp") || (event.key==="ArrowDown") ) {
+            event.preventDefault();
+         }          
+}
 
 // console.log(event);
 // console.log(event.key);
@@ -551,7 +606,7 @@ function checkCollisions(currentPosX, currentPosY, newPosX, newPosY, stepwiseCol
     if (currentPosX-newPosX!==0) {
         if (currentPosX<newPosX) {
             let stepwiseX=currentPosX;
-            console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
+            // console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
             while ( collisionResults.isAllowed && (stepwiseX<newPosX) )  {
                 stepwiseX++;
                 checkPlayfieldCollisions(stepwiseX+16, currentPosY+8, 32, 52, collisionResults);
@@ -583,7 +638,7 @@ function checkCollisions(currentPosX, currentPosY, newPosX, newPosY, stepwiseCol
     else if (currentPosY-newPosY!==0) {
         if (currentPosY<newPosY) {
             let stepwiseY=currentPosY;
-            console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
+            // console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
             while ( collisionResults.isAllowed && (stepwiseY<newPosY) )  {
                 stepwiseY++;
                 checkPlayfieldCollisions(currentPosX+16, stepwiseY+8, 32, 52, collisionResults);
@@ -905,7 +960,8 @@ else if (currentKeysPressed.pressedKeys.has('ArrowRight')) {
 }
 else {
     player1.direction='';
-    if ( player1.imageState==='Walk Left' || player1.imageState==='Walk Down' ) {
+    if ( player1.imageState==='Walk Left' || player1.imageState==='Walk Down' || 
+        player1.imageState==='Idle Left') {
         player1.imageState='Idle Left';
     }
     else {
@@ -915,6 +971,11 @@ else {
 
 movePlayer1();
 player1.incrementImageAnimation();
+
+bandMember1.incrementImageAnimation();
+bandMember2.incrementImageAnimation();
+bandMember3.incrementImageAnimation();
+bandMember4.incrementImageAnimation();
 
 currentKeysPressed.pressedKeys.clear();
 
