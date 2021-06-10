@@ -8,6 +8,8 @@ const BANDMEMBER_DEFAULT_STATE="wander";
 const PLAYER_DEFAULT_STATE="chase";
 const ANIMATION_FRAME_DELAY=100; // milliseconds
 let mainGameLoopIntervalID;
+let currentGameLevel=gameLevel1;
+let currentLevel=1;
 
 // Keyboard key press data structure
 const KEY_PRESSED_CYCLE=100; // milliseconds 
@@ -499,7 +501,7 @@ function movePlayer1() {
     
     preCollisionXY[0]=currentPosX;
     preCollisionXY[1]=currentPosY;
-    const willCollide=checkCollision(currentPosX, currentPosY, newPosX, newPosY, preCollisionXY);
+    const willCollide=checkCollisions(currentPosX, currentPosY, newPosX, newPosY, preCollisionXY);
 
     if (player1.direction==='N') player1.posY = player1.posY - player1.speed;
     if (player1.direction==='S') player1.posY = player1.posY + player1.speed;
@@ -515,39 +517,72 @@ function movePlayer1() {
 Collision Detection
 ===========================================================================*/
 
-function checkCollision(currentPosX, currentPosY, newPosX, newPosY, preCollisionXY) {
+function checkCollisions(currentPosX, currentPosY, newPosX, newPosY, preCollisionXY) {
 
-    // First Check for out of bounds 
+    let collisionResults={
+            "collision": false,
+            "collisionType": "",
+            "isAllowed": true,
+    };
 
     if (currentPosX-newPosX!==0) {
         if (currentPosX<newPosX) {
-            let collision=false;
-            let incrX=currentPosX;
-            while ( !collision && (incrX<newPosX) ) 
-                if (incrX>=1024) 
+            let stepWiseX=currentPosX;
+            while ( collisionResults.isAllowed && (stepWiseX<newPosX) )  {
+                stepWiseX++;
+                checkPlayfieldCollisionsRight(stepwiseX+16, currentPosY+8, 32, 52, collisionResults);
             }
         }
         else {
-
+            let stepWiseX=currentPosX;
+            while ( collisionResults.isAllowed && (stepWiseX>newPosX) ) {
+                stepWiseX--;
+                checkPlayfieldCollisionsLeft(stepwiseX+16, currentPosY+8, 32, 52, collisionResults);
+            }
         }
     }
-    else if (currentPosY-newsPosY!==0)
+    else if (currentPosY-newsPosY!==0) {
 
 
 
     }
     else {
-        preCollisionXY[0]=newPosX;
-        preCollisionXY[1]=newPosY;
+        preCollisionXY[0, 1]=[newPosX, newPosY];
         return false;
     }
 
-    // Then, check for collision with the game board walls and elements
-    // Next, iterate through the display list of all playField objects
-        // If an object is within 64 pixels of the Player, check if collision will occur
+}
+
+/*==================================
+// Check Play Field Collisions
+====================================*/
+
+function checkPlayfieldCollisionsLeft(posX, posY, width, height, collisionResults) {
+
+    let gameGridStartRow=Math.floor(posX/32)-1; 
+    if (gameGridStartRow<0) gameGridStartRow=0;
+
+    let gameGridEndRow=Math.floor(posX/32)+4;
+    if (gameGridEndRow>31) gameGridEndRow=31;
+
+    gameGridColumn = Math.floor(posX/32)+1;
+    if (gameGridColumn>31) gameGridColumn=31;
+
+    for (let row=gameGridStartRow; row<=gameGridEndRow; row++)
+    {
+        if (posX < rect2.x + 32 && posX + width > rect2.x &&
+            posY < rect2.y + 32 && posY + height > rect2.y) {
+          // collision detected!
+        }
+    }
+}
+
+function checkPlayfieldCollisionsRight(posX, posY, width, height, collisionResults) {
+
 
 
 }
+
 
 
 
