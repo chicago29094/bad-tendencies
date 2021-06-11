@@ -207,12 +207,33 @@ p.bt-character {
     color: #ffffff;      
     font-size: 1.3 rem;
     text-align: center;
-    margin: 0px 0px 30px 0px;
+    margin: 8px 0px 5px 0px;
 }
 
 div.bt-character {
     margin: 20px 0px 0px 0px;
 }
+
+div.bt-character-outer {
+    margin: 0px 0px 30px 0px;
+}
+
+div.bt-character-status-party, div.bt-character-status-health  {
+    width: 120px;
+    height: 8px;
+    margin: 0px 0px 0px 0px;
+    padding: 0px;
+    /* background: #000000;
+    background: url('/assets/bar_background.png') 0px 0px; */
+}
+
+img.health-bar, img.party-bar {
+    margin: 0px;
+    padding: 0px;
+    width: 1px;
+    height: 8px;
+}
+
 
 /*===========================================================================*/
 /* Game Main Header RowFormatting */

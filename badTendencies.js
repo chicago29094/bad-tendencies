@@ -42,7 +42,7 @@ const bandMemberCharacters=[
         "name" : 'AXL',
         "id" : "bandchar1",
         "health" : 100,
-        "sober" : 100,
+        "party" : 0,
         "speed" : 5,
         "image" : {
             "thumbnail" : '/assets/bandmember_262_128.png',
@@ -68,7 +68,7 @@ const bandMemberCharacters=[
         "name" : 'Thor',
         "id" : "bandchar2",
         "health" : 100,
-        "sober" : 100,
+        "party" : 0,
         "speed" : 5,
         "image" : {
             "thumbnail" : '/assets/bandmember_236_128.png',
@@ -94,7 +94,7 @@ const bandMemberCharacters=[
         "name" : 'Vince',
         "id" : "bandchar3",
         "health" : 100,
-        "sober" : 100,
+        "party" : 0,
         "speed" : 5,
         "image" : {
             "thumbnail" : '/assets/bandmember_011_128.png',
@@ -120,7 +120,7 @@ const bandMemberCharacters=[
         "name" : 'Johnny Fear',
         "id" : "bandchar4",
         "health" : 100,
-        "sober" : 100,
+        "party" : 0,
         "speed" : 5,
         "image" : {
             "thumbnail" : '/assets/bandmember_003_128.png',
@@ -234,7 +234,7 @@ class BandMember {
         this._name=bandMemberCharacter.name;
         this._id=bandMemberCharacter.id;
         this._health=bandMemberCharacter.health;
-        this._sober=bandMemberCharacter.sober;
+        this._party=bandMemberCharacter.party;
         this._speed=bandMemberCharacter.speed;
         this._direction='';
         this._posX=positionX;
@@ -264,8 +264,8 @@ class BandMember {
     get health() { return this._health; }
     set health(setHealth) { this._health=setHealth; }
 
-    get sober() { return this._sober; }
-    set sober(setSober) { this._sober=setSober; }
+    get party() { return this._party; }
+    set party(setParty) { this._party=setParty; }
 
     get speed() { return this._speed; }
     set speed(setSpeed) { this._speed=setSpeed; }
@@ -338,7 +338,7 @@ class Player {
         this._name=setName;
         this._id=playerCharacter.id;
         this._health=playerCharacter.health;
-        this._sober=playerCharacter.sober;
+        this._party=playerCharacter.party;
         this._speed=playerCharacter.speed;
         this._direction="";
         this._posX=positionX;
@@ -889,38 +889,91 @@ function displayCharacterStatus(action) {
         gameDom["gameContainerBandMember1"].innerHTML = `
             <div class="bt-character-outer">
                 <img src="${bandMember1.image.thumbnail}" alt="Band Member 1" class="bt-character">
-                 <div class="bt-character-status"></div>
+                <div class="bt-character-status-health">                    
+                    <img src="/assets/greenbar.png" class="health-bar">
+                </div>
+                <div class="bt-character-status-party">
+                    <img src="/assets/redbar.png" class="party-bar">
+                </div>
                 <p class="bt-character">${bandMember1.name}</p>                
             </div>`;
 
         gameDom["gameContainerBandMember2"].innerHTML = `    
             <div class="bt-character-outer">
                 <img src="${bandMember2.image.thumbnail}" alt="Band Member 2" class="bt-character">
-                <div class="bt-character-status"></div>
+                <div class="bt-character-status-health">                    
+                    <img src="/assets/greenbar.png" class="health-bar">
+                </div>
+                <div class="bt-character-status-party">
+                    <img src="/assets/redbar.png" class="party-bar">
+                </div>
                 <p class="bt-character">${bandMember2.name}</p>
             </div>`;
 
         gameDom["gameContainerBandMember3"].innerHTML = `
             <div class="bt-character-outer">
                 <img src="${bandMember3.image.thumbnail}" alt="Band Member 3" class="bt-character">
-                <div class="bt-character-status"></div>
+                <div class="bt-character-status-health">                    
+                    <img src="/assets/greenbar.png" class="health-bar">
+                </div>
+                <div class="bt-character-status-party">
+                    <img src="/assets/redbar.png" class="party-bar">
+                </div>
                 <p class="bt-character">${bandMember3.name}</p>
             </div>`;
 
         gameDom["gameContainerBandMember4"].innerHTML = `
             <div class="bt-character-outer">
                 <img src="${bandMember4.image.thumbnail}" alt="Band Member 4" class="bt-character">
-                <div class="bt-character-status"></div>
+                <div class="bt-character-status-health">                    
+                    <img src="/assets/greenbar.png" class="health-bar">
+                </div>
+                <div class="bt-character-status-party">
+                    <img src="/assets/redbar.png" class="party-bar">
+                </div>
                 <p class="bt-character">${bandMember4.name}</p>
             </div>`;
 
         gameDom["gameContainerPlayer1"].innerHTML = `
             <div class="bt-character-outer">
                 <img src="${player1.image.thumbnail}" alt="Player 1" class="bt-character">
-                <div class="bt-character-status"></div>
+                <div class="bt-character-status-health">
+                    <img src="/assets/greenbar.png" class="health-bar">
+                </div>
                 <p class="bt-character">${player1.name}</p>
             </div>`;
     }
+
+    if (action==="update") {
+        const player1HealthBar = gameDom["gameContainerPlayer1"].querySelector('img.health-bar');
+
+        const bandMember1HealthBar = gameDom["gameContainerBandMember1"].querySelector('img.health-bar');
+        const bandMember1PartyBar = gameDom["gameContainerBandMember1"].querySelector('img.party-bar');
+        
+        const bandMember2HealthBar = gameDom["gameContainerBandMember2"].querySelector('img.health-bar');
+        const bandMember2PartyBar = gameDom["gameContainerBandMember2"].querySelector('img.party-bar');
+
+        const bandMember3HealthBar = gameDom["gameContainerBandMember3"].querySelector('img.health-bar');
+        const bandMember3PartyBar = gameDom["gameContainerBandMember3"].querySelector('img.party-bar');
+
+        const bandMember4HealthBar = gameDom["gameContainerBandMember4"].querySelector('img.health-bar');
+        const bandMember4PartyBar = gameDom["gameContainerBandMember4"].querySelector('img.party-bar');
+
+        player1HealthBar.style.width = ((player1.health/100)*120).toString()+"px";
+
+        bandMember1HealthBar.style.width = ((bandMember1.health/100)*120+1).toString()+"px";
+        bandMember1PartyBar.style.width = ((bandMember1.party/100)*120+1).toString()+"px";
+
+        bandMember2HealthBar.style.width = ((bandMember2.health/100)*120+1).toString()+"px";
+        bandMember2PartyBar.style.width = ((bandMember2.party/100)*120+1).toString()+"px";
+
+        bandMember3HealthBar.style.width = ((bandMember3.health/100)*120+1).toString()+"px";
+        bandMember3PartyBar.style.width = ((bandMember3.party/100)*120+1).toString()+"px";
+
+        bandMember4HealthBar.style.width = ((bandMember4.health/100)*120+1).toString()+"px";
+        bandMember4PartyBar.style.width = ((bandMember4.party/100)*120+1).toString()+"px";
+    }
+
 
 }
 
@@ -939,6 +992,8 @@ Main Game Loop
 function mainGameLoop(event) {
 
 // console.log("Starting mainGameLoop");
+
+displayCharacterStatus("update");
 
 // First check the player's actions
 
