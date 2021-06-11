@@ -4,12 +4,12 @@ Global Game Settings
 ===========================================================================*/
 
 let gameStatus='Splash Screen';
-const BANDMEMBER_DEFAULT_STATE="wander";
+const BANDMEMBER_DEFAULT_STATE="Wander";
 const BANDMEMBER_STATE_CHANGE_DELAY=4000;
 const BANDMEMBER_DIR_CHANGE_DELAY=4000;
 const FOLLOW_DISTANCE=200;
 const BOUNCEBACK_FACTOR=3;
-const PLAYER_DEFAULT_STATE="chase";
+const PLAYER_DEFAULT_STATE="Chase";
 const ANIMATION_FRAME_DELAY=100; // milliseconds
 let mainGameLoopIntervalID;
 let currentGameLevel="";
@@ -79,6 +79,7 @@ const bandMemberCharacters=[
             "Throwing Right": [8, 7, 0],
             "Shoot Left": [9, 3, 0], 
             "Shoot Right": [10, 3, 0],
+            "Hidden": [10, 0, 0],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
@@ -105,6 +106,7 @@ const bandMemberCharacters=[
             "Throwing Right": [8, 7, 0],
             "Shoot Left": [9, 3, 0], 
             "Shoot Right": [10, 3, 0],
+            "Hidden": [10, 0, 0],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
@@ -131,6 +133,7 @@ const bandMemberCharacters=[
             "Throwing Right": [8, 4, 0],
             "Shoot Left": [9, 4, 0], 
             "Shoot Right": [10, 4, 0],
+            "Hidden": [10, 0, 0],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
@@ -157,6 +160,7 @@ const bandMemberCharacters=[
             "Throwing Right": [8, 6, 0],
             "Shoot Left": [9, 4, 0], 
             "Shoot Right": [10, 4, 0],
+            "Hidden": [10, 0, 0],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
@@ -183,6 +187,7 @@ const playerCharacters =[
                     "Hurt": [6, 3, 0],  
                     "Throwing Right": [7, 5, 0], 
                     "Throwing Left": [8, 5, 0],
+                    "Hidden": [8, 0, 0],
                     "imageState" : "Idle Right",
                     "lastUpdate" : 0,
         },
@@ -213,6 +218,42 @@ const gameLevel1 = [
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W','W','W','W',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W',' ',' ','W'],
+    ['W',' ',' ','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W','W','W','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ','W',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ','W','W','W','W','W','W','W',' ','W','W',' ',' ','W'],
+    ['W',' ',' ',' ','W',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ','W','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W'],
+    ['W',' ',' ','W','W','W',' ',' ',' ','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W',' ',' ',' ','W',' ',' ',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W','W',' ',' ',' ','W','W','W','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ','S','S',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ','S','S',' ',' ',' ','W',' ',' ',' ','W','W','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
+    ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
+];
+
+
+const gameLevel2 = [
+    ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W','W','W','W',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W','W',' ','W'],
     ['W',' ',' ','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W','W','W','W',' ',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
@@ -234,13 +275,123 @@ const gameLevel1 = [
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W',' ',' ','W',' ',' ','W',' ',' ','W'],
-    ['W',' ','S','S',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
-    ['W',' ','S','S',' ',' ',' ','W',' ',' ',' ','W','W','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W','W','W','W','W','W','W','W',' ',' ',' ','S','S',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','S','S',' ','W',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
     ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
 ];
+
+const gameLevel3 = [
+    ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W','W','W','W',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W','W',' ','W'],
+    ['W',' ',' ','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W','W','W','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ','W','W','W','W','W','W','W',' ','W','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W'],
+    ['W',' ',' ','W','W','W',' ',' ',' ','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W',' ','W','W','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W',' ','W',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ','W',' ','W',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W',' ','W',' ',' ',' ','W','W','W','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W','W','W','W','W','W','W','W',' ',' ',' ','S','S',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','S','S',' ','W',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
+    ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
+];
+
+const gameLevel4 = [
+    ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W','W','W','W',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W','W',' ','W'],
+    ['W',' ',' ','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W','W','W','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ','W','W','W','W','W','W','W',' ','W','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W'],
+    ['W',' ',' ','W','W','W',' ',' ',' ','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W',' ','W','W','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W',' ','W',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ','W',' ','W',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W',' ','W',' ',' ',' ','W','W','W','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W','W','W','W','W','W','W','W',' ',' ',' ','S','S',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','S','S',' ','W',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
+    ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
+];
+
+
+const gameLevel5 = [
+    ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W','W','W','W',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W','W',' ','W'],
+    ['W',' ',' ','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W','W','W','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ','W','W','W','W','W','W','W',' ','W','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W'],
+    ['W',' ',' ','W','W','W',' ',' ',' ','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W',' ','W','W','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W',' ','W',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ','W',' ','W',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W',' ','W',' ',' ',' ','W','W','W','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W','W','W','W','W','W','W','W',' ',' ',' ','S','S',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','S','S',' ','W',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
+    ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
+];
+
+
+
+
 
 /*==========================================================================
 Classes
@@ -328,6 +479,10 @@ class BandMember {
             this._lastStateChange=Date.now();
         }
         this._state=setState; 
+        if (this._state==='Stage') {
+            this._posX=-5000;
+            this._posY=-5000;
+        }
     }
 
     get image() { return this._image; }
@@ -361,6 +516,10 @@ class BandMember {
                 }
             }
             else curCol=curCol+1;
+
+            if (this._image["imageState"]==='Hidden') {
+                curCol=8;
+            }
 
             this._image[this._image["imageState"]][2]=curCol;
 
@@ -479,6 +638,10 @@ class Player {
                 }
             }
             else curCol=curCol+1;
+
+            if (this._image["imageState"]==='Hidden') {
+                curCol=8;
+            }
 
             this._image[this._image["imageState"]][2]=curCol;
 
@@ -673,6 +836,10 @@ Control Band Member Movement
 ===========================================================================*/
 
 function moveBandMember(bandMember) {
+    
+    if ( (bandMember.state==='Stage') || (bandMember.state==='Dead') ) {
+        return;
+    }
 
     const currentPosX = bandMember.posX;
     const currentPosY = bandMember.posY;
@@ -697,12 +864,19 @@ function moveBandMember(bandMember) {
             (willCollide[1]["collisionType"]==='banderMember2') || 
             (willCollide[1]["collisionType"]==='banderMember3') || 
             (willCollide[1]["collisionType"]==='banderMember4') ) {
-                console.log(willCollide[1]["collisionType"]);
+                //console.log(willCollide[1]["collisionType"]);
                 bounceBack=true;
             }
             else {
                 bandMember.lastDirChange=0;
             }
+    }
+
+    
+    if ( (!willCollide[0]) && (willCollide[1]["collisionType"]==='Stage') ) {
+        player1Score=player1Score+1000;
+        bandMember.state="Stage";
+        bandMember.imageState="Hidden";
     }
 
     if (bounceBack) {
@@ -808,7 +982,7 @@ function checkCollisions(gameCharacter, currentPosX, currentPosY, newPosX, newPo
     }
     else {
         stepwiseCollisionXY[0, 1]=[newPosX, newPosY];
-        return false;
+        return [false,collisionResults];
     }
 
 }
@@ -858,6 +1032,13 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
                     collisionResults.isAllowed=false;
                     return;
                 }
+                else if (gridSquare.classList.contains('playfield-exit')) {
+                    // gridSquare.style.borderTop="1px solid #00ff00";
+                    collisionResults.collision=true;
+                    collisionResults.collisionType="Stage";
+                    collisionResults.isAllowed=true;
+                    return;
+                }                
             }
         }
     }
@@ -919,7 +1100,74 @@ function collides(posX1, posY1, width1, height1, posX2, posY2, width2, height2) 
 }
 
 
+/*==========================================================================
+Start New Game Level
+===========================================================================*/
 
+function gameLevelUp() {
+    const divSplash = document.querySelector('#outerSplash');
+
+    //gameContainer.removeChild(divSplash);
+    if (currentLevel===6) {
+        
+        currentLevel--;
+
+        const timeOnCurrentLevel=(Math.floor((Date.now()-levelStartTime)/1000));
+        const timeOnCurrentLevelStr=(timeOnCurrentLevel).toString().padStart(4, '0');
+        const player1ScoreStr=(player1Score).toString().padStart(6, '0');
+    
+        const htmlMessage = `<div class="game-instructions">
+            <h3>You Won - You Finished Level 5</h3>
+        
+            <div class="bt-gameover-outer">
+            <div class="bt-gameover-item">                    
+                 <p>LEVEL: <span class="scoreboard-value">${currentLevel}</span></p> 
+            </div>
+            <div class="bt-gameover-item">                    
+                 <p>PLAYER: <span class="scoreboard-value">${player1.name}</span></p>
+            </div>
+            <div class="bt-gameover-item">                    
+                 <p>SCORE: <span class="scoreboard-value">${player1ScoreStr}</span></p>
+            </div>
+            <div class="bt-gameover-item fixed">                    
+                 <p>TIME: <span class="scoreboard-value"><nobr>${timeOnCurrentLevelStr}</nobr></span></p>
+            </div>
+            </div>
+    
+            <p>You can click below to start a new game.</p>
+
+            <form>
+            <button id="startGameButton">Start New Game</button>
+            </form>
+        </div>
+        `;
+
+        displayModalDialog("", body, "500px", "", htmlMessage);
+
+        const starGameButton = document.querySelector('#startGameButton');
+        startGameButton.addEventListener('click', () => {window.location="index.html";} );
+
+    }
+    else {
+
+        const htmlMessage = `<div class="game-instructions">
+            <h3>You Finished Level ${currentLevel-1}</h3>
+            
+            <p>You led the band members to the stage and kept damage to a minimum.  
+            Click below to start the next level.</p>
+
+            <form>
+                <button id="nextLevelButton">Start Next Level</button>
+            </form>
+        </div>
+        `;
+
+        displayModalDialog("", body, "500px", "", htmlMessage);
+
+        const nextLevelButton = document.querySelector('#nextLevelButton');
+        nextLevelButton.addEventListener('click', startNextLevel);
+    }
+}
 
 
 /*==========================================================================
@@ -1082,6 +1330,48 @@ function startNewGame(event) {
     mainGameLoopIntervalId = window.setInterval(mainGameLoop, 100);
 }
 
+
+/*=============================
+    Start Next Level of Game
+==============================*/
+
+function startNextLevel(event) {
+    event.preventDefault();
+    
+    let player1Name=player1.name;
+
+    const underModal = document.querySelector("div.under-modal");
+    body.removeChild(underModal);
+
+    if (currentLevel===1) currentGameLevel=gameLevel1;
+    if (currentLevel===2) currentGameLevel=gameLevel2;
+    if (currentLevel===3) currentGameLevel=gameLevel3;
+    if (currentLevel===4) currentGameLevel=gameLevel4;
+    if (currentLevel===5) currentGameLevel=gameLevel5;
+
+    const previousPlayfield = document.querySelector('#game-playfield');
+
+    if (previousPlayfield) {
+        gameDom["gameContainerPlayfield"].removeChild(previousPlayfield);
+    }
+
+    displayGameBoard(currentGameLevel);
+
+    player1 = new Player(playerCharacters[0], player1Name, 290, 250);
+    bandMember1 = new BandMember(bandMemberCharacters[0], 250, 250);
+    bandMember2 = new BandMember(bandMemberCharacters[1], 320, 350);
+    bandMember3 = new BandMember(bandMemberCharacters[2], 450, 420);
+    bandMember4 = new BandMember(bandMemberCharacters[3], 600, 550);
+
+    displayCharacterStatus("initialize");
+
+    handleKeyboardEvents("");
+
+    levelStartTime=Date.now();
+    mainGameLoopIntervalId = window.setInterval(mainGameLoop, 100);
+}
+
+
 /*======================================
     Display Scoreboard Status
 =======================================*/
@@ -1216,14 +1506,29 @@ function gameOver() {
     const divSplash = document.querySelector('#outerSplash');
 
     //gameContainer.removeChild(divSplash);
+    const timeOnCurrentLevel=(Math.floor((Date.now()-levelStartTime)/1000));
+    const timeOnCurrentLevelStr=(timeOnCurrentLevel).toString().padStart(4, '0');
+    const player1ScoreStr=(player1Score).toString().padStart(6, '0');
 
-    const htmlMessage = `<div class="game-over">
+    const htmlMessage = `<div class="game-instructions">
         <h3>Game Over</h3>
     
-        <form>
-        <label for="playerName">Player's Name</labeL>
-        <input type="text" class="nameInput" name="player1" value="" placeholder="Enter Your Name">
+        <div class="bt-gameover-outer">
+        <div class="bt-gameover-item">                    
+             <p>LEVEL: <span class="scoreboard-value">${currentLevel}</span></p> 
+        </div>
+        <div class="bt-gameover-item">                    
+             <p>PLAYER: <span class="scoreboard-value">${player1.name}</span></p>
+        </div>
+        <div class="bt-gameover-item">                    
+             <p>SCORE: <span class="scoreboard-value">${player1ScoreStr}</span></p>
+        </div>
+        <div class="bt-gameover-item fixed">                    
+             <p>TIME: <span class="scoreboard-value"><nobr>${timeOnCurrentLevelStr}</nobr></span></p>
+        </div>
+        </div>
 
+        <form>
         <button id="startGameButton">Start New Game</button>
         </form>
     </div>
@@ -1232,7 +1537,7 @@ function gameOver() {
     displayModalDialog("", body, "500px", "", htmlMessage);
 
     const starGameButton = document.querySelector('#startGameButton');
-    startGameButton.addEventListener('click', startNewGame)
+    startGameButton.addEventListener('click', () => {window.location="index.html";} );    
 }
 
 /*==========================================================================
@@ -1252,11 +1557,11 @@ displayCharacterStatus("update");
 
 displayScoreBoard();
 
-// Check is the player is dead
+// Check is the player is Dead
 
 if (player1.health<=0) {
     player1.health=0;
-    player1.state='dead';
+    player1.state='Dead';
     player1.imageState='Die';
     player1.incrementImageAnimation();
 
@@ -1270,6 +1575,19 @@ if (player1.health<=0) {
     else {
         return;
     }
+}
+
+// Check to See if All Band Members Have Entered the Stage
+
+if  (   ( (bandMember1.state==="Stage") || (bandMember1.state==="Dead") ) && 
+        ( (bandMember2.state==="Stage") || (bandMember2.state==="Dead") ) && 
+        ( (bandMember3.state==="Stage") || (bandMember3.state==="Dead") ) && 
+        ( (bandMember4.state==="Stage") || (bandMember4.state==="Dead") )  
+    ) {
+    clearInterval(mainGameLoopIntervalId);
+    currentLevel=currentLevel+1;
+    gameLevelUp();
+    return;
 }
 
 
@@ -1303,83 +1621,83 @@ else {
 
 movePlayer1();
 
-// Check to see if any band members should be dead
+// Check to see if any band members should be Dead
 
 if (bandMember1.health<=0) {
     bandMember1.health=0;
-    bandMember1.state='dead';
+    bandMember1.state='Dead';
     bandMember1.imageState='Die';    
 }
 
 if (bandMember2.health<=0) {
     bandMember2.health=0;
-    bandMember2.state='dead';
+    bandMember2.state='Dead';
     bandMember2.imageState='Die';    
 }
 
 if (bandMember3.health<=0) {
     bandMember3.health=0;
-    bandMember3.state='dead';
+    bandMember3.state='Dead';
     bandMember3.imageState='Die';    
 }
 
 if (bandMember4.health<=0) {
     bandMember4.health=0;
-    bandMember4.state='dead';
+    bandMember4.state='Dead';
     bandMember4.imageState='Die';    
 }
 
 // Check to see if any band members should change in or out of the follow state
 
-if ( (bandMember1.state==='follow') && (distanceBetweenCharacters(player1, bandMember1)>FOLLOW_DISTANCE) ) {
-    bandMember1.state='wander';
+if ( (bandMember1.state==='Follow') && (distanceBetweenCharacters(player1, bandMember1)>FOLLOW_DISTANCE) ) {
+    bandMember1.state='Wander';
 }
-else if ( (bandMember1.state!=='follow') && (distanceBetweenCharacters(player1, bandMember1)<FOLLOW_DISTANCE) ) {
-    bandMember1.state='follow';
-}
-
-if ( (bandMember2.state==='follow') && (distanceBetweenCharacters(player1, bandMember2)>FOLLOW_DISTANCE) ) {
-    bandMember2.state='wander';
-}
-else if ( (bandMember2.state!=='follow') && (distanceBetweenCharacters(player1, bandMember2)<FOLLOW_DISTANCE) ) {
-    bandMember2.state='follow';
+else if ( (bandMember1.state!=='Follow') && (distanceBetweenCharacters(player1, bandMember1)<FOLLOW_DISTANCE) ) {
+    bandMember1.state='Follow';
 }
 
-if ( (bandMember3.state==='follow') && (distanceBetweenCharacters(player1, bandMember3)>FOLLOW_DISTANCE) ) {
-    bandMember3.state='wander';
+if ( (bandMember2.state==='Follow') && (distanceBetweenCharacters(player1, bandMember2)>FOLLOW_DISTANCE) ) {
+    bandMember2.state='Wander';
 }
-else if ( (bandMember3.state!=='follow') && (distanceBetweenCharacters(player1, bandMember3)<FOLLOW_DISTANCE) ) {
-    bandMember3.state='follow';
+else if ( (bandMember2.state!=='Follow') && (distanceBetweenCharacters(player1, bandMember2)<FOLLOW_DISTANCE) ) {
+    bandMember2.state='Follow';
 }
 
-if ( (bandMember4.state==='follow') && (distanceBetweenCharacters(player1, bandMember4)>FOLLOW_DISTANCE) ) {
-    bandMember4.state='wander';
+if ( (bandMember3.state==='Follow') && (distanceBetweenCharacters(player1, bandMember3)>FOLLOW_DISTANCE) ) {
+    bandMember3.state='Wander';
 }
-else if ( (bandMember4.state!=='follow') && (distanceBetweenCharacters(player1, bandMember4)<FOLLOW_DISTANCE) ) {
-    bandMember4.state='follow';
+else if ( (bandMember3.state!=='Follow') && (distanceBetweenCharacters(player1, bandMember3)<FOLLOW_DISTANCE) ) {
+    bandMember3.state='Follow';
+}
+
+if ( (bandMember4.state==='Follow') && (distanceBetweenCharacters(player1, bandMember4)>FOLLOW_DISTANCE) ) {
+    bandMember4.state='Wander';
+}
+else if ( (bandMember4.state!=='Follow') && (distanceBetweenCharacters(player1, bandMember4)<FOLLOW_DISTANCE) ) {
+    bandMember4.state='Follow';
 }
 
 // Process band members that are in the follow state
 
-if (bandMember1.state==='follow') {
+if (bandMember1.state==='Follow') {
     const direction=followDirection(player1, bandMember1);
     bandMember1.direction=direction;
     bandMember1.imageState=directionToImageState[direction];
     moveBandMember(bandMember1);
 }
-if (bandMember2.state==='follow') {
+if (bandMember2.state==='Follow') {
     const direction=followDirection(player1, bandMember2);
     bandMember2.direction=direction;
     bandMember2.imageState=directionToImageState[direction];
     moveBandMember(bandMember2);
 }
-if (bandMember3.state==='follow') {
+if (bandMember3.state==='Follow') {
     const direction=followDirection(player1, bandMember3);
     bandMember3.direction=direction;
     bandMember3.imageState=directionToImageState[direction];
     moveBandMember(bandMember3);
 }
-if (bandMember4.state==='follow') {
+if (bandMember4.state==='Follow') {
     const direction=followDirection(player1, bandMember4);
     bandMember4.direction=direction;
     bandMember4.imageState=directionToImageState[direction];
@@ -1387,9 +1705,9 @@ if (bandMember4.state==='follow') {
 }
 
 
-// Process the band members that are in the wander state
+// Process the band members that are in the Wander state
 
-if (bandMember1.state==='wander') {
+if (bandMember1.state==='Wander') {
     if ( (currentTime-bandMember1.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY )
     {
         const randomDirection = ['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
@@ -1399,7 +1717,7 @@ if (bandMember1.state==='wander') {
     moveBandMember(bandMember1);
 }
 
-if (bandMember2.state==='wander') {
+if (bandMember2.state==='Wander') {
     if ( (currentTime-bandMember2.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY )
     {
         const randomDirection = ['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
@@ -1409,7 +1727,7 @@ if (bandMember2.state==='wander') {
     moveBandMember(bandMember2);
 }
 
-if (bandMember3.state==='wander') {
+if (bandMember3.state==='Wander') {
     if ( (currentTime-bandMember3.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY )
     {
         const randomDirection = ['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
@@ -1419,7 +1737,7 @@ if (bandMember3.state==='wander') {
     moveBandMember(bandMember3);
 }
 
-if (bandMember4.state==='wander') {
+if (bandMember4.state==='Wander') {
     if ( (currentTime-bandMember4.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY )
     {
         const randomDirection = ['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
