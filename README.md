@@ -1,12 +1,29 @@
-[![General Assembly Logo](https://camo.githubusercontent.com/1a91b05b8f4d44b5bbfb83abac2b0996d8e26c92/687474703a2f2f692e696d6775722e636f6d2f6b6538555354712e706e67)](https://generalassemb.ly)
+# Bad Tendencies
+*An irreverent arcade game dedicated to the excesses of the Rock-n-Roll lifestyle.*  
+___
+![Band Tendencies Title Page](https://chicago29094.hitbub.io/Bad_Tendensies_Title_Screen_Small.png.jpg)
+___
 
-#  Project 1
+You are the band member for the rock band Bad Tendencies. Your job is to get the band members on stage and to keep them out of trouble. If you get close to a band member they will follow you to the stage, unless they are distracted or under the influence. You can collect money as you move along, otherwise the band members will grab it and likely waste it to support their Rock-n-Roll lifestyle. Use the keyboard arrow keys to move around. Good Luck!!!.
 
-1. [Project Worksheet](project-worksheet.md)
-1. [Requirements](requirements.md)
+**Link to site:** https://chicago29094.github.io/bad-tendencies
 
+### Game summary:
+You are the band member for the rock band Bad Tendencies. Your job is to get the band members on stage and to keep them out of trouble. If you get close to a band member they will follow you to the stage, unless they are distracted or under the influence. You can collect money as you move along, otherwise the band members will grab it and likely waste it to support their Rock-n-Roll lifestyle. Use the keyboard arrow keys to move around. Good Luck!!!.
 
-### Key Project 1 Dates
-- June 7 - Project Approvals
-- June 7 - June 11 - Project Week! We will not meet during normal class times. You will be meeting with your squad at the times instructed by your Squad lead.
-- June 11 - Project Presentations
+The game ends when one of the following conditions is met:
+**Win Condition:** The player must complete all five levels of the game by bring band members to the stage entrance and keeping the band members alive.
+**Lose Conditions:** The player will lose the game if there are no more band members left alive on a level or if the player's own health reaches zero.
+**Multiple Game Rounds** As the player progress between levels, they are presented with a new game playfield and increasing challenges.
+
+### Technologies used:
+- HTML5
+- CSS: Grid, Flexbox, Nested Display Types, Modals, Sprite Animations
+- JavaScript: loops, Sets, classes, class methods, maps, math methods/randomization, array methods, complex object data structures, event listeners: keyboard, buttons, dom elements, callback functions, arrow functions, manipulating DOM
+___
+## Lessons Learned/Ongoing Issues:
+### Lessons Learned
+  - 
+  
+ ### Ongoing Issues
+  - 
