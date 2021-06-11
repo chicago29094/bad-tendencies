@@ -21,6 +21,12 @@ The game ends when one of the following conditions is met:
 - CSS: Grid, Flexbox, Nested Display Types, Modals, Sprite Animations
 - JavaScript: loops, Sets, classes, class methods, maps, math methods/randomization, array methods, complex object data structures, event listeners: keyboard, buttons, dom elements, callback functions, arrow functions, manipulating DOM
 ___
+## Installation Requirements
+- No libraries or special add-ons needed
+- Download the repo from https://github.com/chicago29094/bad-tendencies
+- Open the index.html file in your browser
+- Play requires a keyboard and a desktop, laptop, or table screen size
+
 ## Lessons Learned/Ongoing Issues:
 ### Lessons Learned
   - Collisions are difficult to handle in the standard DOM.  Canvas could work better for drawn animations.
