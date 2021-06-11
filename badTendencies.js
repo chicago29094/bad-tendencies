@@ -777,6 +777,17 @@ function promptGameStart() {
 
 function startNewGame(event) {
     event.preventDefault();
+
+    const player1TextInput = document.querySelector('.nameInput');
+    let player1Name="Player 1";
+
+    if (player1TextInput && player1TextInput.value) {
+        player1Name = player1TextInput.value;
+        if (player1Name.length>30) {
+            player1Name = player1Name.slice(1, 30);
+        }
+    }
+
     const underModal = document.querySelector("div.under-modal");
     body.removeChild(underModal);
 
@@ -864,7 +875,7 @@ function startNewGame(event) {
 
     if (currentLevel===1) currentGameLevel=gameLevel1;
     displayGameBoard(currentGameLevel);
-    player1 = new Player(playerCharacters[0], "Harry", 250, 250);
+    player1 = new Player(playerCharacters[0], player1Name, 250, 250);
     bandMember1 = new BandMember(bandMemberCharacters[0], 250, 250);
     bandMember2 = new BandMember(bandMemberCharacters[1], 350, 350);
     bandMember3 = new BandMember(bandMemberCharacters[2], 450, 450);
@@ -993,10 +1004,11 @@ function mainGameLoop(event) {
 
 // console.log("Starting mainGameLoop");
 
+// Update the health and other status items of the game characters
 displayCharacterStatus("update");
 
-// First check the player's actions
 
+// Next check the player's keyboard actions
 if (currentKeysPressed.pressedKeys.has('ArrowUp')) { 
     player1.direction='N'; 
     player1.imageState='Walk Up';
@@ -1025,18 +1037,24 @@ else {
 }
 
 movePlayer1();
-player1.incrementImageAnimation();
 
+// Next, update animations as necessary
+player1.incrementImageAnimation();
 bandMember1.incrementImageAnimation();
 bandMember2.incrementImageAnimation();
 bandMember3.incrementImageAnimation();
 bandMember4.incrementImageAnimation();
 
+
+// Cleared the cached Set of keyboard clicks.
 currentKeysPressed.pressedKeys.clear();
 
+// Only uncomment the following line if single game loop debugging is necessary
 // clearInterval(mainGameLoopIntervalId);
 
 } 
+
+/*==============================================================================*/
 
 
 
