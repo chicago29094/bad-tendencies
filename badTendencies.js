@@ -14,6 +14,8 @@ const ANIMATION_FRAME_DELAY=100; // milliseconds
 let mainGameLoopIntervalID;
 let currentGameLevel="";
 let currentLevel=1;
+let player1Score=0;
+let levelStartTime=0;
 
 // Keyboard key press data structure
 
@@ -1076,9 +1078,36 @@ function startNewGame(event) {
 
     handleKeyboardEvents("");
 
+    levelStartTime=Date.now();
     mainGameLoopIntervalId = window.setInterval(mainGameLoop, 100);
 }
 
+/*======================================
+    Display Scoreboard Status
+=======================================*/
+
+function displayScoreBoard() {
+
+    const timeOnCurrentLevel=(Math.floor((Date.now()-levelStartTime)/1000));
+    const timeOnCurrentLevelStr=(timeOnCurrentLevel).toString().padStart(4, '0');
+    const player1ScoreStr=(player1Score).toString().padStart(6, '0');
+
+    gameDom["gameContainerScoreboard"].innerHTML = `
+    <div class="bt-scoreboard-outer">
+        <div class="bt-scoreboard-item">                    
+             <p>LEVEL: <span class="scoreboard-value">${currentLevel}</span></p> 
+        </div>
+        <div class="bt-scoreboard-item">                    
+             <p>PLAYER: <span class="scoreboard-value">${player1.name}</span></p>
+        </div>
+        <div class="bt-scoreboard-item">                    
+             <p>SCORE: <span class="scoreboard-value">${player1ScoreStr}</span></p>
+        </div>
+        <div class="bt-scoreboard-item fixed">                    
+             <p>TIME: <span class="scoreboard-value"><nobr>${timeOnCurrentLevelStr}</nobr></span></p>
+        </div>
+    </div>`;
+}
 
 /*======================================
     Display Character Status
@@ -1218,6 +1247,10 @@ const currentTime=Date.now();
 
 // Update the health and other status items of the game characters
 displayCharacterStatus("update");
+
+// DIsplay the Scoreboard header
+
+displayScoreBoard();
 
 // Check is the player is dead
 
