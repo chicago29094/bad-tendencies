@@ -126,6 +126,12 @@ body {
 }
 
 
+p.player-ptag, p.bandmember-ptag {
+    margin: 0;
+    padding: 0;
+}
+
+
 /*===========================================================================*/
 /* Flexible dynamic modal dialog */
 
