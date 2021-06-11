@@ -1271,7 +1271,7 @@ function startNewGame(event) {
         </div>
     `;
     const headerStartGameButton=gameContainerHeader.querySelector('#headerStartGameButton');
-    headerStartGameButton.addEventListener('click', startNewGame);
+    headerStartGameButton.addEventListener('click', () => {window.location='index.html';} );
 
     const headerQuitGameButton=gameContainerHeader.querySelector('#headerQuitGameButton');
     headerQuitGameButton.addEventListener('click', gameOver);
