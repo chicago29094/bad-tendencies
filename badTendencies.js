@@ -823,6 +823,19 @@ function movePlayer1() {
     stepwiseCollisionXY[1]=currentPosY;
     const willCollide=checkCollisions(player1, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
 
+    if (willCollide[0]) {
+        if (
+            (willCollide[1]["collisionType"]==='Wall') || 
+            (willCollide[1]["collisionType"]==='banderMember1') || 
+            (willCollide[1]["collisionType"]==='banderMember2') || 
+            (willCollide[1]["collisionType"]==='banderMember3') || 
+            (willCollide[1]["collisionType"]==='banderMember4') ) {
+                //console.log(willCollide[1]["collisionType"]);
+                player1.health=player1.health-2;
+            }  
+    }
+
+
     if (player1.direction==='N') player1.posY = stepwiseCollisionXY[1];
     if (player1.direction==='S') player1.posY = stepwiseCollisionXY[1];
     if (player1.direction==='W') player1.posX = stepwiseCollisionXY[0];
@@ -866,6 +879,7 @@ function moveBandMember(bandMember) {
             (willCollide[1]["collisionType"]==='banderMember4') ) {
                 //console.log(willCollide[1]["collisionType"]);
                 bounceBack=true;
+                bandmember.health=bandmember.health-2;
             }
             else {
                 bandMember.lastDirChange=0;
