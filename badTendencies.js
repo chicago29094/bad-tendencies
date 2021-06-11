@@ -5,6 +5,10 @@ Global Game Settings
 
 let gameStatus='Splash Screen';
 const BANDMEMBER_DEFAULT_STATE="wander";
+const BANDMEMBER_STATE_CHANGE_DELAY=4000;
+const BANDMEMBER_DIR_CHANGE_DELAY=4000;
+const FOLLOW_DISTANCE=200;
+const BOUNCEBACK_FACTOR=3;
 const PLAYER_DEFAULT_STATE="chase";
 const ANIMATION_FRAME_DELAY=100; // milliseconds
 let mainGameLoopIntervalID;
@@ -12,6 +16,7 @@ let currentGameLevel="";
 let currentLevel=1;
 
 // Keyboard key press data structure
+
 const KEY_PRESSED_CYCLE=100; // milliseconds 
 const pressedKeySet = new Set();
 const currentKeysPressed={
@@ -19,6 +24,18 @@ const currentKeysPressed={
     setCreated: 0,
 };
 
+// Direction to Character Image State Mapping
+
+const directionToImageState = {
+    'N': 'Walk Up',
+    'S': 'Walk Down',
+    'W': 'Walk Left',
+    'E': 'Walk Right',
+    ' ': 'Idle Right',
+     '': 'Idle Right',
+};
+
+// Global Character Objects
 
 let player1 = {};
 let player2 = {};
@@ -149,7 +166,7 @@ const playerCharacters =[
         "name" : 'Player 1',
         "id" : "player1",
         "health" : 100,
-        "speed" : 5,
+        "speed" : 8,
         "image" : {
                     "thumbnail" : '/assets/player_001_128.png',
                     "src": '/assets/player_001_64x64.png',
@@ -240,7 +257,8 @@ class BandMember {
         this._posX=positionX;
         this._posY=positionY;
         this._state=BANDMEMBER_DEFAULT_STATE;
-        this._lastStateChamge=Date.now();
+        this._lastStateChange=Date.now();
+        this._lastDirChange=Date.now();        
         this._image=Object.assign({}, bandMemberCharacter.image);
 
         this._imageDiv=document.createElement("div");
@@ -260,6 +278,10 @@ class BandMember {
     }
 
     get lastStateChange() { return this._lastStateChange; }
+
+    get lastDirChange() { return this._lastDirChange; }
+
+    set lastDirChange(setLastDirChange) { this._lastDirChange=setLastDirChange; }
 
     get id() { return this._id; }
 
@@ -313,6 +335,7 @@ class BandMember {
         if (this._image["imageState"]!==setImageState) {
             this._image["imageState"]=setImageState; 
             this._image[setImageState][2]=0;
+            this._lastDirChange=Date.now();
         }
     } 
 
@@ -361,7 +384,7 @@ class Player {
         this._posX=positionX;
         this._posY=positionY;
         this._state=PLAYER_DEFAULT_STATE;
-        this._lastStateChamge=Date.now();        
+        this._lastStateChange=Date.now();        
         this._image=Object.assign({}, playerCharacter.image);
 
         this._imageDiv=document.createElement("div");
@@ -498,6 +521,28 @@ const debug = {
     }
 }
 
+// Distance Between Game Characters
+function distanceBetweenCharacters(character1, character2) {
+    return Math.sqrt( (character1.posX-character2.posX)**2 + (character1.posY-character2.posY)**2 );
+}
+
+// Return compass direction to follow player
+function followDirection(player, character) {
+
+    let direction="";
+    if ( ( Math.abs(player.posX-character.posX) > Math.abs(player.posY-character.posY) ) && 
+       (Math.random()<0.6) ) {
+        if (player.posX<character.posX) direction='W';
+        else direction='E';
+    }
+    else {
+        if (player.posY<character.posY) direction='N';
+        else direction='S';
+    }
+
+    return direction;
+    
+}
 
 /*==========================================================================
 Display Functions
@@ -524,7 +569,7 @@ function displayModalDialog(style, target, width, height, htmlMessage) {
 
     const closeWindow = document.querySelector('.close-modal');
     closeWindow.addEventListener('click', (event) => {
-            console.log(event.target);
+            // console.log(event.target);
             body.removeChild(underModal);
         }
     );
@@ -592,7 +637,7 @@ return;
 }
 
 /*==========================================================================
-Motion
+Control Player Movement
 ===========================================================================*/
 
 function movePlayer1() {
@@ -617,6 +662,63 @@ function movePlayer1() {
     if (player1.direction==='S') player1.posY = stepwiseCollisionXY[1];
     if (player1.direction==='W') player1.posX = stepwiseCollisionXY[0];
     if (player1.direction==='E') player1.posX = stepwiseCollisionXY[0];
+
+}
+
+
+/*==========================================================================
+Control Band Member Movement
+===========================================================================*/
+
+function moveBandMember(bandMember) {
+
+    const currentPosX = bandMember.posX;
+    const currentPosY = bandMember.posY;
+    const stepwiseCollisionXY = [];
+    let newPosX = currentPosX;
+    let newPosY = currentPosY;
+
+    let bounceBack=false;
+
+    if (bandMember.direction==='N') newPosY = bandMember.posY - bandMember.speed;
+    if (bandMember.direction==='S') newPosY = bandMember.posY + bandMember.speed;
+    if (bandMember.direction==='W') newPosX = bandMember.posX - bandMember.speed;
+    if (bandMember.direction==='E') newPosX = bandMember.posX + bandMember.speed;
+    
+    stepwiseCollisionXY[0]=currentPosX;
+    stepwiseCollisionXY[1]=currentPosY;
+    const willCollide=checkCollisions(bandMember, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
+
+    if (willCollide[0]) {
+        if ( (willCollide[1]["collisionType"]==='player1') || 
+            (willCollide[1]["collisionType"]==='banderMember1') || 
+            (willCollide[1]["collisionType"]==='banderMember2') || 
+            (willCollide[1]["collisionType"]==='banderMember3') || 
+            (willCollide[1]["collisionType"]==='banderMember4') ) {
+                console.log(willCollide[1]["collisionType"]);
+                bounceBack=true;
+            }
+            else {
+                bandMember.lastDirChange=0;
+            }
+    }
+
+    if (bounceBack) {
+            
+        if (bandMember.direction==='S') newPosY = bandMember.posY - bandMember.speed*BOUNCEBACK_FACTOR;
+        if (bandMember.direction==='N') newPosY = bandMember.posY + bandMember.speed*BOUNCEBACK_FACTOR;
+        if (bandMember.direction==='E') newPosX = bandMember.posX - bandMember.speed*BOUNCEBACK_FACTOR;
+        if (bandMember.direction==='W') newPosX = bandMember.posX + bandMember.speed*BOUNCEBACK_FACTOR;
+        
+        stepwiseCollisionXY[0]=currentPosX;
+        stepwiseCollisionXY[1]=currentPosY;
+        const willCollide=checkCollisions(bandMember, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
+    }
+ 
+    if (bandMember.direction==='N') bandMember.posY = stepwiseCollisionXY[1];
+    if (bandMember.direction==='S') bandMember.posY = stepwiseCollisionXY[1];
+    if (bandMember.direction==='W') bandMember.posX = stepwiseCollisionXY[0];
+    if (bandMember.direction==='E') bandMember.posX = stepwiseCollisionXY[0];
 
 }
 
@@ -651,8 +753,8 @@ function checkCollisions(gameCharacter, currentPosX, currentPosY, newPosX, newPo
             stepwiseCollisionXY[0]=stepwiseX;
             stepwiseCollisionXY[1]=newPosY;
             // console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
-            if (collisionResults.isAllowed) return false;
-            else return true;
+            if (collisionResults.isAllowed) return [false,collisionResults];
+            else return [true,collisionResults];
         }
         else {
             let stepwiseX=currentPosX;
@@ -665,8 +767,8 @@ function checkCollisions(gameCharacter, currentPosX, currentPosY, newPosX, newPo
             }
             stepwiseCollisionXY[0]=stepwiseX;
             stepwiseCollisionXY[1]=newPosY;
-            if (collisionResults.isAllowed) return false;
-            else return true;
+            if (collisionResults.isAllowed) return [false,collisionResults];
+            else return [true,collisionResults];
         }
     }
     else if (currentPosY-newPosY!==0) {
@@ -683,8 +785,8 @@ function checkCollisions(gameCharacter, currentPosX, currentPosY, newPosX, newPo
             stepwiseCollisionXY[0]=newPosX;
             stepwiseCollisionXY[1]=stepwiseY;
             // console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
-            if (collisionResults.isAllowed) return false;
-            else return true;
+            if (collisionResults.isAllowed) return [false,collisionResults];
+            else return [true,collisionResults];
         }
         else {
             let stepwiseY=currentPosY;
@@ -697,8 +799,8 @@ function checkCollisions(gameCharacter, currentPosX, currentPosY, newPosX, newPo
             }
             stepwiseCollisionXY[0]=newPosX;
             stepwiseCollisionXY[1]=stepwiseY;
-            if (collisionResults.isAllowed) return false;
-            else return true;
+            if (collisionResults.isAllowed) return [false,collisionResults];
+            else return [true,collisionResults];
         }
 
     }
@@ -767,7 +869,7 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
     if ( (gameCharacter.id!==player1.id) && (player1.health>0) && 
         (collides(posX, posY, width, height, player1.posX+16, player1.posY+12, 32, 52)) ) {
         collisionResults.collision=true;
-        collisionResults.collisionType="bandMember1";
+        collisionResults.collisionType="player1";
         collisionResults.isAllowed=false;
         return;
     }
@@ -1168,6 +1270,131 @@ else {
 
 movePlayer1();
 
+// Check to see if any band members should be dead
+
+if (bandMember1.health<=0) {
+    bandMember1.health=0;
+    bandMember1.state='dead';
+    bandMember1.imageState='Die';    
+}
+
+if (bandMember2.health<=0) {
+    bandMember2.health=0;
+    bandMember2.state='dead';
+    bandMember2.imageState='Die';    
+}
+
+if (bandMember3.health<=0) {
+    bandMember3.health=0;
+    bandMember3.state='dead';
+    bandMember3.imageState='Die';    
+}
+
+if (bandMember4.health<=0) {
+    bandMember4.health=0;
+    bandMember4.state='dead';
+    bandMember4.imageState='Die';    
+}
+
+// Check to see if any band members should change in or out of the follow state
+
+if ( (bandMember1.state==='follow') && (distanceBetweenCharacters(player1, bandMember1)>FOLLOW_DISTANCE) ) {
+    bandMember1.state='wander';
+}
+else if ( (bandMember1.state!=='follow') && (distanceBetweenCharacters(player1, bandMember1)<FOLLOW_DISTANCE) ) {
+    bandMember1.state='follow';
+}
+
+if ( (bandMember2.state==='follow') && (distanceBetweenCharacters(player1, bandMember2)>FOLLOW_DISTANCE) ) {
+    bandMember2.state='wander';
+}
+else if ( (bandMember2.state!=='follow') && (distanceBetweenCharacters(player1, bandMember2)<FOLLOW_DISTANCE) ) {
+    bandMember2.state='follow';
+}
+
+if ( (bandMember3.state==='follow') && (distanceBetweenCharacters(player1, bandMember3)>FOLLOW_DISTANCE) ) {
+    bandMember3.state='wander';
+}
+else if ( (bandMember3.state!=='follow') && (distanceBetweenCharacters(player1, bandMember3)<FOLLOW_DISTANCE) ) {
+    bandMember3.state='follow';
+}
+
+if ( (bandMember4.state==='follow') && (distanceBetweenCharacters(player1, bandMember4)>FOLLOW_DISTANCE) ) {
+    bandMember4.state='wander';
+}
+else if ( (bandMember4.state!=='follow') && (distanceBetweenCharacters(player1, bandMember4)<FOLLOW_DISTANCE) ) {
+    bandMember4.state='follow';
+}
+
+// Process band members that are in the follow state
+
+if (bandMember1.state==='follow') {
+    const direction=followDirection(player1, bandMember1);
+    bandMember1.direction=direction;
+    bandMember1.imageState=directionToImageState[direction];
+    moveBandMember(bandMember1);
+}
+if (bandMember2.state==='follow') {
+    const direction=followDirection(player1, bandMember2);
+    bandMember2.direction=direction;
+    bandMember2.imageState=directionToImageState[direction];
+    moveBandMember(bandMember2);
+}
+if (bandMember3.state==='follow') {
+    const direction=followDirection(player1, bandMember3);
+    bandMember3.direction=direction;
+    bandMember3.imageState=directionToImageState[direction];
+    moveBandMember(bandMember3);
+}
+if (bandMember4.state==='follow') {
+    const direction=followDirection(player1, bandMember4);
+    bandMember4.direction=direction;
+    bandMember4.imageState=directionToImageState[direction];
+    moveBandMember(bandMember4);
+}
+
+
+// Process the band members that are in the wander state
+
+if (bandMember1.state==='wander') {
+    if ( (currentTime-bandMember1.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY )
+    {
+        const randomDirection = ['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
+        bandMember1.direction=randomDirection;
+        bandMember1.imageState=directionToImageState[randomDirection];
+    }    
+    moveBandMember(bandMember1);
+}
+
+if (bandMember2.state==='wander') {
+    if ( (currentTime-bandMember2.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY )
+    {
+        const randomDirection = ['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
+        bandMember2.direction=randomDirection;
+        bandMember2.imageState=directionToImageState[randomDirection];
+    }    
+    moveBandMember(bandMember2);
+}
+
+if (bandMember3.state==='wander') {
+    if ( (currentTime-bandMember3.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY )
+    {
+        const randomDirection = ['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
+        bandMember3.direction=randomDirection;
+        bandMember3.imageState=directionToImageState[randomDirection];
+    }    
+    moveBandMember(bandMember3);
+}
+
+if (bandMember4.state==='wander') {
+    if ( (currentTime-bandMember4.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY )
+    {
+        const randomDirection = ['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
+        bandMember4.direction=randomDirection;
+        bandMember4.imageState=directionToImageState[randomDirection];
+    }    
+    moveBandMember(bandMember4);
+}
 
 
 // Next, update animations as necessary
