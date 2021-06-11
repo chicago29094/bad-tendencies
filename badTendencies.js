@@ -879,7 +879,7 @@ function moveBandMember(bandMember) {
             (willCollide[1]["collisionType"]==='banderMember4') ) {
                 //console.log(willCollide[1]["collisionType"]);
                 bounceBack=true;
-                bandMember.health=bandMember.health-2;
+                // bandMember.health=bandMember.health-2;
             }
             else {
                 bandMember.lastDirChange=0;
