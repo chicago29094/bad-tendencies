@@ -64,8 +64,8 @@ const bandMemberCharacters=[
         "party" : 0,
         "speed" : 5,
         "image" : {
-            "thumbnail" : '/assets/bandmember_262_128.png',
-            "src": '/assets/bandmember_262_64x64.png',
+            "thumbnail" : './assets/bandmember_262_128.png',
+            "src": './assets/bandmember_262_64x64.png',
             "Walk Left": [0, 9, 0],  // Sprite Row, Total Frames, Current Frame
             "Walk Right": [1, 9, 0],  
             "Walk Down": [0, 9, 0],
@@ -91,8 +91,8 @@ const bandMemberCharacters=[
         "party" : 0,
         "speed" : 5,
         "image" : {
-            "thumbnail" : '/assets/bandmember_236_128.png',
-            "src": '/assets/bandmember_236_64x64.png',
+            "thumbnail" : './assets/bandmember_236_128.png',
+            "src": './assets/bandmember_236_64x64.png',
             "Walk Left": [0, 7, 0],  // Sprite Row, Total Frames, Current Frame
             "Walk Right": [1, 7, 0],  
             "Walk Down": [0, 7, 0],
@@ -118,8 +118,8 @@ const bandMemberCharacters=[
         "party" : 0,
         "speed" : 5,
         "image" : {
-            "thumbnail" : '/assets/bandmember_011_128.png',
-            "src": '/assets/bandmember_011_64x64.png',
+            "thumbnail" : './assets/bandmember_011_128.png',
+            "src": './assets/bandmember_011_64x64.png',
             "Walk Left": [0, 9, 0],  // Sprite Row, Total Frames, Current Frame
             "Walk Right": [1, 9, 0],  
             "Walk Down": [0, 9, 0],
@@ -145,8 +145,8 @@ const bandMemberCharacters=[
         "party" : 0,
         "speed" : 5,
         "image" : {
-            "thumbnail" : '/assets/bandmember_003_128.png',
-            "src": '/assets/bandmember_003_64x64.png',
+            "thumbnail" : './assets/bandmember_003_128.png',
+            "src": './assets/bandmember_003_64x64.png',
             "Walk Left": [0, 9, 0],  // Sprite Row, Total Frames, Current Frame
             "Walk Right": [1, 9, 0],  
             "Walk Down": [0, 9, 0],
@@ -174,8 +174,8 @@ const playerCharacters =[
         "health" : 100,
         "speed" : 8,
         "image" : {
-                    "thumbnail" : '/assets/player_001_128.png',
-                    "src": '/assets/player_001_64x64.png',
+                    "thumbnail" : './assets/player_001_128.png',
+                    "src": './assets/player_001_64x64.png',
                     "Walk Left": [0, 9, 0],  // Sprite Row, Total Frames, Current Frame
                     "Walk Right": [1, 9, 0],  
                     "Walk Down": [0, 9, 0],
@@ -201,9 +201,9 @@ Game Level Definitions
 ===========================================================================*/
 
 // const playFieldAssets = {
-//     "W" : `url('/assets/wall_6.png') 0px 0px`,
-//     " " : `url('/assets/floor_3.png') 0px 0px`,
-//     "S" : `url('/assets/exit_4.png') 0px 0px`,
+//     "W" : `url('./assets/wall_6.png') 0px 0px`,
+//     " " : `url('./assets/floor_3.png') 0px 0px`,
+//     "S" : `url('./assets/exit_4.png') 0px 0px`,
 // }
 
 const playFieldAssets = {
@@ -728,7 +728,7 @@ function displayModalDialog(style, target, width, height, htmlMessage) {
     if (width!==0)  modalWindow.style.width=width;
     if (height!==0) modalWindow.style.height=height;
     
-    modalWindow.innerHTML = `<div class="close-modal"><img src="/assets/skull_04.png"></div>`;
+    modalWindow.innerHTML = `<div class="close-modal"><img src="./assets/skull_04.png"></div>`;
     modalWindow.innerHTML = modalWindow.innerHTML + htmlMessage;
     underModal.appendChild(modalWindow);
 
@@ -1425,10 +1425,10 @@ function displayCharacterStatus(action) {
             <div class="bt-character-outer">
                 <img src="${bandMember1.image.thumbnail}" alt="Band Member 1" class="bt-character">
                 <div class="bt-character-status-health">                    
-                    <img src="/assets/greenbar.png" class="health-bar">
+                    <img src="./assets/greenbar.png" class="health-bar">
                 </div>
                 <div class="bt-character-status-party">
-                    <img src="/assets/redbar.png" class="party-bar">
+                    <img src="./assets/redbar.png" class="party-bar">
                 </div>
                 <p class="bt-character">${bandMember1.name}</p>                
             </div>`;
@@ -1437,10 +1437,10 @@ function displayCharacterStatus(action) {
             <div class="bt-character-outer">
                 <img src="${bandMember2.image.thumbnail}" alt="Band Member 2" class="bt-character">
                 <div class="bt-character-status-health">                    
-                    <img src="/assets/greenbar.png" class="health-bar">
+                    <img src="./assets/greenbar.png" class="health-bar">
                 </div>
                 <div class="bt-character-status-party">
-                    <img src="/assets/redbar.png" class="party-bar">
+                    <img src="./assets/redbar.png" class="party-bar">
                 </div>
                 <p class="bt-character">${bandMember2.name}</p>
             </div>`;
@@ -1449,10 +1449,10 @@ function displayCharacterStatus(action) {
             <div class="bt-character-outer">
                 <img src="${bandMember3.image.thumbnail}" alt="Band Member 3" class="bt-character">
                 <div class="bt-character-status-health">                    
-                    <img src="/assets/greenbar.png" class="health-bar">
+                    <img src="./assets/greenbar.png" class="health-bar">
                 </div>
                 <div class="bt-character-status-party">
-                    <img src="/assets/redbar.png" class="party-bar">
+                    <img src="./assets/redbar.png" class="party-bar">
                 </div>
                 <p class="bt-character">${bandMember3.name}</p>
             </div>`;
@@ -1461,10 +1461,10 @@ function displayCharacterStatus(action) {
             <div class="bt-character-outer">
                 <img src="${bandMember4.image.thumbnail}" alt="Band Member 4" class="bt-character">
                 <div class="bt-character-status-health">                    
-                    <img src="/assets/greenbar.png" class="health-bar">
+                    <img src="./assets/greenbar.png" class="health-bar">
                 </div>
                 <div class="bt-character-status-party">
-                    <img src="/assets/redbar.png" class="party-bar">
+                    <img src="./assets/redbar.png" class="party-bar">
                 </div>
                 <p class="bt-character">${bandMember4.name}</p>
             </div>`;
@@ -1473,7 +1473,7 @@ function displayCharacterStatus(action) {
             <div class="bt-character-outer">
                 <img src="${player1.image.thumbnail}" alt="Player 1" class="bt-character">
                 <div class="bt-character-status-health">
-                    <img src="/assets/greenbar.png" class="health-bar">
+                    <img src="./assets/greenbar.png" class="health-bar">
                 </div>
                 <p class="bt-character">${player1.name}</p>
             </div>`;

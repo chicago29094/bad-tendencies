@@ -40,7 +40,7 @@
 
 body {
     background-color: #000000;
-    background: url('/assets/city_1.jpg');
+    background: url('./assets/city_1.jpg');
 }
 
 
@@ -112,17 +112,17 @@ body {
 
 .playfield-wall {
     background-color: #000000;
-    background: url('/assets/wall_6.png') 0px 0px;
+    background: url('./assets/wall_6.png') 0px 0px;
 }
 
 .playfield-floor {
     background-color: #000000;
-    background: url('/assets/floor_3.png') 0px 0px;
+    background: url('./assets/floor_3.png') 0px 0px;
 }
 
 .playfield-exit {
     background-color: #000000;
-    background: url('/assets/exit_4.png') 0px 0px;
+    background: url('./assets/exit_4.png') 0px 0px;
 }
 
 
@@ -293,7 +293,7 @@ div.bt-character-status-party, div.bt-character-status-health  {
     margin: 0px 0px 0px 0px;
     padding: 0px;
     /* background: #000000;
-    background: url('/assets/bar_background.png') 0px 0px; */
+    background: url('./assets/bar_background.png') 0px 0px; */
 }
 
 img.health-bar, img.party-bar {
