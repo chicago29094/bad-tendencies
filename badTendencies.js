@@ -258,6 +258,8 @@ class BandMember {
         gameDom["gameContainerPlayfield"].appendChild(this._imageDiv);        
     }
 
+    get id() { return this._id; }
+
     get name() { return this._name; }
     set name(setName) { this._name=setName; }
 
@@ -361,6 +363,8 @@ class Player {
         this._imageDiv.appendChild(this._imagePtag);
         gameDom["gameContainerPlayfield"].appendChild(this._imageDiv);
     }
+
+    get id() { return this._id; }
 
     get name() { return this._name; }
     set name(setName) { this._name=setName; }
@@ -577,7 +581,7 @@ function movePlayer1() {
     
     stepwiseCollisionXY[0]=currentPosX;
     stepwiseCollisionXY[1]=currentPosY;
-    const willCollide=checkCollisions(currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
+    const willCollide=checkCollisions(player1, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
 
     if (player1.direction==='N') player1.posY = stepwiseCollisionXY[1];
     if (player1.direction==='S') player1.posY = stepwiseCollisionXY[1];
@@ -591,7 +595,7 @@ function movePlayer1() {
 Collision Detection
 ===========================================================================*/
 
-function checkCollisions(currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY) {
+function checkCollisions(gameCharacter, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY) {
 
     // console.log("Here:00000");
     let stepwiseX=0;
@@ -609,7 +613,7 @@ function checkCollisions(currentPosX, currentPosY, newPosX, newPosY, stepwiseCol
             // console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
             while ( collisionResults.isAllowed && (stepwiseX<newPosX) )  {
                 stepwiseX++;
-                checkPlayfieldCollisions(stepwiseX+16, currentPosY+8, 32, 52, collisionResults);
+                checkPlayfieldCollisions(gameCharacter, stepwiseX+16, currentPosY+12, 32, 52, collisionResults);
             }
             if (!collisionResults.isAllowed) {
                 stepwiseX--;
@@ -624,7 +628,7 @@ function checkCollisions(currentPosX, currentPosY, newPosX, newPosY, stepwiseCol
             let stepwiseX=currentPosX;
             while ( collisionResults.isAllowed && (stepwiseX>newPosX) ) {
                 stepwiseX--;
-                checkPlayfieldCollisions(stepwiseX+16, currentPosY+8, 32, 52, collisionResults);
+                checkPlayfieldCollisions(gameCharacter, stepwiseX+16, currentPosY+12, 32, 52, collisionResults);
             }
             if (!collisionResults.isAllowed) {
                 stepwiseX++;
@@ -641,7 +645,7 @@ function checkCollisions(currentPosX, currentPosY, newPosX, newPosY, stepwiseCol
             // console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
             while ( collisionResults.isAllowed && (stepwiseY<newPosY) )  {
                 stepwiseY++;
-                checkPlayfieldCollisions(currentPosX+16, stepwiseY+8, 32, 52, collisionResults);
+                checkPlayfieldCollisions(gameCharacter, currentPosX+16, stepwiseY+12, 32, 52, collisionResults);
             }
             if (!collisionResults.isAllowed) {
                 stepwiseY--;
@@ -656,7 +660,7 @@ function checkCollisions(currentPosX, currentPosY, newPosX, newPosY, stepwiseCol
             let stepwiseY=currentPosY;
             while ( collisionResults.isAllowed && (stepwiseY>newPosY) ) {
                 stepwiseY--;
-                checkPlayfieldCollisions(currentPosX+16, stepwiseY+8, 32, 52, collisionResults);
+                checkPlayfieldCollisions(gameCharacter, currentPosX+16, stepwiseY+12, 32, 52, collisionResults);
             }
             if (!collisionResults.isAllowed) {
                 stepwiseY++;
@@ -666,8 +670,6 @@ function checkCollisions(currentPosX, currentPosY, newPosX, newPosY, stepwiseCol
             if (collisionResults.isAllowed) return false;
             else return true;
         }
-
-
 
     }
     else {
@@ -681,7 +683,7 @@ function checkCollisions(currentPosX, currentPosY, newPosX, newPosY, stepwiseCol
 // Check Play Field Collisions
 ====================================*/
 
-function checkPlayfieldCollisions(posX, posY, width, height, collisionResults) {
+function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, collisionResults) {
 
     collisionResults.collision=false;
     collisionResults.collisionType="";
@@ -700,6 +702,7 @@ function checkPlayfieldCollisions(posX, posY, width, height, collisionResults) {
     if (gameGridEndColumn>31) gameGridEndColumn=31;
 
     // console.log(`${gameGridStartColumn} ${gameGridEndColumn} ${gameGridStartRow} ${gameGridEndRow} `);
+    // Iterate through surrounding playfield squares to see if we will collide with a wall
 
     for (let row=gameGridStartRow; row<=gameGridEndRow; row++) {
         for (let col=gameGridStartColumn; col<=gameGridEndColumn; col++) {
@@ -713,20 +716,75 @@ function checkPlayfieldCollisions(posX, posY, width, height, collisionResults) {
             gridWidth=32;
             gridHeight=32;
             
-            if (posX < (gridPosX + gridWidth)  && (posX + width) > gridPosX &&
-                posY < (gridPosY + gridHeight) && (posY + height) > gridPosY) {
-                    if (gridSquare.classList.contains('playfield-wall')) {
+            if (collides(posX, posY, width, height, gridPosX, gridPosY, gridWidth, gridHeight)) {
+                if (gridSquare.classList.contains('playfield-wall')) {
                     // gridSquare.style.borderTop="1px solid #00ff00";
                     collisionResults.collision=true;
                     collisionResults.collisionType="Wall";
                     collisionResults.isAllowed=false;
                     return;
                 }
-
             }
         }
     }
+
+    // console.log("Here:00000");
+    // console.log(posX, posY, width, height, bandMember1.posX, bandMember1.posY, 32, 52);
+    // console.log(collides(posX, posY, width, height, bandMember1.posX, bandMember1.posY, 32, 52));
+
+    // Next check to see if this movement will collide with any other game character 
+
+    if ( (gameCharacter.id!==player1.id) && (player1.health>0) && 
+        (collides(posX, posY, width, height, player1.posX+16, player1.posY+12, 32, 52)) ) {
+        collisionResults.collision=true;
+        collisionResults.collisionType="bandMember1";
+        collisionResults.isAllowed=false;
+        return;
+    }
+    if ( (gameCharacter.id!==bandMember1.id) && (bandMember1.health>0) &&  
+        (collides(posX, posY, width, height, bandMember1.posX+16, bandMember1.posY+12, 32, 52)) ) {
+        collisionResults.collision=true;
+        collisionResults.collisionType="bandMember1";
+        collisionResults.isAllowed=false;
+        return;
+    }
+    if ( (gameCharacter.id!==bandMember2.id) && (bandMember2.health>0) && 
+        (collides(posX, posY, width, height, bandMember2.posX+16, bandMember2.posY+12, 32, 52)) ) {
+        collisionResults.collision=true;
+        collisionResults.collisionType="bandMember2";
+        collisionResults.isAllowed=false;
+        return;
+    }
+    if ( (gameCharacter.id!==bandMember3.id) && (bandMember3.health>0) && 
+        (collides(posX, posY, width, height, bandMember3.posX+16, bandMember3.posY+12, 32, 52)) ) {
+        collisionResults.collision=true;
+        collisionResults.collisionType="bandMember3";
+        collisionResults.isAllowed=false;
+        return;
+    }
+    if ( (gameCharacter.id!==bandMember4.id) && (bandMember4.health>0) && 
+        (collides(posX, posY, width, height, bandMember4.posX+16, bandMember4.posY+12, 32, 52)) ) {
+        collisionResults.collision=true;
+        collisionResults.collisionType="bandMember4";
+        collisionResults.isAllowed=false;
+        return;
+    }
 }
+
+
+// Check overlap collision between two bounding boxes, returns boolean true upon collision
+
+function collides(posX1, posY1, width1, height1, posX2, posY2, width2, height2) {
+
+    if (posX1 < (posX2 + width2)  && (posX1 + width1) > posX2 &&
+    posY1 < (posY2 + height2) && (posY1 + height1) > posY2) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
 
 
 
@@ -875,11 +933,12 @@ function startNewGame(event) {
 
     if (currentLevel===1) currentGameLevel=gameLevel1;
     displayGameBoard(currentGameLevel);
-    player1 = new Player(playerCharacters[0], player1Name, 250, 250);
+
+    player1 = new Player(playerCharacters[0], player1Name, 290, 250);
     bandMember1 = new BandMember(bandMemberCharacters[0], 250, 250);
-    bandMember2 = new BandMember(bandMemberCharacters[1], 350, 350);
-    bandMember3 = new BandMember(bandMemberCharacters[2], 450, 450);
-    bandMember4 = new BandMember(bandMemberCharacters[3], 550, 550);
+    bandMember2 = new BandMember(bandMemberCharacters[1], 320, 350);
+    bandMember3 = new BandMember(bandMemberCharacters[2], 450, 420);
+    bandMember4 = new BandMember(bandMemberCharacters[3], 600, 550);
 
     displayCharacterStatus("initialize");
 
