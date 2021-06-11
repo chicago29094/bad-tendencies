@@ -3,7 +3,7 @@
 Global Game Settings
 ===========================================================================*/
 
-const gameStatus='Splash Screen';
+let gameStatus='Splash Screen';
 const BANDMEMBER_DEFAULT_STATE="wander";
 const PLAYER_DEFAULT_STATE="chase";
 const ANIMATION_FRAME_DELAY=100; // milliseconds
@@ -240,6 +240,7 @@ class BandMember {
         this._posX=positionX;
         this._posY=positionY;
         this._state=BANDMEMBER_DEFAULT_STATE;
+        this._lastStateChamge=Date.now();
         this._image=Object.assign({}, bandMemberCharacter.image);
 
         this._imageDiv=document.createElement("div");
@@ -257,6 +258,8 @@ class BandMember {
         this._imageDiv.appendChild(this._imagePtag);
         gameDom["gameContainerPlayfield"].appendChild(this._imageDiv);        
     }
+
+    get lastStateChange() { return this._lastStateChange; }
 
     get id() { return this._id; }
 
@@ -295,7 +298,13 @@ class BandMember {
     }
 
     get state() { return this._state; }
-    set state(setState) { this._state=setState; }
+
+    set state(setState) { 
+        if (setState!==this._state) {
+            this._lastStateChange=Date.now();
+        }
+        this._state=setState; 
+    }
 
     get image() { return this._image; }
 
@@ -319,7 +328,13 @@ class BandMember {
         if ( (currentTime-lastUpdate) > ANIMATION_FRAME_DELAY ) {
             this._image.lastUpdate=currentTime;
 
-            if (curCol===maxCol) curCol=0;
+            if (curCol===maxCol) {
+                if ( (this._image["imageState"]!=='Die') && 
+                    (this._image["imageState"]!=='Shoot Left') && 
+                    (this._image["imageState"]!=='Shoot Right') ) {
+                        curCol=0;
+                }
+            }
             else curCol=curCol+1;
 
             this._image[this._image["imageState"]][2]=curCol;
@@ -346,6 +361,7 @@ class Player {
         this._posX=positionX;
         this._posY=positionY;
         this._state=PLAYER_DEFAULT_STATE;
+        this._lastStateChamge=Date.now();        
         this._image=Object.assign({}, playerCharacter.image);
 
         this._imageDiv=document.createElement("div");
@@ -363,6 +379,8 @@ class Player {
         this._imageDiv.appendChild(this._imagePtag);
         gameDom["gameContainerPlayfield"].appendChild(this._imageDiv);
     }
+
+    get lastStateChange() { return this._lastStateChange; }
 
     get id() { return this._id; }
 
@@ -398,7 +416,12 @@ class Player {
     }
 
     get state() { return this._state; }
-    set state(setState) { this._state=setState; }
+    set state(setState) { 
+        if (setState!==this._state) {
+            this._lastStateChange=Date.now();
+        }        
+        this._state=setState; 
+    }
 
     get image() { return this._image; }
 
@@ -420,9 +443,16 @@ class Player {
         let newPosY=0;
 
         if ( (currentTime-lastUpdate) > ANIMATION_FRAME_DELAY ) {
+
             this._image.lastUpdate=currentTime;
 
-            if (curCol===maxCol) curCol=0;
+            if (curCol===maxCol) {
+                if ( (this._image["imageState"]!=='Die') && 
+                    (this._image["imageState"]!=='Shoot Left') && 
+                    (this._image["imageState"]!=='Shoot Right') ) {
+                        curCol=0;
+                }
+            }
             else curCol=curCol+1;
 
             this._image[this._image["imageState"]][2]=curCol;
@@ -1052,7 +1082,26 @@ function displayCharacterStatus(action) {
 ===========================*/
 
 function gameOver() {
+    const divSplash = document.querySelector('#outerSplash');
 
+    //gameContainer.removeChild(divSplash);
+
+    const htmlMessage = `<div class="game-over">
+        <h3>Game Over</h3>
+    
+        <form>
+        <label for="playerName">Player's Name</labeL>
+        <input type="text" class="nameInput" name="player1" value="" placeholder="Enter Your Name">
+
+        <button id="startGameButton">Start New Game</button>
+        </form>
+    </div>
+    `;
+
+    displayModalDialog("", body, "500px", "", htmlMessage);
+
+    const starGameButton = document.querySelector('#startGameButton');
+    startGameButton.addEventListener('click', startNewGame)
 }
 
 /*==========================================================================
@@ -1061,10 +1110,32 @@ Main Game Loop
 
 function mainGameLoop(event) {
 
+const currentTime=Date.now();
+
 // console.log("Starting mainGameLoop");
 
 // Update the health and other status items of the game characters
 displayCharacterStatus("update");
+
+// Check is the player is dead
+
+if (player1.health<=0) {
+    player1.health=0;
+    player1.state='dead';
+    player1.imageState='Die';
+    player1.incrementImageAnimation();
+
+    if ( (currentTime-player1.lastStateChange)>3000 )
+    {
+        gameStatus="Game Over";
+        clearInterval(mainGameLoopIntervalId);
+        gameOver();
+        return;
+    }
+    else {
+        return;
+    }
+}
 
 
 // Next check the player's keyboard actions
@@ -1096,6 +1167,8 @@ else {
 }
 
 movePlayer1();
+
+
 
 // Next, update animations as necessary
 player1.incrementImageAnimation();
