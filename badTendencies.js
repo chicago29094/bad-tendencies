@@ -56,6 +56,72 @@ const gameDom = [] ; // Use an array to cache and reference commonly accessed DO
 Band Member Characters
 ===========================================================================*/
 
+const mediaSoundsLibrary = [
+    {
+        "music_score" : {
+            "main" : './sounds/clearside_sandblaster.mp3',
+        }
+    },
+    {
+        "sound_effect" : {
+            "coins" :  './sounds/sfx_coin_cluster3.wav',
+            "death1" :  './sounds/sfx_deathscream_human5.wav',
+            "death2" :  './sounds/sfx_deathscream_human14.wav',
+            "shot1" :  './sounds/sfx_exp_short_hard5.wav',
+            "shot2" :  './sounds/sfx_exp_short_soft3.wav',
+            "shot3" :  './sounds/sfx_exp_shortest_hard7.wav',
+            "impact4" :  './sounds/sfx_exp_various4.wav',
+            "low_health" :  './sounds/sfx_lowhealth_alarmloop3.wav',
+            "steps1" :  './sounds/sfx_movement_footstepsloop4_fast.wav',
+            "steps2" :  './sounds/sfx_movement_footstepsloop4_slow.wav',
+            "levelchange" :  './sounds/sfx_sound_neutral7.wav',
+            "levelchange" :  './sounds/sfx_sound_shutdown1.wav',
+            "fanfare1" :  './sounds/sfx_sounds_fanfare1.wav',
+            "impact1" :  './sounds/sfx_sounds_impact1.wav',
+            "impact6" :  './sounds/sfx_sounds_impact6.wav',
+            "pause" :  './sounds/sfx_sounds_pause4_in.wav',
+            "shotgun" :  './sounds/sfx_weapon_shotgun3.wav',         
+        }
+    },
+    {
+        "player" : { 
+            "Walk Left": './sounds/sfx_.wav',
+            "Walk Right":  './sounds/sfx_.wav',
+            "Walk Down":  './sounds/sfx_.wav',
+            "Walk Up":  './sounds/sfx_.wav',
+            "Idle Left":  './sounds/sfx_.wav',
+            "Idle Right":  './sounds/sfx_.wav',
+            "Die":  './sounds/sfx_.wav',
+            "Dizzy":  './sounds/sfx_.wav',
+            "Hurt":  './sounds/sfx_.wav',
+            "Throwing Left":  './sounds/sfx_.wav',
+            "Throwing Right":  './sounds/sfx_.wav',
+            "Shoot Left":  './sounds/sfx_.wav',
+            "Shoot Right": './sounds/sfx_.wav',
+        }
+    },
+    {
+        "bandmember" : { 
+            "Walk Left": './sounds/sfx_.wav',
+            "Walk Right":  './sounds/sfx_.wav',
+            "Walk Down":  './sounds/sfx_.wav',
+            "Walk Up":  './sounds/sfx_.wav',
+            "Idle Left":  './sounds/sfx_.wav',
+            "Idle Right":  './sounds/sfx_.wav',
+            "Die":  './sounds/sfx_.wav',
+            "Dizzy":  './sounds/sfx_.wav',
+            "Hurt":  './sounds/sfx_.wav',
+            "Throwing Left":  './sounds/sfx_.wav',
+            "Throwing Right":  './sounds/sfx_.wav',
+            "Shoot Left":  './sounds/sfx_.wav',
+            "Shoot Right": './sounds/sfx_.wav',
+        }
+    },
+
+];
+
+
+
 const bandMemberCharacters=[
     {
         "name" : 'AXL',
