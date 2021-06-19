@@ -3,14 +3,18 @@
 Global Game Settings
 ===========================================================================*/
 
-let gameStatus='Splash Screen';
 const BANDMEMBER_DEFAULT_STATE="Wander";
 const BANDMEMBER_STATE_CHANGE_DELAY=4000;
 const BANDMEMBER_DIR_CHANGE_DELAY=4000;
+const BANDMEMBER_FOLLOW_CHANGE_DELAY=1000;
+const BANDMEMBER_PID_MAXHISTORY=20;  // Proportional, Integral, Differential Motion Control
 const FOLLOW_DISTANCE=200;
 const BOUNCEBACK_FACTOR=3;
 const PLAYER_DEFAULT_STATE="Chase";
 const ANIMATION_FRAME_DELAY=100; // milliseconds
+const SPLASH_SCREEN_DELAY=3000; // milliseconds
+
+let gameStatus='Splash Screen';
 let mainGameLoopIntervalID;
 let currentGameLevel="";
 let currentLevel=1;
@@ -50,6 +54,8 @@ let bandMember4 = {};
 
 const body = document.querySelector('body');
 const gameContainer = document.querySelector('#game-container');
+const mediaContainer = document.querySelector('#media-container');
+
 const gameDom = [] ; // Use an array to cache and reference commonly accessed DOM elements
 
 /*==========================================================================
@@ -85,36 +91,32 @@ const mediaSoundsLibrary = [
     },
     {
         "player" : { 
-            "Walk Left": './sounds/sfx_.wav',
-            "Walk Right":  './sounds/sfx_.wav',
-            "Walk Down":  './sounds/sfx_.wav',
-            "Walk Up":  './sounds/sfx_.wav',
-            "Idle Left":  './sounds/sfx_.wav',
-            "Idle Right":  './sounds/sfx_.wav',
-            "Die":  './sounds/sfx_.wav',
-            "Dizzy":  './sounds/sfx_.wav',
-            "Hurt":  './sounds/sfx_.wav',
-            "Throwing Left":  './sounds/sfx_.wav',
-            "Throwing Right":  './sounds/sfx_.wav',
-            "Shoot Left":  './sounds/sfx_.wav',
-            "Shoot Right": './sounds/sfx_.wav',
+            "Walk Left": './sounds/sfx_movement_footstepsloop4_fast.wav',
+            "Walk Right":  './sounds/sfx_movement_footstepsloop4_fast.wav',
+            "Walk Down":  './sounds/sfx_movement_footstepsloop4_fast.wav',
+            "Walk Up":  './sounds/sfx_movement_footstepsloop4_fast.wav',
+            "Die":  './sounds/sfx_deathscream_human14.wav',
+            "Dizzy":  './sounds/sfx_movement_ladder3loop.wav',
+            "Hurt":  './sounds/sfx_movement_ladder3loop.wav',
+            "Throwing Left":  './sounds/sfx_exp_various4.wav',
+            "Throwing Right":  './sounds/sfx_exp_various4.wav',
+            "Shoot Left":  './sounds/sfx_exp_short_hard5.wav',
+            "Shoot Right": './sounds/sfx_exp_short_hard5.wav',
         }
     },
     {
         "bandmember" : { 
-            "Walk Left": './sounds/sfx_.wav',
-            "Walk Right":  './sounds/sfx_.wav',
-            "Walk Down":  './sounds/sfx_.wav',
-            "Walk Up":  './sounds/sfx_.wav',
-            "Idle Left":  './sounds/sfx_.wav',
-            "Idle Right":  './sounds/sfx_.wav',
-            "Die":  './sounds/sfx_.wav',
-            "Dizzy":  './sounds/sfx_.wav',
-            "Hurt":  './sounds/sfx_.wav',
-            "Throwing Left":  './sounds/sfx_.wav',
-            "Throwing Right":  './sounds/sfx_.wav',
-            "Shoot Left":  './sounds/sfx_.wav',
-            "Shoot Right": './sounds/sfx_.wav',
+            "Walk Left": './sounds/sfx_movement_footstepsloop4_fast.wav',
+            "Walk Right":  './sounds/sfx_movement_footstepsloop4_fast.wav',
+            "Walk Down":  './sounds/sfx_movement_footstepsloop4_fast.wav',
+            "Walk Up":  './sounds/sfx_movement_footstepsloop4_fast.wav',
+            "Die":  './sounds/sfx_deathscream_human5.wav',
+            "Dizzy":  './sounds/sfx_movement_ladder3loop.wav',
+            "Hurt":  './sounds/sfx_movement_ladder3loop.wav',
+            "Throwing Left":  './sounds/sfx_exp_various4.wav',
+            "Throwing Right":  './sounds/sfx_exp_various4.wav',
+            "Shoot Left":  './sounds/sfx_weapon_shotgun3.wav',
+            "Shoot Right": './sounds/sfx_weapon_shotgun3.wav',
         }
     },
 
@@ -475,9 +477,13 @@ class BandMember {
         this._direction='';
         this._posX=positionX;
         this._posY=positionY;
+        this._lastPosX=positionX;
+        this._lastPosY=positionY;
         this._state=BANDMEMBER_DEFAULT_STATE;
         this._lastStateChange=Date.now();
-        this._lastDirChange=Date.now();        
+        this._lastDirChange=Date.now();     
+        this._PIDBuffer=[];  
+        this._PIDBufferIndex=0;
         this._image=Object.assign({}, bandMemberCharacter.image);
 
         this._imageDiv=document.createElement("div");
@@ -523,6 +529,7 @@ class BandMember {
     set posX(setPosX) { 
         this._posX=setPosX; 
         this._imageDiv.style.left=this._posX+"px";
+
     }
         
     get posY() { return this._posY; }
@@ -532,15 +539,14 @@ class BandMember {
     }
 
     get posXY() { return [this._posX, this.posY];}
-    set posXY([setPosX, setPosY]) { 
+    set posXY([setPosX, setPosY]) {         
         this._posX=setPosX; this._posY=setPosY; 
         this._imageDiv.style.left=this._posX+"px";
         this._imageDiv.style.top=this._posY+"px";
     }
-
+    
     get state() { return this._state; }
-
-    set state(setState) { 
+        set state(setState) { 
         if (setState!==this._state) {
             this._lastStateChange=Date.now();
         }
@@ -550,9 +556,9 @@ class BandMember {
             this._posY=-5000;
         }
     }
-
+    
     get image() { return this._image; }
-
+    
     get imageState() { return this._image["imageState"]}
     set imageState(setImageState) { 
         if (this._image["imageState"]!==setImageState) {
@@ -561,6 +567,25 @@ class BandMember {
             this._lastDirChange=Date.now();
         }
     } 
+    
+    updatePIDBuffer ()  { 
+        // Keep a history of last n movement differentials in a circular buffer
+        if (this._PIDBufferIndex===BANDMEMBER_PID_MAXHISTORY) { 
+                this._PIDBufferIndex=0;
+        }
+        this._PIDBuffer[this._PIDBufferIndex]=Math.sqrt( (this._posX-this._lastPosX)**2 + (this._posY-this._lastPosY)**2 );
+        this._lastPosX=this._posX;
+        this._lastPosY=this._posY;
+        this._PIDBufferIndex++;
+    }
+    
+     getPIDBufferDiffs() {
+        let totalPIDDiffs=0;
+        for (let i=0; i<this._PIDBuffer.length; i++) {
+            totalPIDDiffs=totalPIDDiffs+this._PIDBuffer[i];
+        }
+        return totalPIDDiffs;
+    }
 
     incrementImageAnimation() {
         const row=this._image[this._image["imageState"]][0];
@@ -760,9 +785,13 @@ function distanceBetweenCharacters(character1, character2) {
 // Return compass direction to follow player
 function followDirection(player, character) {
 
+    const currentTime=Date.now();
+    if ( (currentTime-character.lastDirChange)<BANDMEMBER_FOLLOW_CHANGE_DELAY ) {
+        return character.direction;
+    }
+
     let direction="";
-    if ( ( Math.abs(player.posX-character.posX) > Math.abs(player.posY-character.posY) ) && 
-       (Math.random()<0.6) ) {
+    if ( ( Math.abs(player.posX-character.posX) > Math.abs(player.posY-character.posY) )  ) {
         if (player.posX<character.posX) direction='W';
         else direction='E';
     }
@@ -771,9 +800,50 @@ function followDirection(player, character) {
         else direction='S';
     }
 
+    const totalDiffs = character.getPIDBufferDiffs();
+    console.log("totalDiffs", totalDiffs);
+    const diffRatio = (totalDiffs/BANDMEMBER_PID_MAXHISTORY*character.speed);
+    console.log(character, "diffRatio:", diffRatio);
+
+    if (Math.random()>diffRatio) {
+        direction=['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
+    }
+
     return direction;
     
 }
+
+// Initialize DOM and cache game sounds 
+
+function loadGameSounds() {
+
+    for ( [num, soundCategory] of Object.entries(mediaSoundsLibrary) ) {
+
+        for ( [soundType, mediaType] of Object.entries(soundCategory) )  {
+
+            for ( [sound, media] of Object.entries(mediaType) )  {
+
+                console.log(soundType, sound, media);
+
+                let soundDom={};
+                soundDom=document.createElement('audio');
+                mediaContainer.appendChild(soundDom);
+                let soundSource=document.createElement('source');
+                soundSource.setAttribute('src', media);
+                if (media.indexOf('wav')!==-1) soundSource.setAttribute('type', "audio/wav");
+                if (media.indexOf('mp3')!==-1) soundSource.setAttribute('type', "audio/mp3");
+                soundDom.appendChild(soundSource);  
+            }
+        }
+    }
+
+}
+
+loadGameSounds();
+
+// Play game sounds 
+
+
 
 /*==========================================================================
 Display Functions
@@ -1834,6 +1904,12 @@ bandMember1.incrementImageAnimation();
 bandMember2.incrementImageAnimation();
 bandMember3.incrementImageAnimation();
 bandMember4.incrementImageAnimation();
+
+// Next, update PID buffers
+bandMember1.updatePIDBuffer();
+bandMember2.updatePIDBuffer();
+bandMember3.updatePIDBuffer();
+bandMember4.updatePIDBuffer();
 
 
 // Cleared the cached Set of keyboard clicks.

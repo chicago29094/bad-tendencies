@@ -1,14 +1,25 @@
 {
     "cSpell.words": [
+        "alarmloop",
         "bandmember",
         "bt",
         "container",
+        "deathscream",
+        "fast",
+        "footstepsloop",
         "game",
         "gameover",
+        "human",
         "jonnyfear",
+        "levelchange",
+        "lowhealth",
+        "maxhistory",
+        "movement",
         "outer",
+        "pid",
         "playfield",
         "set",
+        "sfx",
         "unsober"
     ]
 }
