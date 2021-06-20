@@ -8,11 +8,20 @@ const BANDMEMBER_STATE_CHANGE_DELAY=4000;
 const BANDMEMBER_DIR_CHANGE_DELAY=4000;
 const BANDMEMBER_FOLLOW_CHANGE_DELAY=1000;
 const BANDMEMBER_PID_MAXHISTORY=20;  // Proportional, Integral, Differential Motion Control
+const BANDMEMBER_HEALTH_RECOVERY=1;
+const BANDMEMBER_PARTY_RECOVERY=1;
 const FOLLOW_DISTANCE=200;
 const BOUNCEBACK_FACTOR=3;
 const PLAYER_DEFAULT_STATE="Chase";
+const PLAYER_HEALTH_RECOVERY=1;
 const ANIMATION_FRAME_DELAY=100; // milliseconds
 const SPLASH_SCREEN_DELAY=3000; // milliseconds
+
+let GOOD_PLAYFIELD_OBJECT_DROP_RATE=20000; // milliseconds
+let BAD_PLAYFIELD_OBJECT_DROP_RATE=20000; // milliseconds
+let lastGoodDropTime=0;
+let lastBadDropTime=0;
+
 
 let gameStatus='Splash Screen';
 let mainGameLoopIntervalID;
@@ -611,6 +620,14 @@ class BandMember {
         this._lastPosY=this._posY;
         this._PIDBufferIndex++;
     }
+
+    updateVitals ()  { 
+        // Update the health and party vitals on each game loop
+        this._health=this._health+BANDMEMBER_HEALTH_RECOVERY;
+        if (this._health>100) this._health=100;
+        this._party=this._party-BANDMEMBER_PARTY_RECOVERY;
+        if (this._party<0) this._party=0;
+    }
     
      getPIDBufferDiffs() {
         let totalPIDDiffs=0;
@@ -739,6 +756,12 @@ class Player {
                 this._image["imageState"]=setImageState; 
                 this._image[setImageState][2]=0;
             }
+    }
+
+    updateVitals ()  { 
+        // Update the health vitals on each game loop
+        this._health=this._health+BANDMEMBER_HEALTH_RECOVERY;
+        if (this._health>100) this._health=100;
     }
 
     incrementImageAnimation() {
@@ -939,6 +962,66 @@ function displayGameBoard(level) {
         }
     }    
 }
+
+
+/*================================================
+// Randomly Drop and Display Playfield Objects
+=================================================*/
+
+function dropPlayfieldObject(updateType, when) {
+
+    let currentTime=Date.now();
+
+    if (!when || when!=='Now') {
+        if (updateType==="Good") {
+            if ((currentTime-lastGoodDropTime)<GOOD_PLAYFIELD_OBJECT_DROP_RATE) {
+                return;
+            }
+            else {
+                lastGoodDropTime=currentTime;
+            }
+        }
+        else if (updateType==="Bad") {
+            if ((currentTime-lastBadDropTime)<BAD_PLAYFIELD_OBJECT_DROP_RATE) {
+                return;
+            }
+            else {
+                lastBadDropTime=currentTime;
+            }
+        }
+        else {
+            return;
+        }
+    }
+
+    let tryY=Math.round(Math.random()*currentGameLevel.length);
+    let tryX=Math.round(Math.random()*currentGameLevel[tryY].length);
+
+    while ( currentGameLevel[tryY][tryX]!==' ' ) {
+
+        let tryY=Math.round(Math.random()*(currentGameLevel.length-1));
+        let tryX=Math.round(Math.random()*(currentGameLevel[tryY].length-1));
+    }
+
+    if (updateType==='Good') {
+        const playfieldObjectType = ['h', 'k'][Math.round(Math.random()*1)];
+    }
+    else {
+        const playfieldObjectType = ['a','b','c','l','m','n','o','p'][Math.round(Math.random()*7)];
+    }
+
+    console.log(playFieldObjectType);
+
+    const playfieldImage = document.createElement('img');
+    playfieldImage.setAttribute('class', "game-playfield-object");
+    playfieldImage.setAttribute('data-gst', playfieldObjectType);
+    playfieldImage.setAttribute('src', playFieldObjectImages[playfieldObjectType]);    
+    playfieldImage.style.position="absolute";
+    playfieldImage.style.left=tryX*32+"px";
+    playfieldImage.style.top=tryY*32+"px";
+    gamePlayfield.appendChild(playfieldImage);                 
+}
+
 
 /*==========================================================================
 Keyboard Detection
@@ -1944,6 +2027,16 @@ bandMember2.updatePIDBuffer();
 bandMember3.updatePIDBuffer();
 bandMember4.updatePIDBuffer();
 
+//Next, update player and band member health and party levels
+player1.updateVitals();
+bandMember1.updateVitals();
+bandMember2.updateVitals();
+bandMember3.updateVitals();
+bandMember4.updateVitals();
+
+// Randomly drop playFIeld objects onto game board
+dropPlayfieldObject("Good");
+dropPlayfieldObject("Bad");
 
 // Cleared the cached Set of keyboard clicks.
 currentKeysPressed.pressedKeys.clear();
