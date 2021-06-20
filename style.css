@@ -125,7 +125,10 @@
     background: url('./assets/exit_4.png') 0px 0px;
 }
 
-
+.playfield-pit {
+    background-color: #000000;
+    background: url('./assets/pit_01.png') 0px 0px;
+}
 p.player-ptag, p.bandmember-ptag {
     margin: 0;
     padding: 0;
