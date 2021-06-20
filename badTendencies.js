@@ -970,7 +970,11 @@ function displayGameBoard(level) {
 
 function dropPlayfieldObject(updateType, when) {
 
+    let playfieldObjectType="";
     let currentTime=Date.now();
+    let tryX=0;
+    let tryY=0;
+
 
     if (!when || when!=='Now') {
         if (updateType==="Good") {
@@ -994,23 +998,25 @@ function dropPlayfieldObject(updateType, when) {
         }
     }
 
-    let tryY=Math.round(Math.random()*currentGameLevel.length);
-    let tryX=Math.round(Math.random()*currentGameLevel[tryY].length);
+    tryY=(Math.round(Math.random()*(currentGameLevel.length-1)));
+    tryX=(Math.round(Math.random()*(currentGameLevel[tryY].length-1)));
+
+    console.log("Outer", tryX, tryY );
 
     while ( currentGameLevel[tryY][tryX]!==' ' ) {
-
-        let tryY=Math.round(Math.random()*(currentGameLevel.length-1));
-        let tryX=Math.round(Math.random()*(currentGameLevel[tryY].length-1));
+        tryY=Math.round(Math.random()*(currentGameLevel.length-1));
+        tryX=Math.round(Math.random()*(currentGameLevel[tryY].length-1));
+        console.log(`Inner x=${tryX}  y=${tryY} currentGameLevel[]='${currentGameLevel[tryY][tryX]}'`);
     }
 
     if (updateType==='Good') {
-        const playfieldObjectType = ['h', 'k'][Math.round(Math.random()*1)];
+        playfieldObjectType = ['h', 'k'][Math.round(Math.random()*1)];
     }
     else {
-        const playfieldObjectType = ['a','b','c','l','m','n','o','p'][Math.round(Math.random()*7)];
+        playfieldObjectType = ['a','b','c','l','m','n','o','p'][Math.round(Math.random()*7)];
     }
 
-    console.log(playFieldObjectType);
+    console.log(playfieldObjectType);
 
     const playfieldImage = document.createElement('img');
     playfieldImage.setAttribute('class', "game-playfield-object");
@@ -1019,7 +1025,7 @@ function dropPlayfieldObject(updateType, when) {
     playfieldImage.style.position="absolute";
     playfieldImage.style.left=tryX*32+"px";
     playfieldImage.style.top=tryY*32+"px";
-    gamePlayfield.appendChild(playfieldImage);                 
+    gameDom["gameContainerPlayfield"].appendChild(playfieldImage);                 
 }
 
 
