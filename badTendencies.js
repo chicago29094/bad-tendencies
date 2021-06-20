@@ -268,21 +268,51 @@ const playerCharacters =[
 Game Level Definitions
 ===========================================================================*/
 
-// const playFieldAssets = {
-//     "W" : `url('./assets/wall_6.png') 0px 0px`,
-//     " " : `url('./assets/floor_3.png') 0px 0px`,
-//     "S" : `url('./assets/exit_4.png') 0px 0px`,
-// }
-
-const playFieldAssets = {
+const playFieldAssetsClasses = {
     "W" : `playfield-wall`,
     " " : `playfield-floor`,
     "S" : `playfield-exit`,
+    "a" : `playfield-floor`,
+    "b" : `playfield-floor`,    
+    "c" : `playfield-floor`,    
+    "d" : `playfield-floor`,    
+    "e" : `playfield-floor`,    
+    "f" : `playfield-floor`,    
+    "g" : `playfield-floor`,    
+    "h" : `playfield-floor`,    
+    "i" : `playfield-floor`,
+    "j" : `playfield-floor`,
+    "i" : `playfield-floor`,
+    "k" : `playfield-floor`,
+    "l" : `playfield-floor`,
+    "m" : `playfield-floor`,
+    "n" : `playfield-floor`,
+    "o" : `playfield-floor`,
+    "p" : `playfield-floor`,    
+}
+
+const playFieldObjectImages = {
+    "a" : './assets/beer_002.png',
+    "b" : './assets/beer_004.png',
+    "c" : './assets/bomb2_32.png',
+    "d" : './assets/bullet_down.png',
+    "e" : './assets/bullet_up.png',
+    "f" : './assets/bullet_left.png',
+    "g" : './assets/bullet_right.png',
+    "h" : './assets/coin2.gif',
+    "i" : './assets/explosion_32.gif',
+    "j" : './assets/explosion_64.gif',
+    "k" : './assets/gem_blue.png',
+    "l" : './assets/handgun_left.png',
+    "m" : './assets/handgun_right.png',
+    "n" : './assets/lighter_pic.gif',
+    "o" : './assets/pills_06.png',
+    "p" : './assets/wine_002.png',
 }
 
 const gameLevel1 = [
     ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
-    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W','W','W','W',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
@@ -801,9 +831,9 @@ function followDirection(player, character) {
     }
 
     const totalDiffs = character.getPIDBufferDiffs();
-    console.log("totalDiffs", totalDiffs);
+    //console.log("totalDiffs", totalDiffs);
     const diffRatio = (totalDiffs/BANDMEMBER_PID_MAXHISTORY*character.speed);
-    console.log(character, "diffRatio:", diffRatio);
+    //console.log(character, "diffRatio:", diffRatio);
 
     if (Math.random()>diffRatio) {
         direction=['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
@@ -895,10 +925,10 @@ function displayGameBoard(level) {
             gameSquare.setAttribute('data-gst', level[i][j]);
 
             // const pTag = document.createElement('p');
-            gameSquare.classList.add(playFieldAssets[level[i][j]]);
+            gameSquare.classList.add(playFieldAssetsClasses[level[i][j]]);
             
-            if (level[i][j]==='S') {
-                // gameSquare.innerHTML=`<p style="background-color:#cccccc">S</p>`;
+            if ( (level[i][j]>='a') && (level[i][j]<='p') ) {
+                gameSquare.innerHTML=`<img src='${playFieldObjectImages[level[i][j]]}'>`;
             }
 
             // gameSquare.appendChild(pTag);    
