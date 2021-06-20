@@ -1072,7 +1072,8 @@ function dropPlayfieldObject(updateType, when) {
     playfieldImage.style.position="absolute";
     playfieldImage.style.left=tryX*32+"px";
     playfieldImage.style.top=tryY*32+"px";
-    gameDom["gameContainerPlayfield"].appendChild(playfieldImage);                 
+    gameDom["gameContainerPlayfield"].appendChild(playfieldImage); 
+    currentGameLevel[tryY][tryX]=playfieldObjectType;          
 }
 
 
@@ -1135,9 +1136,13 @@ function movePlayer1() {
             (willCollide[1]["collisionType"]==='banderMember2') || 
             (willCollide[1]["collisionType"]==='banderMember3') || 
             (willCollide[1]["collisionType"]==='banderMember4') ) {
-                //console.log(willCollide[1]["collisionType"]);
+                // console.log(willCollide[1]["collisionType"]);
+                soundController("play", "once", "sound_effect", "impact6");
                 player1.health=player1.health-2;
-            }  
+            } else 
+            {
+                // console.log(willCollide[1]["collisionType"]);
+            }
     }
 
 
@@ -1331,6 +1336,8 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
     // console.log(`${gameGridStartColumn} ${gameGridEndColumn} ${gameGridStartRow} ${gameGridEndRow} `);
     // Iterate through surrounding playfield squares to see if we will collide with a wall
 
+    // console.log(currentGameLevel);
+
     for (let row=gameGridStartRow; row<=gameGridEndRow; row++) {
         for (let col=gameGridStartColumn; col<=gameGridEndColumn; col++) {
 
@@ -1344,7 +1351,10 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
             gridWidth=32;
             gridHeight=32;
 
-            
+            // console.log("squareHas", squareHas);
+            if ( squareHas==='c' ) {
+                console.log("BAAAAANNNNGGG!!!!!!!", col, row);
+            }
             if (collides(posX, posY, width, height, gridPosX, gridPosY, gridWidth, gridHeight)) {
 
                 if (gridSquare.classList.contains('playfield-wall')) {
@@ -1368,6 +1378,7 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
                     collisionResults.isAllowed=true;
                     return;
                 }
+
                 else if ( squareHas==='a' || squareHas==='b' ) {
                     // gridSquare.style.borderTop="1px solid #00ff00";
                     collisionResults.collision=true;
@@ -1376,7 +1387,7 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
                     return;
                 }
                 else if ( squareHas==='c' ) {
-                    // gridSquare.style.borderTop="1px solid #00ff00";
+                    gridSquare.style.borderTop="1px solid #00ff00";
                     collisionResults.collision=true;
                     collisionResults.collisionType="Bomb";
                     collisionResults.isAllowed=true;
