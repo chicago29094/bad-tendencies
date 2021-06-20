@@ -10,6 +10,7 @@ const BANDMEMBER_FOLLOW_CHANGE_DELAY=1000;
 const BANDMEMBER_PID_MAXHISTORY=20;  // Proportional, Integral, Differential Motion Control
 const BANDMEMBER_HEALTH_RECOVERY=1;
 const BANDMEMBER_PARTY_RECOVERY=1;
+const BANDMEMBER_COOLDOWN=3000; // milliseconds
 const FOLLOW_DISTANCE=200;
 const BOUNCEBACK_FACTOR=3;
 const PLAYER_DEFAULT_STATE="Chase";
@@ -525,7 +526,12 @@ class BandMember {
         this._lastPosY=positionY;
         this._state=BANDMEMBER_DEFAULT_STATE;
         this._lastStateChange=Date.now();
-        this._lastDirChange=Date.now();     
+        this._lastDirChange=Date.now(); 
+        this._hasLighter=0;
+        this._hasBomb=0;
+        this._hasGun=0;    
+        this._hasGunBullets=0;
+        this._cooldown=0;
         this._PIDBuffer=[];  
         this._PIDBufferIndex=0;
         this._image=Object.assign({}, bandMemberCharacter.image);
@@ -544,6 +550,22 @@ class BandMember {
         this._imagePtag.style.background=`url('${this._image.src}') 0px 0px`
         this._imageDiv.appendChild(this._imagePtag);
         gameDom["gameContainerPlayfield"].appendChild(this._imageDiv);        
+    }
+
+
+    get cooldown() { return this._cooldown; }
+    set cooldown(setCooldown) { this._cooldown=Date.now()+setCooldown};
+
+    get hasLighter() { return this._hasLighter; }
+    set haslighter(setTime) { this._hasLighter=setTime; }
+    
+    get hasBomb() { return this._hasBomb; }
+    set hasBomb(setTime) { this._hasBomb=setTime; }
+    
+    get hasGun() { return this._hasGun; }
+    set hasGun(setTime) { 
+            this._hasGun=setTime; 
+            this._hasGunBullets=6;
     }
 
     get lastStateChange() { return this._lastStateChange; }
@@ -623,12 +645,16 @@ class BandMember {
         this._PIDBufferIndex++;
     }
 
-    updateVitals ()  { 
+    updateVitalsCooldown ()  { 
         // Update the health and party vitals on each game loop
         this._health=this._health+BANDMEMBER_HEALTH_RECOVERY;
         if (this._health>100) this._health=100;
         this._party=this._party-BANDMEMBER_PARTY_RECOVERY;
         if (this._party<0) this._party=0;
+        // Check to see if the cooldown period has expired
+        if (this.cooldown>0 && this._cooldown<Date.now()) {
+            this._cooldown=0;
+        }
     }
     
      getPIDBufferDiffs() {
@@ -760,7 +786,7 @@ class Player {
             }
     }
 
-    updateVitals ()  { 
+    updateVitalsCooldown ()  { 
         // Update the health vitals on each game loop
         this._health=this._health+BANDMEMBER_HEALTH_RECOVERY;
         if (this._health>100) this._health=100;
@@ -1309,15 +1335,18 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
         for (let col=gameGridStartColumn; col<=gameGridEndColumn; col++) {
 
             const gridSquare = document.querySelector(`div[data-gsx='${col}'][data-gsy='${row}']`)
-            
+            const squareHas = currentGameLevel[row][col];
+
             // console.log(`${col} ${row} ${gridSquare}`);
             // gridSquare.style.borderTop="1px solid #ff0000";
             gridPosX=col*32;
             gridPosY=row*32;
             gridWidth=32;
             gridHeight=32;
+
             
             if (collides(posX, posY, width, height, gridPosX, gridPosY, gridWidth, gridHeight)) {
+
                 if (gridSquare.classList.contains('playfield-wall')) {
                     // gridSquare.style.borderTop="1px solid #00ff00";
                     collisionResults.collision=true;
@@ -1331,7 +1360,71 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
                     collisionResults.collisionType="Stage";
                     collisionResults.isAllowed=true;
                     return;
-                }                
+                }
+                else if (gridSquare.classList.contains('playfield-pit')) {
+                    // gridSquare.style.borderTop="1px solid #00ff00";
+                    collisionResults.collision=true;
+                    collisionResults.collisionType="Pit";
+                    collisionResults.isAllowed=true;
+                    return;
+                }
+                else if ( squareHas==='a' || squareHas==='b' ) {
+                    // gridSquare.style.borderTop="1px solid #00ff00";
+                    collisionResults.collision=true;
+                    collisionResults.collisionType="Beer";
+                    collisionResults.isAllowed=true;
+                    return;
+                }
+                else if ( squareHas==='c' ) {
+                    // gridSquare.style.borderTop="1px solid #00ff00";
+                    collisionResults.collision=true;
+                    collisionResults.collisionType="Bomb";
+                    collisionResults.isAllowed=true;
+                    return;
+                }
+                else if ( squareHas==='h' ) {
+                    // gridSquare.style.borderTop="1px solid #00ff00";
+                    collisionResults.collision=true;
+                    collisionResults.collisionType="Coin";
+                    collisionResults.isAllowed=true;
+                    return;
+                }
+                else if ( squareHas==='k' ) { 
+                    // gridSquare.style.borderTop="1px solid #00ff00";
+                    collisionResults.collision=true;
+                    collisionResults.collisionType="Gem";
+                    collisionResults.isAllowed=true;
+                    return;
+                }
+                else if ( squareHas==='l' || squareHas==='m' ) { 
+                    // gridSquare.style.borderTop="1px solid #00ff00";
+                    collisionResults.collision=true;
+                    collisionResults.collisionType="Handgun";
+                    collisionResults.isAllowed=true;
+                    return;
+                }
+                else if ( squareHas==='n' ) {
+                    // gridSquare.style.borderTop="1px solid #00ff00";
+                    collisionResults.collision=true;
+                    collisionResults.collisionType="Lighter";
+                    collisionResults.isAllowed=true;
+                    return;
+                }
+                else if ( squareHas==='o' ) {
+                    // gridSquare.style.borderTop="1px solid #00ff00";
+                    collisionResults.collision=true;
+                    collisionResults.collisionType="Pills";
+                    collisionResults.isAllowed=true;
+                    return;
+                }
+                else if ( squareHas==='p' ) { 
+                    // gridSquare.style.borderTop="1px solid #00ff00";
+                    collisionResults.collision=true;
+                    collisionResults.collisionType="Wine";
+                    collisionResults.isAllowed=true;
+                    return;
+                }
+                
             }
         }
     }
@@ -2062,11 +2155,11 @@ bandMember3.updatePIDBuffer();
 bandMember4.updatePIDBuffer();
 
 //Next, update player and band member health and party levels
-player1.updateVitals();
-bandMember1.updateVitals();
-bandMember2.updateVitals();
-bandMember3.updateVitals();
-bandMember4.updateVitals();
+player1.updateVitalsCooldown();
+bandMember1.updateVitalsCooldown();
+bandMember2.updateVitalsCooldown();
+bandMember3.updateVitalsCooldown();
+bandMember4.updateVitalsCooldown();
 
 // Randomly drop playFIeld objects onto game board
 dropPlayfieldObject("Good");
