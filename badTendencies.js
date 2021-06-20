@@ -67,6 +67,8 @@ const mediaContainer = document.querySelector('#media-container');
 
 const gameDom = [] ; // Use an array to cache and reference commonly accessed DOM elements
 
+const soundDomLookup = []; // Use an array for fast DOM audio lookups;
+
 /*==========================================================================
 Band Member Characters
 ===========================================================================*/
@@ -877,9 +879,10 @@ function loadGameSounds() {
 
         for ( [soundType, mediaType] of Object.entries(soundCategory) )  {
 
+            soundDomLookup[soundType]=[];
             for ( [sound, media] of Object.entries(mediaType) )  {
 
-                console.log(soundType, sound, media);
+                // console.log(soundType, sound, media);
 
                 let soundDom={};
                 soundDom=document.createElement('audio');
@@ -888,7 +891,10 @@ function loadGameSounds() {
                 soundSource.setAttribute('src', media);
                 if (media.indexOf('wav')!==-1) soundSource.setAttribute('type', "audio/wav");
                 if (media.indexOf('mp3')!==-1) soundSource.setAttribute('type', "audio/mp3");
-                soundDom.appendChild(soundSource);  
+                soundDom.appendChild(soundSource); 
+
+                soundDomLookup[soundType][sound]=soundDom;
+                //soundDomLookup[soundType].push(sound, soundDom);
             }
         }
     }
@@ -899,6 +905,9 @@ loadGameSounds();
 
 // Play game sounds 
 
+function playSounds(category, sound) {
+
+}
 
 
 /*==========================================================================
@@ -1001,12 +1010,9 @@ function dropPlayfieldObject(updateType, when) {
     tryY=(Math.round(Math.random()*(currentGameLevel.length-1)));
     tryX=(Math.round(Math.random()*(currentGameLevel[tryY].length-1)));
 
-    console.log("Outer", tryX, tryY );
-
     while ( currentGameLevel[tryY][tryX]!==' ' ) {
         tryY=Math.round(Math.random()*(currentGameLevel.length-1));
         tryX=Math.round(Math.random()*(currentGameLevel[tryY].length-1));
-        console.log(`Inner x=${tryX}  y=${tryY} currentGameLevel[]='${currentGameLevel[tryY][tryX]}'`);
     }
 
     if (updateType==='Good') {
@@ -1016,7 +1022,6 @@ function dropPlayfieldObject(updateType, when) {
         playfieldObjectType = ['a','b','c','l','m','n','o','p'][Math.round(Math.random()*7)];
     }
 
-    console.log(playfieldObjectType);
 
     const playfieldImage = document.createElement('img');
     playfieldImage.setAttribute('class', "game-playfield-object");
@@ -1599,6 +1604,13 @@ function startNewGame(event) {
     handleKeyboardEvents("");
 
     levelStartTime=Date.now();
+
+    console.log(soundDomLookup);
+    soundDomLookup["player"]["Die"].play();
+
+    console.log("Here:0001");
+
+
     mainGameLoopIntervalId = window.setInterval(mainGameLoop, 100);
 }
 
@@ -1640,7 +1652,10 @@ function startNextLevel(event) {
     handleKeyboardEvents("");
 
     levelStartTime=Date.now();
+
+
     mainGameLoopIntervalId = window.setInterval(mainGameLoop, 100);
+
 }
 
 
