@@ -894,7 +894,6 @@ function loadGameSounds() {
                 soundDom.appendChild(soundSource); 
 
                 soundDomLookup[soundType][sound]=soundDom;
-                //soundDomLookup[soundType].push(sound, soundDom);
             }
         }
     }
@@ -903,10 +902,27 @@ function loadGameSounds() {
 
 loadGameSounds();
 
-// Play game sounds 
+/*=========================================
+// Control game sounds and music
+=========================================*/
 
-function playSounds(category, sound) {
+function soundController(action, actionModifier, category, sound) {
 
+    if (action==="play" || action==="Play") {
+        soundDomLookup[category][sound].play();
+        if (actionModifier==="loop" || actionModifier==="Loop") {
+            soundDomLookup[category][sound].loop=true;
+        }
+    }
+    else if (action==="pause" || action==="Pause") {
+        soundDomLookup[category][sound].pause();
+    }
+    else if (action==="resume" || action==="Resume") {
+        soundDomLookup[category][sound].resume();
+    }
+    else if (action==="stop" || action==="Stop") {
+        soundDomLookup[category][sound].stop();
+    }
 }
 
 
@@ -1605,11 +1621,8 @@ function startNewGame(event) {
 
     levelStartTime=Date.now();
 
-    console.log(soundDomLookup);
-    soundDomLookup["player"]["Die"].play();
-
-    console.log("Here:0001");
-
+    // Play the game background music
+    // soundController("play", "loop", "music_score", "main");
 
     mainGameLoopIntervalId = window.setInterval(mainGameLoop, 100);
 }
