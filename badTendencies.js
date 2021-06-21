@@ -1127,24 +1127,29 @@ function movePlayer1() {
     
     stepwiseCollisionXY[0]=currentPosX;
     stepwiseCollisionXY[1]=currentPosY;
-    const willCollide=checkCollisions(player1, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
+    const blockMovement=checkCollisions(player1, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
 
-    if (willCollide[0]) {
-        if (
-            (willCollide[1]["collisionType"]==='Wall') || 
-            (willCollide[1]["collisionType"]==='banderMember1') || 
-            (willCollide[1]["collisionType"]==='banderMember2') || 
-            (willCollide[1]["collisionType"]==='banderMember3') || 
-            (willCollide[1]["collisionType"]==='banderMember4') ) {
-                // console.log(willCollide[1]["collisionType"]);
+    //console.log(blockMovement[0], blockMovement[1]);
+
+    if (blockMovement[0]) {
+        if ( (blockMovement[1]["collisionType"]==='Wall') || 
+             (blockMovement[1]["collisionType"]==='bandMember1') || 
+             (blockMovement[1]["collisionType"]==='bandMember2') || 
+             (blockMovement[1]["collisionType"]==='bandMember3') || 
+             (blockMovement[1]["collisionType"]==='bandMember4') ) {
+                console.log(blockMovement[1]["collisionType"]);
                 soundController("play", "once", "sound_effect", "impact6");
                 player1.health=player1.health-2;
             } else 
             {
-                // console.log(willCollide[1]["collisionType"]);
+                console.log(blockMovement[1]["collisionType"]);
             }
     }
 
+    if ( (!blockMovement[0]) && (blockMovement[1]["collision"]===true) ) {
+        console.log("Player", blockMovement[1]["collisionType"]);
+    }
+    
 
     if (player1.direction==='N') player1.posY = stepwiseCollisionXY[1];
     if (player1.direction==='S') player1.posY = stepwiseCollisionXY[1];
@@ -1179,15 +1184,15 @@ function moveBandMember(bandMember) {
     
     stepwiseCollisionXY[0]=currentPosX;
     stepwiseCollisionXY[1]=currentPosY;
-    const willCollide=checkCollisions(bandMember, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
+    const blockMovement=checkCollisions(bandMember, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
 
-    if (willCollide[0]) {
-        if ( (willCollide[1]["collisionType"]==='player1') || 
-            (willCollide[1]["collisionType"]==='banderMember1') || 
-            (willCollide[1]["collisionType"]==='banderMember2') || 
-            (willCollide[1]["collisionType"]==='banderMember3') || 
-            (willCollide[1]["collisionType"]==='banderMember4') ) {
-                //console.log(willCollide[1]["collisionType"]);
+    if (blockMovement[0]) {
+        if ( (blockMovement[1]["collisionType"]==='player1') || 
+            (blockMovement[1]["collisionType"]==='bandMember1') || 
+            (blockMovement[1]["collisionType"]==='bandMember2') || 
+            (blockMovement[1]["collisionType"]==='bandMember3') || 
+            (blockMovement[1]["collisionType"]==='bandMember4') ) {
+                //console.log(blockMovement[1]["collisionType"]);
                 bounceBack=true;
                 // bandMember.health=bandMember.health-2;
             }
@@ -1196,8 +1201,11 @@ function moveBandMember(bandMember) {
             }
     }
 
-    
-    if ( (!willCollide[0]) && (willCollide[1]["collisionType"]==='Stage') ) {
+    if ( (!blockMovement[0]) && (blockMovement[1]["collision"]===true) ) {
+        console.log("Band Member", blockMovement[1]["collisionType"]);
+    }
+
+    if ( (!blockMovement[0]) && (blockMovement[1]["collisionType"]==='Stage') ) {
         player1Score=player1Score+1000;
         bandMember.state="Stage";
         bandMember.imageState="Hidden";
@@ -1212,7 +1220,7 @@ function moveBandMember(bandMember) {
         
         stepwiseCollisionXY[0]=currentPosX;
         stepwiseCollisionXY[1]=currentPosY;
-        const willCollide=checkCollisions(bandMember, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
+        const blockMovement=checkCollisions(bandMember, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
     }
  
     if (bandMember.direction==='N') bandMember.posY = stepwiseCollisionXY[1];
@@ -1334,9 +1342,7 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
     if (gameGridEndColumn>31) gameGridEndColumn=31;
 
     // console.log(`${gameGridStartColumn} ${gameGridEndColumn} ${gameGridStartRow} ${gameGridEndRow} `);
-    // Iterate through surrounding playfield squares to see if we will collide with a wall
-
-    // console.log(currentGameLevel);
+    // Iterate through surrounding playfield squares to see if we will collide with a wall, exit, or pit
 
     for (let row=gameGridStartRow; row<=gameGridEndRow; row++) {
         for (let col=gameGridStartColumn; col<=gameGridEndColumn; col++) {
@@ -1351,12 +1357,8 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
             gridWidth=32;
             gridHeight=32;
 
-            // console.log("squareHas", squareHas);
-            if ( squareHas==='c' ) {
-                console.log("BAAAAANNNNGGG!!!!!!!", col, row);
-            }
             if (collides(posX, posY, width, height, gridPosX, gridPosY, gridWidth, gridHeight)) {
-
+                
                 if (gridSquare.classList.contains('playfield-wall')) {
                     // gridSquare.style.borderTop="1px solid #00ff00";
                     collisionResults.collision=true;
@@ -1378,8 +1380,67 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
                     collisionResults.isAllowed=true;
                     return;
                 }
+                
+            }
+        }
+    }
 
-                else if ( squareHas==='a' || squareHas==='b' ) {
+    // Next check to see if this movement will collide with any other game character 
+
+    if ( (gameCharacter.id!==player1.id) && (player1.health>0) && 
+        (collides(posX, posY, width, height, player1.posX+16, player1.posY+12, 32, 52)) ) {
+        collisionResults.collision=true;
+        collisionResults.collisionType="player1";
+        collisionResults.isAllowed=false;
+        return;
+    }
+    if ( (gameCharacter.id!==bandMember1.id) && (bandMember1.health>0) &&  
+        (collides(posX, posY, width, height, bandMember1.posX+16, bandMember1.posY+12, 32, 52)) ) {
+        collisionResults.collision=true;
+        collisionResults.collisionType="bandMember1";
+        collisionResults.isAllowed=false;
+        return;
+    }
+    if ( (gameCharacter.id!==bandMember2.id) && (bandMember2.health>0) && 
+        (collides(posX, posY, width, height, bandMember2.posX+16, bandMember2.posY+12, 32, 52)) ) {
+        collisionResults.collision=true;
+        collisionResults.collisionType="bandMember2";
+        collisionResults.isAllowed=false;
+        return;
+    }
+    if ( (gameCharacter.id!==bandMember3.id) && (bandMember3.health>0) && 
+        (collides(posX, posY, width, height, bandMember3.posX+16, bandMember3.posY+12, 32, 52)) ) {
+        collisionResults.collision=true;
+        collisionResults.collisionType="bandMember3";
+        collisionResults.isAllowed=false;
+        return;
+    }
+    if ( (gameCharacter.id!==bandMember4.id) && (bandMember4.health>0) && 
+        (collides(posX, posY, width, height, bandMember4.posX+16, bandMember4.posY+12, 32, 52)) ) {
+        collisionResults.collision=true;
+        collisionResults.collisionType="bandMember4";
+        collisionResults.isAllowed=false;
+        return;
+    }
+
+    /* So far the move is allowed, but we must now iterate through surrounding playfield squares to see if the character will collide with a special playfield action item */
+
+    for (let row=gameGridStartRow; row<=gameGridEndRow; row++) {
+        for (let col=gameGridStartColumn; col<=gameGridEndColumn; col++) {
+
+            const gridSquare = document.querySelector(`div[data-gsx='${col}'][data-gsy='${row}']`)
+            const squareHas = currentGameLevel[row][col];
+
+            // console.log(`${col} ${row} ${gridSquare}`);
+            // gridSquare.style.borderTop="1px solid #ff0000";
+            gridPosX=col*32;
+            gridPosY=row*32;
+            gridWidth=32;
+            gridHeight=32;
+
+            if (collides(posX, posY, width, height, gridPosX, gridPosY, gridWidth, gridHeight)) {
+
+                if ( squareHas==='a' || squareHas==='b' ) {
                     // gridSquare.style.borderTop="1px solid #00ff00";
                     collisionResults.collision=true;
                     collisionResults.collisionType="Beer";
@@ -1387,7 +1448,7 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
                     return;
                 }
                 else if ( squareHas==='c' ) {
-                    gridSquare.style.borderTop="1px solid #00ff00";
+                    // gridSquare.style.borderTop="1px solid #00ff00";
                     collisionResults.collision=true;
                     collisionResults.collisionType="Bomb";
                     collisionResults.isAllowed=true;
@@ -1438,48 +1499,6 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
                 
             }
         }
-    }
-
-    // console.log("Here:00000");
-    // console.log(posX, posY, width, height, bandMember1.posX, bandMember1.posY, 32, 52);
-    // console.log(collides(posX, posY, width, height, bandMember1.posX, bandMember1.posY, 32, 52));
-
-    // Next check to see if this movement will collide with any other game character 
-
-    if ( (gameCharacter.id!==player1.id) && (player1.health>0) && 
-        (collides(posX, posY, width, height, player1.posX+16, player1.posY+12, 32, 52)) ) {
-        collisionResults.collision=true;
-        collisionResults.collisionType="player1";
-        collisionResults.isAllowed=false;
-        return;
-    }
-    if ( (gameCharacter.id!==bandMember1.id) && (bandMember1.health>0) &&  
-        (collides(posX, posY, width, height, bandMember1.posX+16, bandMember1.posY+12, 32, 52)) ) {
-        collisionResults.collision=true;
-        collisionResults.collisionType="bandMember1";
-        collisionResults.isAllowed=false;
-        return;
-    }
-    if ( (gameCharacter.id!==bandMember2.id) && (bandMember2.health>0) && 
-        (collides(posX, posY, width, height, bandMember2.posX+16, bandMember2.posY+12, 32, 52)) ) {
-        collisionResults.collision=true;
-        collisionResults.collisionType="bandMember2";
-        collisionResults.isAllowed=false;
-        return;
-    }
-    if ( (gameCharacter.id!==bandMember3.id) && (bandMember3.health>0) && 
-        (collides(posX, posY, width, height, bandMember3.posX+16, bandMember3.posY+12, 32, 52)) ) {
-        collisionResults.collision=true;
-        collisionResults.collisionType="bandMember3";
-        collisionResults.isAllowed=false;
-        return;
-    }
-    if ( (gameCharacter.id!==bandMember4.id) && (bandMember4.health>0) && 
-        (collides(posX, posY, width, height, bandMember4.posX+16, bandMember4.posY+12, 32, 52)) ) {
-        collisionResults.collision=true;
-        collisionResults.collisionType="bandMember4";
-        collisionResults.isAllowed=false;
-        return;
     }
 }
 
