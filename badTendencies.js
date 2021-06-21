@@ -18,6 +18,7 @@ const PLAYER_HEALTH_RECOVERY=1;
 const ANIMATION_FRAME_DELAY=100; // milliseconds
 const SPLASH_SCREEN_DELAY=3000; // milliseconds
 
+
 let GOOD_PLAYFIELD_OBJECT_DROP_RATE=20000; // milliseconds
 let BAD_PLAYFIELD_OBJECT_DROP_RATE=20000; // milliseconds
 let lastGoodDropTime=0;
@@ -828,26 +829,6 @@ class Player {
     }
 }
 
-/*----------------------------------
-// Game Display List
-------------------------------------*/
-
-class DisplayList {
-
-    constructor() {
-        this._displayObjects = new Set();
-    }
-
-    get displayObjects() { return this._displayObjects; }
-
-    add(obj) { this._displayObjects.add(obj); }
-
-    delete(obj) { this._displayObjects.delete(obj); }
-
-    clear() { this._displayObjects.clear(); }
-
-}
-
 
 /*==========================================================================
 Utility Functions
@@ -1005,7 +986,7 @@ function displayGameBoard(level) {
             gameSquare.classList.add(playFieldAssetsClasses[level[i][j]]);
             
             if ( (level[i][j]>='a') && (level[i][j]<='p') ) {
-                gameSquare.innerHTML=`<img src='${playFieldObjectImages[level[i][j]]}'>`;
+                gameSquare.innerHTML=`<img src='${playFieldObjectImages[level[i][j]]}' data-gsy="${(i).toString()}" data-gsx="${(j).toString()}" data-gst="${level[i][j]}">`;
             }
 
             // gameSquare.appendChild(pTag);    
@@ -1067,6 +1048,8 @@ function dropPlayfieldObject(updateType, when) {
 
     const playfieldImage = document.createElement('img');
     playfieldImage.setAttribute('class', "game-playfield-object");
+    playfieldImage.setAttribute('data-gsy', tryX);
+    playfieldImage.setAttribute('data-gsx', tryY); 
     playfieldImage.setAttribute('data-gst', playfieldObjectType);
     playfieldImage.setAttribute('src', playFieldObjectImages[playfieldObjectType]);    
     playfieldImage.style.position="absolute";
@@ -1147,7 +1130,11 @@ function movePlayer1() {
     }
 
     if ( (!blockMovement[0]) && (blockMovement[1]["collision"]===true) ) {
-        console.log("Player", blockMovement[1]["collisionType"]);
+        if (blockMovement[1]["collisionType"]==="Coin") {
+            player1.score+=100;
+            soundController("play", "once", "sound_effect", "coins");
+
+        }
     }
     
 
@@ -1244,6 +1231,10 @@ function checkCollisions(gameCharacter, currentPosX, currentPosY, newPosX, newPo
     let collisionResults={
             "collision": false,
             "collisionType": "",
+            "collisionDomRef": "",
+            "collisionDomObjType" : "",
+            "collisionGridCol": "",
+            "collisionGridRow": "",
             "isAllowed": true,
     };
 
@@ -1325,6 +1316,8 @@ function checkCollisions(gameCharacter, currentPosX, currentPosY, newPosX, newPo
 
 function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, collisionResults) {
 
+    let returnFlag=false;
+
     collisionResults.collision=false;
     collisionResults.collisionType="";
     collisionResults.isAllowed=true;
@@ -1356,6 +1349,11 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
             gridPosY=row*32;
             gridWidth=32;
             gridHeight=32;
+
+            // Store position so this object may be processed or removed from the playfield faster
+            collisionResults.collisionGridCol=col;
+            collisionResults.collisionGridRow=row;
+            collisionResults.collisionDomObjType=squareHas;
 
             if (collides(posX, posY, width, height, gridPosX, gridPosY, gridWidth, gridHeight)) {
                 
@@ -1438,62 +1436,52 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
             gridWidth=32;
             gridHeight=32;
 
+            // Store position so this object may be processed or removed from the playfield faster
+            collisionResults.collisionGridCol=col;
+            collisionResults.collisionGridRow=row;
+            collisionResults.collisionDomObjType=squareHas;
+
             if (collides(posX, posY, width, height, gridPosX, gridPosY, gridWidth, gridHeight)) {
 
-                if ( squareHas==='a' || squareHas==='b' ) {
-                    // gridSquare.style.borderTop="1px solid #00ff00";
-                    collisionResults.collision=true;
-                    collisionResults.collisionType="Beer";
-                    collisionResults.isAllowed=true;
-                    return;
+                returnFlag=false;
+                if ( squareHas==='a' || squareHas==='b' ) { 
+                    collisionResults.collisionType="Beer";      
+                    returnFlag=true;
                 }
                 else if ( squareHas==='c' ) {
-                    // gridSquare.style.borderTop="1px solid #00ff00";
-                    collisionResults.collision=true;
                     collisionResults.collisionType="Bomb";
-                    collisionResults.isAllowed=true;
-                    return;
+                    returnFlag=true;
                 }
                 else if ( squareHas==='h' ) {
-                    // gridSquare.style.borderTop="1px solid #00ff00";
-                    collisionResults.collision=true;
                     collisionResults.collisionType="Coin";
-                    collisionResults.isAllowed=true;
-                    return;
+                    returnFlag=true;
                 }
                 else if ( squareHas==='k' ) { 
-                    // gridSquare.style.borderTop="1px solid #00ff00";
-                    collisionResults.collision=true;
                     collisionResults.collisionType="Gem";
-                    collisionResults.isAllowed=true;
-                    return;
+                    returnFlag=true;
                 }
                 else if ( squareHas==='l' || squareHas==='m' ) { 
-                    // gridSquare.style.borderTop="1px solid #00ff00";
-                    collisionResults.collision=true;
                     collisionResults.collisionType="Handgun";
-                    collisionResults.isAllowed=true;
-                    return;
+                    returnFlag=true;
                 }
                 else if ( squareHas==='n' ) {
-                    // gridSquare.style.borderTop="1px solid #00ff00";
-                    collisionResults.collision=true;
                     collisionResults.collisionType="Lighter";
-                    collisionResults.isAllowed=true;
-                    return;
+                    returnFlag=true;
                 }
                 else if ( squareHas==='o' ) {
-                    // gridSquare.style.borderTop="1px solid #00ff00";
-                    collisionResults.collision=true;
                     collisionResults.collisionType="Pills";
-                    collisionResults.isAllowed=true;
-                    return;
+                    returnFlag=true;
                 }
                 else if ( squareHas==='p' ) { 
-                    // gridSquare.style.borderTop="1px solid #00ff00";
+                    collisionResults.collisionType="Wine";  
+                    returnFlag=true; 
+                }
+
+                if (returnFlag===true) {
                     collisionResults.collision=true;
-                    collisionResults.collisionType="Wine";
                     collisionResults.isAllowed=true;
+                    const domElement = gameDom["gameContainerPlayfield"].querySelector(`img[data-gsx='${collisionResults.collisionGridCol}'][data-gsy='${collisionResults.collisionGridRow}'][data-gst='${collisionResults.collisionDomObjType}']`);
+                    collisionResults.collisionDomRef=domElement;
                     return;
                 }
                 
