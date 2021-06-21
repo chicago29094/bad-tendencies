@@ -140,7 +140,7 @@ const mediaSoundsLibrary = [
 const bandMemberCharacters=[
     {
         "name" : 'AXL',
-        "id" : "bandchar1",
+        "id" : "bandMember1",
         "health" : 100,
         "party" : 0,
         "speed" : 5,
@@ -167,7 +167,7 @@ const bandMemberCharacters=[
     },
     {
         "name" : 'Thor',
-        "id" : "bandchar2",
+        "id" : "bandMember2",
         "health" : 100,
         "party" : 0,
         "speed" : 5,
@@ -194,7 +194,7 @@ const bandMemberCharacters=[
     },
     {
         "name" : 'Vince',
-        "id" : "bandchar3",
+        "id" : "bandMember3",
         "health" : 100,
         "party" : 0,
         "speed" : 5,
@@ -221,7 +221,7 @@ const bandMemberCharacters=[
     },
     {
         "name" : 'Johnny Fear',
-        "id" : "bandchar4",
+        "id" : "bandMember4",
         "health" : 100,
         "party" : 0,
         "speed" : 5,
@@ -1130,13 +1130,8 @@ function movePlayer1() {
     }
 
     if ( (!blockMovement[0]) && (blockMovement[1]["collision"]===true) ) {
-        if (blockMovement[1]["collisionType"]==="Coin") {
-            player1.score+=100;
-            soundController("play", "once", "sound_effect", "coins");
-
-        }
+            processPlayfieldInteractions(player1, blockMovement[1], blockMovement[1]["collisionType"]);
     }
-    
 
     if (player1.direction==='N') player1.posY = stepwiseCollisionXY[1];
     if (player1.direction==='S') player1.posY = stepwiseCollisionXY[1];
@@ -1144,6 +1139,77 @@ function movePlayer1() {
     if (player1.direction==='E') player1.posX = stepwiseCollisionXY[0];
 
 }
+
+/*==========================================================================
+Process Playfield Object Interactions
+===========================================================================*/
+
+function processPlayfieldInteractions(character, collision, collisionType) {
+
+    if (character.id==="player1") {
+
+        if (collisionType==="Beer") {
+            player1.score+=25;
+            soundController("play", "once", "sound_effect", "coins");
+            gameDom["gameContainerPlayfield"].removeChild(collision.collisionDomRef);
+            currentGameLevel[collision.collisionGridCol][collision.collisionGridRow]=' ';
+        }
+        else if (collisionType==="Bomb") {
+            player1.score+=50;
+            soundController("play", "once", "sound_effect", "coins");
+            gameDom["gameContainerPlayfield"].removeChild(collision.collisionDomRef);
+            currentGameLevel[collision.collisionGridCol][collision.collisionGridRow]=' ';
+        }
+        else if (collisionType==="Coin") {
+            player1.score+=100;
+            soundController("play", "once", "sound_effect", "coins");
+            gameDom["gameContainerPlayfield"].removeChild(collision.collisionDomRef);
+            currentGameLevel[collision.collisionGridCol][collision.collisionGridRow]=' ';
+        }
+        else if (collisionType==="Gem") {
+            player1.score+=250;
+            soundController("play", "once", "sound_effect", "coins");
+            gameDom["gameContainerPlayfield"].removeChild(collision.collisionDomRef);
+            currentGameLevel[collision.collisionGridCol][collision.collisionGridRow]=' ';
+        }
+        else if (collisionType==="Handgun") {
+            player1.score+=175;
+            soundController("play", "once", "sound_effect", "coins");
+            gameDom["gameContainerPlayfield"].removeChild(collision.collisionDomRef);
+            currentGameLevel[collision.collisionGridCol][collision.collisionGridRow]=' ';
+        }        
+        else if (collisionType==="Lighter") {
+            player1.score+=50;
+            soundController("play", "once", "sound_effect", "coins");
+            gameDom["gameContainerPlayfield"].removeChild(collision.collisionDomRef);
+            currentGameLevel[collision.collisionGridCol][collision.collisionGridRow]=' ';
+        }                        
+        else if (collisionType==="Pills") {
+            player1.score+=50;
+            soundController("play", "once", "sound_effect", "coins");
+            gameDom["gameContainerPlayfield"].removeChild(collision.collisionDomRef);
+            currentGameLevel[collision.collisionGridCol][collision.collisionGridRow]=' ';
+        }
+        else if (collisionType==="Wine") {
+            player1.score+=250;
+            soundController("play", "once", "sound_effect", "coins");
+            gameDom["gameContainerPlayfield"].removeChild(collision.collisionDomRef);
+            currentGameLevel[collision.collisionGridCol][collision.collisionGridRow]=' ';
+        }       
+    }
+
+    else {  // Band Member playfield collisions
+
+        if (collisionType==="Stage") {
+            player1Score=player1Score+1000;
+            bandMember.state="Stage";
+            bandMember.imageState="Hidden";
+        }
+
+    }
+
+}
+
 
 
 /*==========================================================================
@@ -1192,10 +1258,9 @@ function moveBandMember(bandMember) {
         console.log("Band Member", blockMovement[1]["collisionType"]);
     }
 
-    if ( (!blockMovement[0]) && (blockMovement[1]["collisionType"]==='Stage') ) {
-        player1Score=player1Score+1000;
-        bandMember.state="Stage";
-        bandMember.imageState="Hidden";
+
+    if ( (!blockMovement[0]) && (blockMovement[1]["collision"]===true) ) {
+        processPlayfieldInteractions(bandMember, blockMovement[1], blockMovement[1]["collisionType"]);
     }
 
     if (bounceBack) {
