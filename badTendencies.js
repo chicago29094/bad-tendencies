@@ -8,8 +8,8 @@ const BANDMEMBER_STATE_CHANGE_DELAY=4000;
 const BANDMEMBER_DIR_CHANGE_DELAY=4000;
 const BANDMEMBER_FOLLOW_CHANGE_DELAY=1000;
 const BANDMEMBER_PID_MAXHISTORY=20;  // Proportional, Integral, Differential Motion Control
-const BANDMEMBER_HEALTH_RECOVERY=1;
-const BANDMEMBER_PARTY_RECOVERY=1;
+const BANDMEMBER_HEALTH_RECOVERY=0.1;
+const BANDMEMBER_PARTY_RECOVERY=0.1;
 const BANDMEMBER_COOLDOWN=3000; // milliseconds
 const FOLLOW_DISTANCE=200;
 const BOUNCEBACK_FACTOR=3;
@@ -618,7 +618,7 @@ class BandMember {
     }
     
     get state() { return this._state; }
-        set state(setState) { 
+    set state(setState) { 
         if (setState!==this._state) {
             this._lastStateChange=Date.now();
         }
@@ -1879,7 +1879,7 @@ function startNewGame(event) {
     levelStartTime=Date.now();
 
     // Play the game background music
-    // soundController("play", "loop", "music_score", "main");
+    soundController("play", "loop", "music_score", "main");
 
     mainGameLoopIntervalId = window.setInterval(mainGameLoop, 100);
 }
