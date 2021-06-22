@@ -130,6 +130,11 @@ const mediaSoundsLibrary = [
             "Throwing Right":  './sounds/sfx_exp_various4.wav',
             "Shoot Left":  './sounds/sfx_weapon_shotgun3.wav',
             "Shoot Right": './sounds/sfx_weapon_shotgun3.wav',
+            "Stage": './sounds/sfx_sound_neutral7.wav',
+            "Awesome": './sounds/awesome.wav',
+            "Guitar Riff": './sounds/guitarriff.wav',
+            "Ha Ha":'./sounds/haha.wav',
+            "Oh Ya": './sounds/ohya.wav',
         }
     },
 
@@ -915,20 +920,25 @@ loadGameSounds();
 
 function soundController(action, actionModifier, category, sound) {
 
-    if (action==="play" || action==="Play") {
-        soundDomLookup[category][sound].play();
-        if (actionModifier==="loop" || actionModifier==="Loop") {
-            soundDomLookup[category][sound].loop=true;
+    try {
+        if (action==="play" || action==="Play") {
+            soundDomLookup[category][sound].play();
+            if (actionModifier==="loop" || actionModifier==="Loop") {
+                soundDomLookup[category][sound].loop=true;
+            }
+        }
+        else if (action==="pause" || action==="Pause") {
+            soundDomLookup[category][sound].pause();
+        }
+        else if (action==="resume" || action==="Resume") {
+            soundDomLookup[category][sound].resume();
+        }
+        else if (action==="stop" || action==="Stop") {
+            soundDomLookup[category][sound].stop();
         }
     }
-    else if (action==="pause" || action==="Pause") {
-        soundDomLookup[category][sound].pause();
-    }
-    else if (action==="resume" || action==="Resume") {
-        soundDomLookup[category][sound].resume();
-    }
-    else if (action==="stop" || action==="Stop") {
-        soundDomLookup[category][sound].stop();
+    catch(error) {
+        console.log(error);
     }
 }
 
@@ -1159,7 +1169,6 @@ function processPlayfieldInteractions(character, collision, collisionType) {
         }
         else if (collisionType==="Coin") {
             player1Score+=100;
-            console.log(gameDom["gameContainerPlayfield"]);
             soundController("play", "once", "sound_effect", "coins");
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
@@ -1200,9 +1209,83 @@ function processPlayfieldInteractions(character, collision, collisionType) {
 
         if (collisionType==="Stage") {
             player1Score=player1Score+1000;
+            soundController("play", "once", "sound_effect", "coins");
+            soundController("play", "once", "bandmember", "Stage");
             character.state="Stage";
             character.imageState="Hidden";
         }
+
+        if (collisionType==="Pit") {
+            soundController("play", "once", "bandmember", "Die");
+            character.state='Dead';
+            character.imageState='Die';            
+        }
+
+        else if (collisionType==="Beer") {
+            const pick=[0,1,2,3][Math.round(Math.random()*3)];
+            if (pick===0) soundController("play", "once", "bandmember", "Awesome");
+            if (pick===1) soundController("play", "once", "bandmember", "Guitar Riff");
+            if (pick===2) soundController("play", "once", "bandmember", "Ha Ha");
+            if (pick===3) soundController("play", "once", "bandmember", "Oh Ya");
+            character.health=character.health-5;
+            character.party=character.party+5;
+            collision.collisionDomRef.remove();
+            currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
+        }
+        else if (collisionType==="Bomb") {
+            soundController("play", "once", "bandmember", "Oh Ya");
+            if (character.hasBomb===0) {
+                character.hasBomb=Date.now;
+                collision.collisionDomRef.remove();
+                currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
+            }
+        }
+        else if (collisionType==="Coin") {
+            collision.collisionDomRef.remove();
+            currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
+        }
+        else if (collisionType==="Gem") {
+            collision.collisionDomRef.remove();
+            currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
+        }
+        else if (collisionType==="Handgun") {
+            soundController("play", "once", "bandmember", "Ha Ha");
+            if (character.hasHandgun===0) {
+                character.hasHandgun=Date.now;
+                collision.collisionDomRef.remove();
+                currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
+            }
+        }        
+        else if (collisionType==="Lighter") {
+            soundController("play", "once", "bandmember", "Oh Ya");
+            if (character.hasLighter===0) {
+                character.haslighter=Date.now;
+                collision.collisionDomRef.remove();
+                currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
+            }
+        }                        
+        else if (collisionType==="Pills") {
+            const pick=[0,1,2,3][Math.round(Math.random()*3)];
+            if (pick===0) soundController("play", "once", "bandmember", "Awesome");
+            if (pick===1) soundController("play", "once", "bandmember", "Guitar Riff");
+            if (pick===2) soundController("play", "once", "bandmember", "Ha Ha");
+            if (pick===3) soundController("play", "once", "bandmember", "Oh Ya");
+            character.health=character.health-20;
+            character.party=character.party+50;
+            collision.collisionDomRef.remove();
+            currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
+        }
+        else if (collisionType==="Wine") {
+            const pick=[0,1,2,3][Math.round(Math.random()*3)];
+            if (pick===0) soundController("play", "once", "bandmember", "Awesome");
+            if (pick===1) soundController("play", "once", "bandmember", "Guitar Riff");
+            if (pick===2) soundController("play", "once", "bandmember", "Ha Ha");
+            if (pick===3) soundController("play", "once", "bandmember", "Oh Ya");
+            character.health=character.health-10;
+            character.party=character.party+20;
+            collision.collisionDomRef.remove();
+            currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
+        }               
 
     }
 
