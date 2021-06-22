@@ -1048,8 +1048,8 @@ function dropPlayfieldObject(updateType, when) {
 
     const playfieldImage = document.createElement('img');
     playfieldImage.setAttribute('class', "game-playfield-object");
-    playfieldImage.setAttribute('data-gsy', tryX);
-    playfieldImage.setAttribute('data-gsx', tryY); 
+    playfieldImage.setAttribute('data-gsx', tryX);
+    playfieldImage.setAttribute('data-gsy', tryY); 
     playfieldImage.setAttribute('data-gst', playfieldObjectType);
     playfieldImage.setAttribute('src', playFieldObjectImages[playfieldObjectType]);    
     playfieldImage.style.position="absolute";
@@ -1123,9 +1123,6 @@ function movePlayer1() {
                 console.log(blockMovement[1]["collisionType"]);
                 soundController("play", "once", "sound_effect", "impact6");
                 player1.health=player1.health-2;
-            } else 
-            {
-                console.log(blockMovement[1]["collisionType"]);
             }
     }
 
@@ -1147,54 +1144,55 @@ Process Playfield Object Interactions
 function processPlayfieldInteractions(character, collision, collisionType) {
 
     if (character.id==="player1") {
-
+        console.log(collision, collisionType);
         if (collisionType==="Beer") {
-            player1.score+=25;
+            player1Score+=25;
             soundController("play", "once", "sound_effect", "coins");
-            gameDom["gameContainerPlayfield"].removeChild(collision.collisionDomRef);
-            currentGameLevel[collision.collisionGridCol][collision.collisionGridRow]=' ';
+            collision.collisionDomRef.remove();
+            currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }
         else if (collisionType==="Bomb") {
-            player1.score+=50;
+            player1Score+=50;
             soundController("play", "once", "sound_effect", "coins");
-            gameDom["gameContainerPlayfield"].removeChild(collision.collisionDomRef);
-            currentGameLevel[collision.collisionGridCol][collision.collisionGridRow]=' ';
+            collision.collisionDomRef.remove();
+            currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }
         else if (collisionType==="Coin") {
-            player1.score+=100;
+            player1Score+=100;
+            console.log(gameDom["gameContainerPlayfield"]);
             soundController("play", "once", "sound_effect", "coins");
-            gameDom["gameContainerPlayfield"].removeChild(collision.collisionDomRef);
-            currentGameLevel[collision.collisionGridCol][collision.collisionGridRow]=' ';
+            collision.collisionDomRef.remove();
+            currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }
         else if (collisionType==="Gem") {
-            player1.score+=250;
+            player1Score+=250;
             soundController("play", "once", "sound_effect", "coins");
-            gameDom["gameContainerPlayfield"].removeChild(collision.collisionDomRef);
-            currentGameLevel[collision.collisionGridCol][collision.collisionGridRow]=' ';
+            collision.collisionDomRef.remove();
+            currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }
         else if (collisionType==="Handgun") {
-            player1.score+=175;
+            player1Score+=175;
             soundController("play", "once", "sound_effect", "coins");
-            gameDom["gameContainerPlayfield"].removeChild(collision.collisionDomRef);
-            currentGameLevel[collision.collisionGridCol][collision.collisionGridRow]=' ';
+            collision.collisionDomRef.remove();
+            currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }        
         else if (collisionType==="Lighter") {
-            player1.score+=50;
+            player1Score+=50;
             soundController("play", "once", "sound_effect", "coins");
-            gameDom["gameContainerPlayfield"].removeChild(collision.collisionDomRef);
-            currentGameLevel[collision.collisionGridCol][collision.collisionGridRow]=' ';
+            collision.collisionDomRef.remove();
+            currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }                        
         else if (collisionType==="Pills") {
-            player1.score+=50;
+            player1Score+=50;
             soundController("play", "once", "sound_effect", "coins");
-            gameDom["gameContainerPlayfield"].removeChild(collision.collisionDomRef);
-            currentGameLevel[collision.collisionGridCol][collision.collisionGridRow]=' ';
+            collision.collisionDomRef.remove();
+            currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }
         else if (collisionType==="Wine") {
-            player1.score+=250;
+            player1Score+=250;
             soundController("play", "once", "sound_effect", "coins");
-            gameDom["gameContainerPlayfield"].removeChild(collision.collisionDomRef);
-            currentGameLevel[collision.collisionGridCol][collision.collisionGridRow]=' ';
+            collision.collisionDomRef.remove();
+            currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }       
     }
 
@@ -1202,8 +1200,8 @@ function processPlayfieldInteractions(character, collision, collisionType) {
 
         if (collisionType==="Stage") {
             player1Score=player1Score+1000;
-            bandMember.state="Stage";
-            bandMember.imageState="Hidden";
+            character.state="Stage";
+            character.imageState="Hidden";
         }
 
     }
