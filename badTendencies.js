@@ -78,7 +78,7 @@ Band Member Characters
 const mediaSoundsLibrary = [
     {
         "music_score" : {
-            "main" : './sounds/clearside_sandblaster.mp3',
+            "main" : './sounds/clearside_sandblaster_edit1.mp3',
         }
     },
     {
@@ -1228,7 +1228,7 @@ function processPlayfieldInteractions(character, collision, collisionType) {
             if (pick===2) soundController("play", "once", "bandmember", "Ha Ha");
             if (pick===3) soundController("play", "once", "bandmember", "Oh Ya");
             character.health=character.health-5;
-            character.party=character.party+5;
+            character.party=character.party+10;
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }
@@ -1250,8 +1250,8 @@ function processPlayfieldInteractions(character, collision, collisionType) {
         }
         else if (collisionType==="Handgun") {
             soundController("play", "once", "bandmember", "Ha Ha");
-            if (character.hasHandgun===0) {
-                character.hasHandgun=Date.now;
+            if (character.hasGun===0) {
+                character.hasGun=Date.now;
                 collision.collisionDomRef.remove();
                 currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
             }
