@@ -7,7 +7,7 @@ const BANDMEMBER_DEFAULT_STATE="Wander";
 const BANDMEMBER_STATE_CHANGE_DELAY=4000;
 const BANDMEMBER_DIR_CHANGE_DELAY=4000;
 const BANDMEMBER_FOLLOW_CHANGE_DELAY=1000;
-const BANDMEMBER_PID_MAXHISTORY=20;  // Proportional, Integral, Differential Motion Control
+const BANDMEMBER_MOVE_MAXHISTORY=20;  // Proportional, Integral, Differential Motion Control
 const BANDMEMBER_HEALTH_RECOVERY=0.1;
 const BANDMEMBER_PARTY_RECOVERY=0.1;
 const BANDMEMBER_COOLDOWN=3000; // milliseconds
@@ -19,8 +19,8 @@ const ANIMATION_FRAME_DELAY=100; // milliseconds
 const SPLASH_SCREEN_DELAY=3000; // milliseconds
 
 
-let GOOD_PLAYFIELD_OBJECT_DROP_RATE=20000; // milliseconds
-let BAD_PLAYFIELD_OBJECT_DROP_RATE=20000; // milliseconds
+let GOOD_PLAYFIELD_OBJECT_DROP_RATE=40000; // milliseconds
+let BAD_PLAYFIELD_OBJECT_DROP_RATE=30000; // milliseconds
 let lastGoodDropTime=0;
 let lastBadDropTime=0;
 
@@ -99,7 +99,8 @@ const mediaSoundsLibrary = [
             "impact1" :  './sounds/sfx_sounds_impact1.wav',
             "impact6" :  './sounds/sfx_sounds_impact6.wav',
             "pause" :  './sounds/sfx_sounds_pause4_in.wav',
-            "shotgun" :  './sounds/sfx_weapon_shotgun3.wav',         
+            "shotgun" :  './sounds/sfx_weapon_shotgun3.wav',                
+            "thud" :  './sounds/thud.wav',         
         }
     },
     {
@@ -538,8 +539,8 @@ class BandMember {
         this._hasGun=0;    
         this._hasGunBullets=0;
         this._cooldown=0;
-        this._PIDBuffer=[];  
-        this._PIDBufferIndex=0;
+        this._MoveBuffer=[];  
+        this._MoveBufferIndex=0;
         this._image=Object.assign({}, bandMemberCharacter.image);
 
         this._imageDiv=document.createElement("div");
@@ -640,15 +641,15 @@ class BandMember {
         }
     } 
     
-    updatePIDBuffer ()  { 
-        // Keep a history of last n movement differentials in a circular buffer
-        if (this._PIDBufferIndex===BANDMEMBER_PID_MAXHISTORY) { 
-                this._PIDBufferIndex=0;
+    updateMoveBuffer ()  { 
+        // Keep a history of last n movements in a circular buffer
+        if (this._MoveBufferIndex===BANDMEMBER_MOVE_MAXHISTORY) { 
+                this._MoveBufferIndex=0;
         }
-        this._PIDBuffer[this._PIDBufferIndex]=Math.sqrt( (this._posX-this._lastPosX)**2 + (this._posY-this._lastPosY)**2 );
+        this._MoveBuffer[this._MoveBufferIndex]=Math.sqrt( (this._posX-this._lastPosX)**2 + (this._posY-this._lastPosY)**2 );
         this._lastPosX=this._posX;
         this._lastPosY=this._posY;
-        this._PIDBufferIndex++;
+        this._MoveBufferIndex++;
     }
 
     updateVitalsCooldown ()  { 
@@ -663,12 +664,12 @@ class BandMember {
         }
     }
     
-     getPIDBufferDiffs() {
-        let totalPIDDiffs=0;
-        for (let i=0; i<this._PIDBuffer.length; i++) {
-            totalPIDDiffs=totalPIDDiffs+this._PIDBuffer[i];
+     getMoveBufferDiffs() {
+        let totalMoveDiffs=0;
+        for (let i=0; i<this._MoveBuffer.length; i++) {
+            totalMoveDiffs=totalMoveDiffs+this._MoveBuffer[i];
         }
-        return totalPIDDiffs;
+        return totalMoveDiffs;
     }
 
     incrementImageAnimation() {
@@ -852,36 +853,6 @@ function distanceBetweenCharacters(character1, character2) {
     return Math.sqrt( (character1.posX-character2.posX)**2 + (character1.posY-character2.posY)**2 );
 }
 
-// Return compass direction to follow player
-function followDirection(player, character) {
-
-    const currentTime=Date.now();
-    if ( (currentTime-character.lastDirChange)<BANDMEMBER_FOLLOW_CHANGE_DELAY ) {
-        return character.direction;
-    }
-
-    let direction="";
-    if ( ( Math.abs(player.posX-character.posX) > Math.abs(player.posY-character.posY) )  ) {
-        if (player.posX<character.posX) direction='W';
-        else direction='E';
-    }
-    else {
-        if (player.posY<character.posY) direction='N';
-        else direction='S';
-    }
-
-    const totalDiffs = character.getPIDBufferDiffs();
-    //console.log("totalDiffs", totalDiffs);
-    const diffRatio = (totalDiffs/BANDMEMBER_PID_MAXHISTORY*character.speed);
-    //console.log(character, "diffRatio:", diffRatio);
-
-    if (Math.random()>diffRatio) {
-        direction=['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
-    }
-
-    return direction;
-    
-}
 
 // Initialize DOM and cache game sounds 
 
@@ -1147,6 +1118,113 @@ function movePlayer1() {
 
 }
 
+
+
+/*==========================================================================
+Control Band Member Movement
+===========================================================================*/
+
+function moveBandMember(bandMember) {
+    
+    if ( (bandMember.state==='Stage') || (bandMember.state==='Dead') ) {
+        return;
+    }
+
+    const currentPosX = bandMember.posX;
+    const currentPosY = bandMember.posY;
+    const stepwiseCollisionXY = [];
+    let newPosX = currentPosX;
+    let newPosY = currentPosY;
+
+    let bounceBack=false;
+
+    if (bandMember.direction==='N') newPosY = bandMember.posY - bandMember.speed;
+    if (bandMember.direction==='S') newPosY = bandMember.posY + bandMember.speed;
+    if (bandMember.direction==='W') newPosX = bandMember.posX - bandMember.speed;
+    if (bandMember.direction==='E') newPosX = bandMember.posX + bandMember.speed;
+    
+    stepwiseCollisionXY[0]=currentPosX;
+    stepwiseCollisionXY[1]=currentPosY;
+    const blockMovement=checkCollisions(bandMember, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
+
+    if (blockMovement[0]) {
+        if ((blockMovement[1]["collisionType"]==='player1') || 
+            (blockMovement[1]["collisionType"]==='bandMember1') || 
+            (blockMovement[1]["collisionType"]==='bandMember2') || 
+            (blockMovement[1]["collisionType"]==='bandMember3') || 
+            (blockMovement[1]["collisionType"]==='bandMember4') ) {
+                //console.log(blockMovement[1]["collisionType"]);
+                bounceBack=true;
+                // bandMember.health=bandMember.health-2;
+            }
+            else {
+                bandMember.lastDirChange=0;
+            }
+    }
+
+    if ( (!blockMovement[0]) && (blockMovement[1]["collision"]===true) ) {
+        console.log("Band Member", blockMovement[1]["collisionType"]);
+    }
+
+
+    if ( (!blockMovement[0]) && (blockMovement[1]["collision"]===true) ) {
+        processPlayfieldInteractions(bandMember, blockMovement[1], blockMovement[1]["collisionType"]);
+    }
+
+    if (bounceBack) {
+            
+        if (bandMember.direction==='S') newPosY = bandMember.posY - bandMember.speed*BOUNCEBACK_FACTOR;
+        if (bandMember.direction==='N') newPosY = bandMember.posY + bandMember.speed*BOUNCEBACK_FACTOR;
+        if (bandMember.direction==='E') newPosX = bandMember.posX - bandMember.speed*BOUNCEBACK_FACTOR;
+        if (bandMember.direction==='W') newPosX = bandMember.posX + bandMember.speed*BOUNCEBACK_FACTOR;
+        
+        stepwiseCollisionXY[0]=currentPosX;
+        stepwiseCollisionXY[1]=currentPosY;
+        const blockMovement=checkCollisions(bandMember, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
+    }
+ 
+    if (bandMember.direction==='N') bandMember.posY = stepwiseCollisionXY[1];
+    if (bandMember.direction==='S') bandMember.posY = stepwiseCollisionXY[1];
+    if (bandMember.direction==='W') bandMember.posX = stepwiseCollisionXY[0];
+    if (bandMember.direction==='E') bandMember.posX = stepwiseCollisionXY[0];
+
+}
+
+/*==========================================================================
+ Return compass direction to follow player
+===========================================================================*/
+
+function followDirection(player, character) {
+
+    const currentTime=Date.now();
+    if ( (currentTime-character.lastDirChange)<BANDMEMBER_FOLLOW_CHANGE_DELAY ) {
+        return character.direction;
+    }
+
+    let direction="";
+    if ( ( Math.abs(player.posX-character.posX) > Math.abs(player.posY-character.posY) )  ) {
+        if (player.posX<character.posX) direction='W';
+        else direction='E';
+    }
+    else {
+        if (player.posY<character.posY) direction='N';
+        else direction='S';
+    }
+
+    const totalDiffs = character.getMoveBufferDiffs();
+    const diffRatio = (totalDiffs/(BANDMEMBER_MOVE_MAXHISTORY*BOUNCEBACK_FACTOR*character.speed));
+    console.log(character, "totalDiffs", totalDiffs, "Max=", (BANDMEMBER_MOVE_MAXHISTORY*BOUNCEBACK_FACTOR*character.speed), "diffRatio:", diffRatio);
+
+    if (Math.random()<diffRatio) {
+        direction=['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
+    }
+
+    return direction;
+    
+}
+
+
+
 /*==========================================================================
 Process Playfield Object Interactions
 ===========================================================================*/
@@ -1291,77 +1369,6 @@ function processPlayfieldInteractions(character, collision, collisionType) {
 
 }
 
-
-
-/*==========================================================================
-Control Band Member Movement
-===========================================================================*/
-
-function moveBandMember(bandMember) {
-    
-    if ( (bandMember.state==='Stage') || (bandMember.state==='Dead') ) {
-        return;
-    }
-
-    const currentPosX = bandMember.posX;
-    const currentPosY = bandMember.posY;
-    const stepwiseCollisionXY = [];
-    let newPosX = currentPosX;
-    let newPosY = currentPosY;
-
-    let bounceBack=false;
-
-    if (bandMember.direction==='N') newPosY = bandMember.posY - bandMember.speed;
-    if (bandMember.direction==='S') newPosY = bandMember.posY + bandMember.speed;
-    if (bandMember.direction==='W') newPosX = bandMember.posX - bandMember.speed;
-    if (bandMember.direction==='E') newPosX = bandMember.posX + bandMember.speed;
-    
-    stepwiseCollisionXY[0]=currentPosX;
-    stepwiseCollisionXY[1]=currentPosY;
-    const blockMovement=checkCollisions(bandMember, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
-
-    if (blockMovement[0]) {
-        if ( (blockMovement[1]["collisionType"]==='player1') || 
-            (blockMovement[1]["collisionType"]==='bandMember1') || 
-            (blockMovement[1]["collisionType"]==='bandMember2') || 
-            (blockMovement[1]["collisionType"]==='bandMember3') || 
-            (blockMovement[1]["collisionType"]==='bandMember4') ) {
-                //console.log(blockMovement[1]["collisionType"]);
-                bounceBack=true;
-                // bandMember.health=bandMember.health-2;
-            }
-            else {
-                bandMember.lastDirChange=0;
-            }
-    }
-
-    if ( (!blockMovement[0]) && (blockMovement[1]["collision"]===true) ) {
-        console.log("Band Member", blockMovement[1]["collisionType"]);
-    }
-
-
-    if ( (!blockMovement[0]) && (blockMovement[1]["collision"]===true) ) {
-        processPlayfieldInteractions(bandMember, blockMovement[1], blockMovement[1]["collisionType"]);
-    }
-
-    if (bounceBack) {
-            
-        if (bandMember.direction==='S') newPosY = bandMember.posY - bandMember.speed*BOUNCEBACK_FACTOR;
-        if (bandMember.direction==='N') newPosY = bandMember.posY + bandMember.speed*BOUNCEBACK_FACTOR;
-        if (bandMember.direction==='E') newPosX = bandMember.posX - bandMember.speed*BOUNCEBACK_FACTOR;
-        if (bandMember.direction==='W') newPosX = bandMember.posX + bandMember.speed*BOUNCEBACK_FACTOR;
-        
-        stepwiseCollisionXY[0]=currentPosX;
-        stepwiseCollisionXY[1]=currentPosY;
-        const blockMovement=checkCollisions(bandMember, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
-    }
- 
-    if (bandMember.direction==='N') bandMember.posY = stepwiseCollisionXY[1];
-    if (bandMember.direction==='S') bandMember.posY = stepwiseCollisionXY[1];
-    if (bandMember.direction==='W') bandMember.posX = stepwiseCollisionXY[0];
-    if (bandMember.direction==='E') bandMember.posX = stepwiseCollisionXY[0];
-
-}
 
 
 /*==========================================================================
@@ -2111,11 +2118,9 @@ const currentTime=Date.now();
 displayCharacterStatus("update");
 
 // DIsplay the Scoreboard header
-
 displayScoreBoard();
 
 // Check is the player is Dead
-
 if (player1.health<=0) {
     player1.health=0;
     player1.state='Dead';
@@ -2135,7 +2140,6 @@ if (player1.health<=0) {
 }
 
 // Check to See if All Band Members Have Entered the Stage
-
 if  (   ( (bandMember1.state==="Stage") || (bandMember1.state==="Dead") ) && 
         ( (bandMember2.state==="Stage") || (bandMember2.state==="Dead") ) && 
         ( (bandMember3.state==="Stage") || (bandMember3.state==="Dead") ) && 
@@ -2312,11 +2316,11 @@ bandMember2.incrementImageAnimation();
 bandMember3.incrementImageAnimation();
 bandMember4.incrementImageAnimation();
 
-// Next, update PID buffers
-bandMember1.updatePIDBuffer();
-bandMember2.updatePIDBuffer();
-bandMember3.updatePIDBuffer();
-bandMember4.updatePIDBuffer();
+// Next, update Move Tracking buffers
+bandMember1.updateMoveBuffer();
+bandMember2.updateMoveBuffer();
+bandMember3.updateMoveBuffer();
+bandMember4.updateMoveBuffer();
 
 //Next, update player and band member health and party levels
 player1.updateVitalsCooldown();
