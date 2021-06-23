@@ -7,7 +7,7 @@ const BANDMEMBER_DEFAULT_STATE="Wander";
 const BANDMEMBER_STATE_CHANGE_DELAY=4000;
 const BANDMEMBER_DIR_CHANGE_DELAY=4000;
 const BANDMEMBER_FOLLOW_CHANGE_DELAY=1000;
-const BANDMEMBER_MOVE_MAXHISTORY=20;  // Proportional, Integral, Differential Motion Control
+const BANDMEMBER_MOVE_MAXHISTORY=20;  
 const BANDMEMBER_HEALTH_RECOVERY=0.1;
 const BANDMEMBER_PARTY_RECOVERY=0.1;
 const BANDMEMBER_COOLDOWN=3000; // milliseconds
@@ -529,18 +529,16 @@ class BandMember {
         this._direction='';
         this._posX=positionX;
         this._posY=positionY;
-        this._lastPosX=positionX;
-        this._lastPosY=positionY;
         this._state=BANDMEMBER_DEFAULT_STATE;
         this._lastStateChange=Date.now();
-        this._lastDirChange=Date.now(); 
+        this._lastDirChange=Date.now();
+        this._lastDirection='';
+        this._lastDirChangeReason='';
         this._hasLighter=0;
         this._hasBomb=0;
         this._hasGun=0;    
         this._hasGunBullets=0;
         this._cooldown=0;
-        this._MoveBuffer=[];  
-        this._MoveBufferIndex=0;
         this._image=Object.assign({}, bandMemberCharacter.image);
 
         this._imageDiv=document.createElement("div");
@@ -594,9 +592,20 @@ class BandMember {
 
     get speed() { return this._speed; }
     set speed(setSpeed) { this._speed=setSpeed; }
-    
+
+    get lastDirection() { return this._lastDirection; }
+    set lastDirection(setLastDirection) {
+        this._lastDirection=setLastDirection;
+    }
+    set lastDirChangeReason(setDirChangeReason) {
+            this._lastDirChangeReason=setDirChangeReason;
+    }
+
     get direction() { return this._direction; }
-    set direction(setDirection) { this._direction=setDirection; }
+    set direction(setDirection) {
+            this._lastDirection=this._direction;
+            this._direction=setDirection; 
+    }
 
     get posX() { return this._posX; }
     set posX(setPosX) { 
@@ -640,17 +649,7 @@ class BandMember {
             this._lastDirChange=Date.now();
         }
     } 
-    
-    updateMoveBuffer ()  { 
-        // Keep a history of last n movements in a circular buffer
-        if (this._MoveBufferIndex===BANDMEMBER_MOVE_MAXHISTORY) { 
-                this._MoveBufferIndex=0;
-        }
-        this._MoveBuffer[this._MoveBufferIndex]=Math.sqrt( (this._posX-this._lastPosX)**2 + (this._posY-this._lastPosY)**2 );
-        this._lastPosX=this._posX;
-        this._lastPosY=this._posY;
-        this._MoveBufferIndex++;
-    }
+
 
     updateVitalsCooldown ()  { 
         // Update the health and party vitals on each game loop
@@ -664,13 +663,6 @@ class BandMember {
         }
     }
     
-     getMoveBufferDiffs() {
-        let totalMoveDiffs=0;
-        for (let i=0; i<this._MoveBuffer.length; i++) {
-            totalMoveDiffs=totalMoveDiffs+this._MoveBuffer[i];
-        }
-        return totalMoveDiffs;
-    }
 
     incrementImageAnimation() {
         const row=this._image[this._image["imageState"]][0];
@@ -1124,9 +1116,21 @@ function movePlayer1() {
 Control Band Member Movement
 ===========================================================================*/
 
-function moveBandMember(bandMember) {
-    
+function moveBandMember(bandMember, actionType, checkDirection, collisionResults) {
+
     if ( (bandMember.state==='Stage') || (bandMember.state==='Dead') ) {
+
+        if (actionType==="CheckOnly") {
+            collisionResults.collision=false;
+            collisionResults.collisionType="";
+            collisionResults.collisionDomRef="";
+            collisionResults.collisionDomObjType="";
+            collisionResults.collisionDomObjType="";
+            collisionResults.collisionGridCol="";
+            collisionResults.collisionGridRow="";
+            collisionResults.isAllowed=true;
+        }
+
         return;
     }
 
@@ -1138,11 +1142,19 @@ function moveBandMember(bandMember) {
 
     let bounceBack=false;
 
-    if (bandMember.direction==='N') newPosY = bandMember.posY - bandMember.speed;
-    if (bandMember.direction==='S') newPosY = bandMember.posY + bandMember.speed;
-    if (bandMember.direction==='W') newPosX = bandMember.posX - bandMember.speed;
-    if (bandMember.direction==='E') newPosX = bandMember.posX + bandMember.speed;
-    
+    if (actionType!=="CheckOnly") {
+        if (bandMember.direction==='N') newPosY = bandMember.posY - bandMember.speed;
+        if (bandMember.direction==='S') newPosY = bandMember.posY + bandMember.speed;
+        if (bandMember.direction==='W') newPosX = bandMember.posX - bandMember.speed;
+        if (bandMember.direction==='E') newPosX = bandMember.posX + bandMember.speed;
+    }
+    else {
+        if (checkDirection==='N') newPosY = bandMember.posY - bandMember.speed;
+        if (checkDirection==='S') newPosY = bandMember.posY + bandMember.speed;
+        if (checkDirection==='W') newPosX = bandMember.posX - bandMember.speed;
+        if (checkDirection==='E') newPosX = bandMember.posX + bandMember.speed;        
+    }
+
     stepwiseCollisionXY[0]=currentPosX;
     stepwiseCollisionXY[1]=currentPosY;
     const blockMovement=checkCollisions(bandMember, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
@@ -1158,20 +1170,25 @@ function moveBandMember(bandMember) {
                 // bandMember.health=bandMember.health-2;
             }
             else {
-                bandMember.lastDirChange=0;
+                if (actionType!=="CheckOnly") {
+                    bandMember.lastDirChange=0;
+                    if (blockMovement[1]["collisionType"]==='Wall')  {
+                        bandMember.lastDirection=bandMember.direction;
+                        bandMember.lastDirChangeReason='Wall';
+                    }
+                    else if (blockMovement[1]["collisionType"]==='Pit')  {
+                        bandMember.lastDirection=bandMember.direction;
+                        bandMember.lastDirChangeReason='Pit';
+                    }
+                }
             }
     }
 
-    if ( (!blockMovement[0]) && (blockMovement[1]["collision"]===true) ) {
-        console.log("Band Member", blockMovement[1]["collisionType"]);
-    }
-
-
-    if ( (!blockMovement[0]) && (blockMovement[1]["collision"]===true) ) {
+    if ( (actionType!=="CheckOnly") && (!blockMovement[0]) && (blockMovement[1]["collision"]===true) ) {
         processPlayfieldInteractions(bandMember, blockMovement[1], blockMovement[1]["collisionType"]);
     }
 
-    if (bounceBack) {
+    if ( (actionType!=="CheckOnly") && (bounceBack) ) {
             
         if (bandMember.direction==='S') newPosY = bandMember.posY - bandMember.speed*BOUNCEBACK_FACTOR;
         if (bandMember.direction==='N') newPosY = bandMember.posY + bandMember.speed*BOUNCEBACK_FACTOR;
@@ -1183,10 +1200,25 @@ function moveBandMember(bandMember) {
         const blockMovement=checkCollisions(bandMember, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
     }
  
-    if (bandMember.direction==='N') bandMember.posY = stepwiseCollisionXY[1];
-    if (bandMember.direction==='S') bandMember.posY = stepwiseCollisionXY[1];
-    if (bandMember.direction==='W') bandMember.posX = stepwiseCollisionXY[0];
-    if (bandMember.direction==='E') bandMember.posX = stepwiseCollisionXY[0];
+    if (actionType!=="CheckOnly") {
+        if (bandMember.direction==='N') bandMember.posY = stepwiseCollisionXY[1];
+        if (bandMember.direction==='S') bandMember.posY = stepwiseCollisionXY[1];
+        if (bandMember.direction==='W') bandMember.posX = stepwiseCollisionXY[0];
+        if (bandMember.direction==='E') bandMember.posX = stepwiseCollisionXY[0];
+    }
+
+    if (actionType==="CheckOnly") {
+        collisionResults.collision=blockMovement[1].collision;
+        collisionResults.collisionType=blockMovement[1].collisionType;
+        collisionResults.collisionDomRef=blockMovement[1].collisionDomRef;
+        collisionResults.collisionDomObjType=blockMovement[1].collisionDomObjType;
+        collisionResults.collisionDomObjType=blockMovement[1].collisionDomObjType;
+        collisionResults.collisionGridCol=blockMovement[1].collisionGridCol;
+        collisionResults.collisionGridRow=blockMovement[1].collisionGridRow;
+        collisionResults.isAllowed=blockMovement[1].isAllowed;
+    }
+
+
 
 }
 
@@ -1197,11 +1229,15 @@ function moveBandMember(bandMember) {
 function followDirection(player, character) {
 
     const currentTime=Date.now();
+    let direction="";
+    let checkCollisionResults={};
+    let failedDirections="";
+    let remainingDirections=[];
+
     if ( (currentTime-character.lastDirChange)<BANDMEMBER_FOLLOW_CHANGE_DELAY ) {
         return character.direction;
     }
 
-    let direction="";
     if ( ( Math.abs(player.posX-character.posX) > Math.abs(player.posY-character.posY) )  ) {
         if (player.posX<character.posX) direction='W';
         else direction='E';
@@ -1211,16 +1247,63 @@ function followDirection(player, character) {
         else direction='S';
     }
 
-    const totalDiffs = character.getMoveBufferDiffs();
-    const diffRatio = (totalDiffs/(BANDMEMBER_MOVE_MAXHISTORY*BOUNCEBACK_FACTOR*character.speed));
-    console.log(character, "totalDiffs", totalDiffs, "Max=", (BANDMEMBER_MOVE_MAXHISTORY*BOUNCEBACK_FACTOR*character.speed), "diffRatio:", diffRatio);
+    moveBandMember(character, "CheckOnly", direction, checkCollisionResults);
 
-    if (Math.random()<diffRatio) {
-        direction=['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
+    if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
+        return direction;
+    }
+    else {
+        failedDirections=failedDirections+direction;
     }
 
-    return direction;
+    if ( ( Math.abs(player.posX-character.posX) > Math.abs(player.posY-character.posY) )  ) {
+        if (player.posY<character.posY) direction='N';
+        else direction='S';           
+    }
+    else {
+        if (player.posX<character.posX) direction='W';
+        else direction='E';
+    }
     
+    moveBandMember(character, "CheckOnly", direction, checkCollisionResults);
+
+    if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
+        return direction;
+    }
+    else {
+        failedDirections=failedDirections+direction;
+    }
+    
+    if (failedDirections.indexOf('N')===-1) remainingDirections.push('N');
+    if (failedDirections.indexOf('S')===-1) remainingDirections.push('S');
+    if (failedDirections.indexOf('W')===-1) remainingDirections.push('W');
+    if (failedDirections.indexOf('E')===-1) remainingDirections.push('E');
+    
+    direction=remainingDirections[Math.round(Math.random()*(remainingDirections.length-1))];
+
+    moveBandMember(character, "CheckOnly", direction, checkCollisionResults);
+
+    if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
+        return direction;
+    }
+    else {
+        failedDirections=failedDirections+direction;
+    }
+    
+    remainingDirections=[];
+    if (failedDirections.indexOf('N')===-1) remainingDirections.push('N');
+    if (failedDirections.indexOf('S')===-1) remainingDirections.push('S');
+    if (failedDirections.indexOf('W')===-1) remainingDirections.push('W');
+    if (failedDirections.indexOf('E')===-1) remainingDirections.push('E');
+
+    direction=remainingDirections[Math.round(Math.random()*(remainingDirections.length-1))];
+
+    if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
+        return direction;
+    }
+    else {
+        return ['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
+    }    
 }
 
 
@@ -2244,25 +2327,25 @@ if (bandMember1.state==='Follow') {
     const direction=followDirection(player1, bandMember1);
     bandMember1.direction=direction;
     bandMember1.imageState=directionToImageState[direction];
-    moveBandMember(bandMember1);
+    moveBandMember(bandMember1, "", "", "");
 }
 if (bandMember2.state==='Follow') {
     const direction=followDirection(player1, bandMember2);
     bandMember2.direction=direction;
     bandMember2.imageState=directionToImageState[direction];
-    moveBandMember(bandMember2);
+    moveBandMember(bandMember2, "", "", "");
 }
 if (bandMember3.state==='Follow') {
     const direction=followDirection(player1, bandMember3);
     bandMember3.direction=direction;
     bandMember3.imageState=directionToImageState[direction];
-    moveBandMember(bandMember3);
+    moveBandMember(bandMember3, "", "", "");
 }
 if (bandMember4.state==='Follow') {
     const direction=followDirection(player1, bandMember4);
     bandMember4.direction=direction;
     bandMember4.imageState=directionToImageState[direction];
-    moveBandMember(bandMember4);
+    moveBandMember(bandMember4, "", "", "");
 }
 
 
@@ -2275,7 +2358,7 @@ if (bandMember1.state==='Wander') {
         bandMember1.direction=randomDirection;
         bandMember1.imageState=directionToImageState[randomDirection];
     }    
-    moveBandMember(bandMember1);
+    moveBandMember(bandMember1, "", "", "");
 }
 
 if (bandMember2.state==='Wander') {
@@ -2285,7 +2368,7 @@ if (bandMember2.state==='Wander') {
         bandMember2.direction=randomDirection;
         bandMember2.imageState=directionToImageState[randomDirection];
     }    
-    moveBandMember(bandMember2);
+    moveBandMember(bandMember2, "", "", "");
 }
 
 if (bandMember3.state==='Wander') {
@@ -2295,7 +2378,7 @@ if (bandMember3.state==='Wander') {
         bandMember3.direction=randomDirection;
         bandMember3.imageState=directionToImageState[randomDirection];
     }    
-    moveBandMember(bandMember3);
+    moveBandMember(bandMember3, "", "", "");
 }
 
 if (bandMember4.state==='Wander') {
@@ -2305,7 +2388,7 @@ if (bandMember4.state==='Wander') {
         bandMember4.direction=randomDirection;
         bandMember4.imageState=directionToImageState[randomDirection];
     }    
-    moveBandMember(bandMember4);
+    moveBandMember(bandMember4, "", "", "");
 }
 
 
@@ -2315,12 +2398,6 @@ bandMember1.incrementImageAnimation();
 bandMember2.incrementImageAnimation();
 bandMember3.incrementImageAnimation();
 bandMember4.incrementImageAnimation();
-
-// Next, update Move Tracking buffers
-bandMember1.updateMoveBuffer();
-bandMember2.updateMoveBuffer();
-bandMember3.updateMoveBuffer();
-bandMember4.updateMoveBuffer();
 
 //Next, update player and band member health and party levels
 player1.updateVitalsCooldown();
