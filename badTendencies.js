@@ -1735,8 +1735,134 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
     }
 }
 
+/*=============================================================================================
+// Check Line of Sight Object Detection with optional distance parameter 
+==============================================================================================*/
 
+function lineOfSight(bandMember, distance) {
+
+// Approximation of center of character sprite used for line of site playfield searches
+const currentPosX = bandMember.posX+16+(32/2);
+const currentPosY = bandMember.posY+12+(52/2);
+const currentGridRow = Math.floor(currentPosY/32);
+const currentGridCol = Math.floor(currentPosX/32);
+
+const player1GridCol=Math.floor((player1.posX+16+(32/2))/32);
+const player1GridRow=Math.floor((player1.posY+12+(52/2))/32);
+
+const bandMember1GridCol=Math.floor((bandMember1.posX+16+(32/2))/32);
+const bandMember1GridRow=Math.floor((bandMember1.posY+12+(52/2))/32);
+
+const bandMember2GridCol=Math.floor((bandMember2.posX+16+(32/2))/32);
+const bandMember2GridRow=Math.floor((bandMember2.posY+12+(52/2))/32);
+
+const bandMember3GridCol=Math.floor((bandMember3.posX+16+(32/2))/32);
+const bandMember3GridRow=Math.floor((bandMember3.posY+12+(52/2))/32);
+
+const bandMember4GridCol=Math.floor((bandMember4.posX+16+(32/2))/32);
+const bandMember4GridRow=Math.floor((bandMember4.posY+12+(52/2))/32);
+
+let LineOfSightHitResults=[];
+let hitFlag=false;
+let hitType="";
+
+// Check North
+hitFlag=false;
+hitType="";
+for (let row=currentGridRow; row>=0; row--) {
+    const squareHas = currentGameLevel[row][currentGridCol];
+
+    if (squareHas==='W') { hitFlag=true; hitType="Wall"; break; }
+    if (squareHas!==' ') { hitFlag=true; hitType=squareHas; break; }
+ 
+    if ( (player1GridCol===currentGridCol) && (player1GridRow===row) ) {
+        hitFlag=true; hitType="player1"; break; }
+    if ( (bandMember.id!=="bandMember1") && (bandMember1GridCol===currentGridCol) && (bandMember1GridRow===row) ) {
+        hitFlag=true; hitType="bandMember1"; break; }
+    if ( (bandMember.id!=="bandMember2") &&  (bandMember2GridCol===currentGridCol) && (bandMember2GridRow===row) ) {
+        hitFlag=true; hitType="bandMember2"; break; }
+    if (  (bandMember.id!=="bandMember3") && (bandMember3GridCol===currentGridCol) && (bandMember3GridRow===row) ) {
+        hitFlag=true; hitType="bandMember3"; break; }
+    if (  (bandMember.id!=="bandMember4") && (bandMember4GridCol===currentGridCol) && (bandMember4GridRow===row) ) {
+        hitFlag=true; hitType="bandMember4"; break; }
+}
+
+if (hitFlag) LineOfSightHitResults.push( { "N": hitType, } );
+
+// Check South
+hitFlag=false;
+hitType="";
+for (let row=currentGridRow; row<32; row++) {
+    const squareHas = currentGameLevel[row][currentGridCol];
+
+    if (squareHas==='W') { hitFlag=true; hitType="Wall"; break; }
+    if (squareHas!==' ') { hitFlag=true; hitType=squareHas; break; }
+ 
+    if ( (player1GridCol===currentGridCol) && (player1GridRow===row) ) {
+        hitFlag=true; hitType="player1"; break; }
+    if ( (bandMember.id!=="bandMember1") && (bandMember1GridCol===currentGridCol) && (bandMember1GridRow===row) ) {
+        hitFlag=true; hitType="bandMember1"; break; }
+    if ( (bandMember.id!=="bandMember2") &&  (bandMember2GridCol===currentGridCol) && (bandMember2GridRow===row) ) {
+        hitFlag=true; hitType="bandMember2"; break; }
+    if (  (bandMember.id!=="bandMember3") && (bandMember3GridCol===currentGridCol) && (bandMember3GridRow===row) ) {
+        hitFlag=true; hitType="bandMember3"; break; }
+    if (  (bandMember.id!=="bandMember4") && (bandMember4GridCol===currentGridCol) && (bandMember4GridRow===row) ) {
+        hitFlag=true; hitType="bandMember4"; break; }
+}
+if (hitFlag) LineOfSightHitResults.push( { "S": hitType, } );
+
+// Check West
+hitFlag=false;
+hitType="";
+for (let col=currentGridCol; col>=0; col--) {
+    const squareHas = currentGameLevel[currentGridRow][col];
+
+    if (squareHas==='W') { hitFlag=true; hitType="Wall"; break; }
+    if (squareHas!==' ') { hitFlag=true; hitType=squareHas; break; }
+ 
+    if ( (player1GridCol===col) && (player1GridRow===currentGridRow) ) {
+        hitFlag=true; hitType="player1"; break; }
+    if ( (bandMember.id!=="bandMember1") && (bandMember1GridCol===col) && (bandMember1GridRow===currentGridRow) ) {
+        hitFlag=true; hitType="bandMember1"; break; }
+    if ( (bandMember.id!=="bandMember2") &&  (bandMember2GridCol===col) && (bandMember2GridRow===currentGridRow) ) {
+        hitFlag=true; hitType="bandMember2"; break; }
+    if (  (bandMember.id!=="bandMember3") && (bandMember3GridCol===col) && (bandMember3GridRow===currentGridRow) ) {
+        hitFlag=true; hitType="bandMember3"; break; }
+    if (  (bandMember.id!=="bandMember4") && (bandMember4GridCol===col) && (bandMember4GridRow===currentGridRow) ) {
+        hitFlag=true; hitType="bandMember4"; break; }
+}
+if (hitFlag) LineOfSightHitResults.push( { "W": hitType, } );
+
+// Check East
+hitFlag=false;
+hitType="";
+for (let col=currentGridCol; col<32; col++) {
+    const squareHas = currentGameLevel[currentGridRow][col];
+
+    if (squareHas==='W') { hitFlag=true; hitType="Wall"; break; }
+    if (squareHas!==' ') { hitFlag=true; hitType=squareHas; break; }
+ 
+    if ( (player1GridCol===col) && (player1GridRow===currentGridRow) ) {
+        hitFlag=true; hitType="player1"; break; }
+    if ( (bandMember.id!=="bandMember1") && (bandMember1GridCol===col) && (bandMember1GridRow===currentGridRow) ) {
+        hitFlag=true; hitType="bandMember1"; break; }
+    if ( (bandMember.id!=="bandMember2") &&  (bandMember2GridCol===col) && (bandMember2GridRow===currentGridRow) ) {
+        hitFlag=true; hitType="bandMember2"; break; }
+    if (  (bandMember.id!=="bandMember3") && (bandMember3GridCol===col) && (bandMember3GridRow===currentGridRow) ) {
+        hitFlag=true; hitType="bandMember3"; break; }
+    if (  (bandMember.id!=="bandMember4") && (bandMember4GridCol===col) && (bandMember4GridRow===currentGridRow) ) {
+        hitFlag=true; hitType="bandMember4"; break; }
+}
+if (hitFlag) LineOfSightHitResults.push( { "E": hitType, } );
+
+return LineOfSightHitResults;
+
+}
+
+
+/*=============================================================================================
 // Check overlap collision between two bounding boxes, returns boolean true upon collision
+==============================================================================================*/
 
 function collides(posX1, posY1, width1, height1, posX2, posY2, width2, height2) {
 
@@ -2347,6 +2473,18 @@ if (bandMember4.health<=0) {
     bandMember4.state='Dead';
     bandMember4.imageState='Die';    
 }
+
+// Check line of site interactions for Band Members
+const bandMember1LOS=lineOfSight(bandMember1, "");
+const bandMember2LOS=lineOfSight(bandMember2, "");
+const bandMember3LOS=lineOfSight(bandMember3, "");
+const bandMember4LOS=lineOfSight(bandMember4, "");
+
+console.log("BM1", bandMember1LOS);
+console.log("BM2", bandMember2LOS);
+console.log("BM3", bandMember3LOS);
+console.log("BM4", bandMember4LOS);
+
 
 // Check to see if any band members should change in or out of the follow state
 
