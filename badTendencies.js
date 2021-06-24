@@ -1398,7 +1398,7 @@ function processPlayfieldInteractions(character, collision, collisionType) {
             if (pick===2) soundController("play", "once", "bandmember", "Ha Ha");
             if (pick===3) soundController("play", "once", "bandmember", "Oh Ya");
             character.health=character.health-5;
-            character.party=character.party+10;
+            character.party=character.party+20;
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }
@@ -1452,7 +1452,7 @@ function processPlayfieldInteractions(character, collision, collisionType) {
             if (pick===2) soundController("play", "once", "bandmember", "Ha Ha");
             if (pick===3) soundController("play", "once", "bandmember", "Oh Ya");
             character.health=character.health-10;
-            character.party=character.party+20;
+            character.party=character.party+30;
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }               
@@ -1746,6 +1746,8 @@ function lineOfSight(bandMember, distance) {
 if ( (bandMember.posX<0) || (bandMember.posX>=1024) ) return [];
 if ( (bandMember.posY<0) || (bandMember.posY>=1024) ) return [];
 
+let hitDistance=0;
+
 const currentPosX = bandMember.posX+16+(32/2);
 const currentPosY = bandMember.posY+12+(52/2);
 const currentGridRow = Math.floor(currentPosY/32);
@@ -1773,8 +1775,10 @@ let hitType="";
 // Check North
 hitFlag=false;
 hitType="";
+hitDistance=0;
 for (let row=currentGridRow; row>=0; row--) {
     const squareHas = currentGameLevel[row][currentGridCol];
+    hitDistance=currentGridRow-row;
 
     if (squareHas==='W') { hitFlag=false; hitType="Wall"; break; }
     if (squareHas!==' ') { hitFlag=true; hitType=squareHas; break; }
@@ -1791,13 +1795,16 @@ for (let row=currentGridRow; row>=0; row--) {
         hitFlag=true; hitType="bandMember4"; break; }
 }
 
-if (hitFlag) lineOfSightHitResults.push( { "direction": "N", "type": hitType, } );
+if ( ( (hitFlag) && (!distance) ) ||  ( (hitflag) && (distance) && (hitDistance<=distance) ) ) {
+    lineOfSightHitResults.push( { "direction": "N", "type": hitType, "distance": hitDistance} );
+}
 
 // Check South
 hitFlag=false;
 hitType="";
 for (let row=currentGridRow; row<32; row++) {
     const squareHas = currentGameLevel[row][currentGridCol];
+    hitDistance=row-currentGridRow;
 
     if (squareHas==='W') { hitFlag=false; hitType="Wall"; break; }
     if (squareHas!==' ') { hitFlag=true; hitType=squareHas; break; }
@@ -1814,13 +1821,16 @@ for (let row=currentGridRow; row<32; row++) {
         hitFlag=true; hitType="bandMember4"; break; }
 }
 
-if (hitFlag) lineOfSightHitResults.push( { "direction": "S", "type": hitType, } );
+if ( ( (hitFlag) && (!distance) ) ||  ( (hitflag) && (distance) && (hitDistance<=distance) ) ) {
+    lineOfSightHitResults.push( { "direction": "S", "type": hitType,  "distance": hitDistance} );
+}
 
 // Check West
 hitFlag=false;
 hitType="";
 for (let col=currentGridCol; col>=0; col--) {
     const squareHas = currentGameLevel[currentGridRow][col];
+    hitDistance=currentGridCol-col;
 
     if (squareHas==='W') { hitFlag=false; hitType="Wall"; break; }
     if (squareHas!==' ') { hitFlag=true; hitType=squareHas; break; }
@@ -1837,13 +1847,16 @@ for (let col=currentGridCol; col>=0; col--) {
         hitFlag=true; hitType="bandMember4"; break; }
 }
 
-if (hitFlag) lineOfSightHitResults.push( { "direction": "W", "type": hitType, } );
+if ( ( (hitFlag) && (!distance) ) ||  ( (hitflag) && (distance) && (hitDistance<=distance) ) ) { 
+    lineOfSightHitResults.push( { "direction": "W", "type": hitType,  "distance": hitDistance} );
+}
 
 // Check East
 hitFlag=false;
 hitType="";
 for (let col=currentGridCol; col<32; col++) {
     const squareHas = currentGameLevel[currentGridRow][col];
+    hitDistance=col-currentGridCol;
 
     if (squareHas==='W') { hitFlag=false; hitType="Wall"; break; }
     if (squareHas!==' ') { hitFlag=true; hitType=squareHas; break; }
@@ -1860,7 +1873,9 @@ for (let col=currentGridCol; col<32; col++) {
         hitFlag=true; hitType="bandMember4"; break; }
 }
 
-if (hitFlag) lineOfSightHitResults.push( { "direction": "E", "type": hitType, } );
+if ( ( (hitFlag) && (!distance) ) ||  ( (hitflag) && (distance) && (hitDistance<=distance) ) ) { 
+    lineOfSightHitResults.push( { "direction": "E", "type": hitType,  "distance": hitDistance} );
+}
 
 return lineOfSightHitResults;
 
@@ -2573,6 +2588,20 @@ if (bandMember1LOS.length>0) console.log("BM1", bandMember1LOS);
 if (bandMember2LOS.length>0) console.log("BM2", bandMember2LOS);
 if (bandMember3LOS.length>0) console.log("BM3", bandMember3LOS);
 if (bandMember4LOS.length>0) console.log("BM4", bandMember4LOS);
+
+
+// Check for gun, lighter, bomb interactions 
+
+for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
+    if (bandMember.hasLighter) {
+        if (Math.random()<(bandMember.party/200)) bandMember.status="Fire Death";
+    }
+    if (bandMember.hasBomb) {
+        if (Math.random()<(bandMember.party/200)) bandMember.status="Bomb Death";
+    }
+}
+
+
 
 
 // Check to see if any band members should change in or out of the follow state
