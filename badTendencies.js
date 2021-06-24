@@ -2151,7 +2151,7 @@ function startNextLevel(event) {
     levelStartTime=Number(Date.now());
 
 
-    mainGameLoopIntervalId = window.setInterval(mainGameLoop, 100);
+    mainGameLoopIntervalId = window.setInterval(mainGameLoop, 1000);
 
 }
 
@@ -2162,7 +2162,7 @@ function startNextLevel(event) {
 
 function displayScoreBoard() {
 
-    const timeOnCurrentLevel=(Math.floor((Number(Date.now())-levelStartTime)/1000));
+    const timeOnCurrentLevel=(Math.floor((Number(Date.now())-levelStartTime)/100));
     const timeOnCurrentLevelStr=(timeOnCurrentLevel).toString().padStart(4, '0');
     const player1ScoreStr=(player1Score).toString().padStart(6, '0');
 
@@ -2293,12 +2293,10 @@ function displayCharacterStatus(action) {
         // Hide or display each band member's posession of a gun, bomb, or lighter
         for (bandMember of [bandMember1, bandMember2, bandMember3, bandMember4] )
         {
-            console.log(bandMember);
+            // console.log(bandMember);
             if (bandMember.hasGun>0)   { 
                 const overlayTarget = gameDom["gameContainerCharacters"].querySelector(`img.bt-character-overlay.gun${bandMember.id}`); 
-                console.log("Before:", overlayTarget);
                 overlayTarget.style.visibility="visible";
-                console.log("After:", overlayTarget);
             }
             else {
                 const overlayTarget = gameDom["gameContainerCharacters"].querySelector(`img.bt-character-overlay.gun${bandMember.id}`); 
