@@ -1742,6 +1742,10 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
 function lineOfSight(bandMember, distance) {
 
 // Approximation of center of character sprite used for line of site playfield searches
+
+if ( (bandMember.posX<0) || (bandMember.posX>=1024) ) return [];
+if ( (bandMember.posY<0) || (bandMember.posY>=1024) ) return [];
+
 const currentPosX = bandMember.posX+16+(32/2);
 const currentPosY = bandMember.posY+12+(52/2);
 const currentGridRow = Math.floor(currentPosY/32);
@@ -1762,7 +1766,7 @@ const bandMember3GridRow=Math.floor((bandMember3.posY+12+(52/2))/32);
 const bandMember4GridCol=Math.floor((bandMember4.posX+16+(32/2))/32);
 const bandMember4GridRow=Math.floor((bandMember4.posY+12+(52/2))/32);
 
-let LineOfSightHitResults=[];
+let lineOfSightHitResults=[];
 let hitFlag=false;
 let hitType="";
 
@@ -1772,7 +1776,7 @@ hitType="";
 for (let row=currentGridRow; row>=0; row--) {
     const squareHas = currentGameLevel[row][currentGridCol];
 
-    if (squareHas==='W') { hitFlag=true; hitType="Wall"; break; }
+    if (squareHas==='W') { hitFlag=false; hitType="Wall"; break; }
     if (squareHas!==' ') { hitFlag=true; hitType=squareHas; break; }
  
     if ( (player1GridCol===currentGridCol) && (player1GridRow===row) ) {
@@ -1787,7 +1791,7 @@ for (let row=currentGridRow; row>=0; row--) {
         hitFlag=true; hitType="bandMember4"; break; }
 }
 
-if (hitFlag) LineOfSightHitResults.push( { "N": hitType, } );
+if (hitFlag) lineOfSightHitResults.push( { "direction": "N", "type": hitType, } );
 
 // Check South
 hitFlag=false;
@@ -1795,7 +1799,7 @@ hitType="";
 for (let row=currentGridRow; row<32; row++) {
     const squareHas = currentGameLevel[row][currentGridCol];
 
-    if (squareHas==='W') { hitFlag=true; hitType="Wall"; break; }
+    if (squareHas==='W') { hitFlag=false; hitType="Wall"; break; }
     if (squareHas!==' ') { hitFlag=true; hitType=squareHas; break; }
  
     if ( (player1GridCol===currentGridCol) && (player1GridRow===row) ) {
@@ -1809,7 +1813,8 @@ for (let row=currentGridRow; row<32; row++) {
     if (  (bandMember.id!=="bandMember4") && (bandMember4GridCol===currentGridCol) && (bandMember4GridRow===row) ) {
         hitFlag=true; hitType="bandMember4"; break; }
 }
-if (hitFlag) LineOfSightHitResults.push( { "S": hitType, } );
+
+if (hitFlag) lineOfSightHitResults.push( { "direction": "S", "type": hitType, } );
 
 // Check West
 hitFlag=false;
@@ -1817,7 +1822,7 @@ hitType="";
 for (let col=currentGridCol; col>=0; col--) {
     const squareHas = currentGameLevel[currentGridRow][col];
 
-    if (squareHas==='W') { hitFlag=true; hitType="Wall"; break; }
+    if (squareHas==='W') { hitFlag=false; hitType="Wall"; break; }
     if (squareHas!==' ') { hitFlag=true; hitType=squareHas; break; }
  
     if ( (player1GridCol===col) && (player1GridRow===currentGridRow) ) {
@@ -1831,7 +1836,8 @@ for (let col=currentGridCol; col>=0; col--) {
     if (  (bandMember.id!=="bandMember4") && (bandMember4GridCol===col) && (bandMember4GridRow===currentGridRow) ) {
         hitFlag=true; hitType="bandMember4"; break; }
 }
-if (hitFlag) LineOfSightHitResults.push( { "W": hitType, } );
+
+if (hitFlag) lineOfSightHitResults.push( { "direction": "W", "type": hitType, } );
 
 // Check East
 hitFlag=false;
@@ -1839,7 +1845,7 @@ hitType="";
 for (let col=currentGridCol; col<32; col++) {
     const squareHas = currentGameLevel[currentGridRow][col];
 
-    if (squareHas==='W') { hitFlag=true; hitType="Wall"; break; }
+    if (squareHas==='W') { hitFlag=false; hitType="Wall"; break; }
     if (squareHas!==' ') { hitFlag=true; hitType=squareHas; break; }
  
     if ( (player1GridCol===col) && (player1GridRow===currentGridRow) ) {
@@ -1853,12 +1859,32 @@ for (let col=currentGridCol; col<32; col++) {
     if (  (bandMember.id!=="bandMember4") && (bandMember4GridCol===col) && (bandMember4GridRow===currentGridRow) ) {
         hitFlag=true; hitType="bandMember4"; break; }
 }
-if (hitFlag) LineOfSightHitResults.push( { "E": hitType, } );
 
-return LineOfSightHitResults;
+if (hitFlag) lineOfSightHitResults.push( { "direction": "E", "type": hitType, } );
+
+return lineOfSightHitResults;
 
 }
 
+
+/*=============================================================================================
+// Analyze Line of Sight Object Detection results and choose a direction to move 
+==============================================================================================*/
+
+function analyzeLOS(bandMember, losResults) {
+
+const rankedCompArray = ['player1', 'bandMember1', 'bandMember2', 'bandMember3', "bandMember4",
+'o', 'p', 'a', 'b', 'l', 'm', 'n', 'c', 'h', 'k'];
+
+    for (playfieldObject of rankedCompArray ) {
+        for (let i=0; i<losResults.length; i++) {
+            if (losResults[i].type===playfieldObject) return losResults[i].direction;
+        }    
+    }
+
+    const randomDirection = ['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
+    return randomDirection;
+}
 
 /*=============================================================================================
 // Check overlap collision between two bounding boxes, returns boolean true upon collision
@@ -2478,10 +2504,10 @@ const bandMember2LOS=lineOfSight(bandMember2, "");
 const bandMember3LOS=lineOfSight(bandMember3, "");
 const bandMember4LOS=lineOfSight(bandMember4, "");
 
-console.log("BM1", bandMember1LOS);
-console.log("BM2", bandMember2LOS);
-console.log("BM3", bandMember3LOS);
-console.log("BM4", bandMember4LOS);
+if (bandMember1LOS.length>0) console.log("BM1", bandMember1LOS);
+if (bandMember2LOS.length>0) console.log("BM2", bandMember2LOS);
+if (bandMember3LOS.length>0) console.log("BM3", bandMember3LOS);
+if (bandMember4LOS.length>0) console.log("BM4", bandMember4LOS);
 
 
 // Check to see if any band members should change in or out of the follow state
@@ -2545,7 +2571,12 @@ if (bandMember4.state==='Follow') {
 // Process the band members that are in the Wander state
 
 if (bandMember1.state==='Wander') {
-    if ( (currentTime-bandMember1.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY )
+    if ( (bandMember1LOS.length>0) && ( (currentTime-bandMember1.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY ) ) {
+        const losDirection=analyzeLOS(bandMember1, bandMember1LOS);
+        bandMember1.direction=losDirection;
+        bandMember1.imageState=directionToImageState[losDirection];
+    }
+    else if ( (currentTime-bandMember1.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY )
     {
         const randomDirection = ['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
         bandMember1.direction=randomDirection;
@@ -2555,7 +2586,12 @@ if (bandMember1.state==='Wander') {
 }
 
 if (bandMember2.state==='Wander') {
-    if ( (currentTime-bandMember2.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY )
+    if ( (bandMember2LOS.length>0) && ( (currentTime-bandMember2.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY ) ) {
+        const losDirection=analyzeLOS(bandMember2, bandMember2LOS);
+        bandMember2.direction=losDirection;
+        bandMember2.imageState=directionToImageState[losDirection];
+    }
+    else if ( (currentTime-bandMember2.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY )
     {
         const randomDirection = ['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
         bandMember2.direction=randomDirection;
@@ -2565,7 +2601,12 @@ if (bandMember2.state==='Wander') {
 }
 
 if (bandMember3.state==='Wander') {
-    if ( (currentTime-bandMember3.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY )
+    if ( (bandMember3LOS.length>0) && ( (currentTime-bandMember3.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY ) ) {
+        const losDirection=analyzeLOS(bandMember3, bandMember3LOS);
+        bandMember3.direction=losDirection;
+        bandMember3.imageState=directionToImageState[losDirection];
+    }
+    else if ( (currentTime-bandMember3.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY )
     {
         const randomDirection = ['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
         bandMember3.direction=randomDirection;
@@ -2575,7 +2616,12 @@ if (bandMember3.state==='Wander') {
 }
 
 if (bandMember4.state==='Wander') {
-    if ( (currentTime-bandMember4.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY )
+    if ( (bandMember4LOS.length>0) && ( (currentTime-bandMember4.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY ) ) {
+        const losDirection=analyzeLOS(bandMember4, bandMember4LOS);
+        bandMember4.direction=losDirection;
+        bandMember4.imageState=directionToImageState[losDirection];
+    }
+    else if ( (currentTime-bandMember4.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY )
     {
         const randomDirection = ['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
         bandMember4.direction=randomDirection;
