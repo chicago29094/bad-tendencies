@@ -1873,17 +1873,82 @@ return lineOfSightHitResults;
 
 function analyzeLOS(bandMember, losResults) {
 
+const currentTime=Number(Date.now());
+let direction="";
+let checkCollisionResults={};
+let failedDirections="";
+let remainingDirections=[];
+
+
 const rankedCompArray = ['player1', 'bandMember1', 'bandMember2', 'bandMember3', "bandMember4",
 'o', 'p', 'a', 'b', 'l', 'm', 'n', 'c', 'h', 'k'];
 
-    for (playfieldObject of rankedCompArray ) {
-        for (let i=0; i<losResults.length; i++) {
-            if (losResults[i].type===playfieldObject) return losResults[i].direction;
-        }    
-    }
+for (playfieldObject of rankedCompArray ) {
+    for (let i=0; i<losResults.length && (direction===""); i++) {
+        if (losResults[i].type===playfieldObject) {
+            direction=losResults[i].direction;
+            break;
+        }
+    }    
+}
 
-    const randomDirection = ['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
-    return randomDirection;
+console.log("analyze", direction);
+
+moveBandMember(bandMember, "CheckOnly", direction, checkCollisionResults);
+
+if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
+    return direction;
+}
+else {
+    failedDirections=failedDirections+direction;
+}
+
+if (failedDirections.indexOf('N')===-1) remainingDirections.push('N');
+if (failedDirections.indexOf('S')===-1) remainingDirections.push('S');
+if (failedDirections.indexOf('W')===-1) remainingDirections.push('W');
+if (failedDirections.indexOf('E')===-1) remainingDirections.push('E');
+
+direction=remainingDirections[Math.round(Math.random()*(remainingDirections.length-1))];
+
+moveBandMember(bandMember, "CheckOnly", direction, checkCollisionResults);
+
+if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
+    return direction;
+}
+else {
+    failedDirections=failedDirections+direction;
+}
+
+remainingDirections=[];
+if (failedDirections.indexOf('N')===-1) remainingDirections.push('N');
+if (failedDirections.indexOf('S')===-1) remainingDirections.push('S');
+if (failedDirections.indexOf('W')===-1) remainingDirections.push('W');
+if (failedDirections.indexOf('E')===-1) remainingDirections.push('E');
+
+direction=remainingDirections[Math.round(Math.random()*(remainingDirections.length-1))];
+
+if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
+    return direction;
+}
+else {
+    failedDirections=failedDirections+direction;
+}
+
+remainingDirections=[];
+if (failedDirections.indexOf('N')===-1) remainingDirections.push('N');
+if (failedDirections.indexOf('S')===-1) remainingDirections.push('S');
+if (failedDirections.indexOf('W')===-1) remainingDirections.push('W');
+if (failedDirections.indexOf('E')===-1) remainingDirections.push('E');
+
+direction=remainingDirections[Math.round(Math.random()*(remainingDirections.length-1))];
+
+if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
+    return direction;
+}
+else {
+    return ['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
+}      
+
 }
 
 /*=============================================================================================
