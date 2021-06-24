@@ -5,8 +5,8 @@ Global Game Settings
 
 const BANDMEMBER_DEFAULT_STATE="Wander";
 const BANDMEMBER_STATE_CHANGE_DELAY=4000;
-const BANDMEMBER_DIR_CHANGE_DELAY=4000;
-const BANDMEMBER_FOLLOW_CHANGE_DELAY=1000;
+const BANDMEMBER_DIR_CHANGE_DELAY=8000;
+const BANDMEMBER_FOLLOW_CHANGE_DELAY=500;
 const BANDMEMBER_MOVE_MAXHISTORY=20;  
 const BANDMEMBER_HEALTH_RECOVERY=0.1;
 const BANDMEMBER_PARTY_RECOVERY=0.1;
@@ -20,7 +20,7 @@ const SPLASH_SCREEN_DELAY=3000; // milliseconds
 
 
 let GOOD_PLAYFIELD_OBJECT_DROP_RATE=40000; // milliseconds
-let BAD_PLAYFIELD_OBJECT_DROP_RATE=30000; // milliseconds
+let BAD_PLAYFIELD_OBJECT_DROP_RATE=20000; // milliseconds
 let lastGoodDropTime=0;
 let lastBadDropTime=0;
 
@@ -332,22 +332,30 @@ const playFieldObjectImages = {
     "r" : './assets/flame_64.gif',  
 }
 
+const overlayImages = {
+    "Gun Overlay" : './assets/gun_overlay.png',
+    "Bomb Overlay" : './assets/bomb_overlay.png',
+    "Lighter Overlay" : './assets/lighter_overlay.png',
+    "Flame Overlay" : './assets/flame_overlay64.gif',
+    "Explosion Overlay" : './assets/explosion_overlay64.gif',
+}
+
 const gameLevel1 = [
     ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W','W','W','W',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
-    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
-    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ','l',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','p',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W',' ',' ','W'],
     ['W',' ',' ','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W','W','W','W',' ',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ','P',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ','W',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ','W','W','W','W','W','W','W',' ','W','W',' ',' ','W'],
     ['W',' ',' ',' ','W',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ',' ','W','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','m',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W'],
     ['W',' ',' ','W','W','W',' ',' ',' ','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W',' ',' ',' ','W',' ',' ',' ','P',' ',' ',' ',' ','W'],
@@ -355,7 +363,7 @@ const gameLevel1 = [
     ['W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W',' ',' ',' ','W',' ',' ',' ',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W','W',' ',' ',' ','W','W','W','W',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ','l',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W',' ',' ','W',' ',' ','W',' ',' ','W'],
@@ -530,8 +538,8 @@ class BandMember {
         this._posX=positionX;
         this._posY=positionY;
         this._state=BANDMEMBER_DEFAULT_STATE;
-        this._lastStateChange=Date.now();
-        this._lastDirChange=Date.now();
+        this._lastStateChange=Number(Date.now());
+        this._lastDirChange=Number(Date.now());
         this._lastDirection='';
         this._lastDirChangeReason='';
         this._hasLighter=0;
@@ -559,17 +567,17 @@ class BandMember {
 
 
     get cooldown() { return this._cooldown; }
-    set cooldown(setCooldown) { this._cooldown=Date.now()+setCooldown};
+    set cooldown(setCooldown) { this._cooldown=Number(Date.now())+setCooldown};
 
     get hasLighter() { return this._hasLighter; }
-    set haslighter(setTime) { this._hasLighter=setTime; }
+    set haslighter(setTimeValue) { this._hasLighter=setTimeValue; }
     
     get hasBomb() { return this._hasBomb; }
-    set hasBomb(setTime) { this._hasBomb=setTime; }
+    set hasBomb(setTimeValue) { this._hasBomb=setTimeValue; }
     
     get hasGun() { return this._hasGun; }
-    set hasGun(setTime) { 
-            this._hasGun=setTime; 
+    set hasGun(setTimeValue) { 
+            this._hasGun=setTimeValue;
             this._hasGunBullets=6;
     }
 
@@ -630,7 +638,7 @@ class BandMember {
     get state() { return this._state; }
     set state(setState) { 
         if (setState!==this._state) {
-            this._lastStateChange=Date.now();
+            this._lastStateChange=Number(Date.now());
         }
         this._state=setState; 
         if (this._state==='Stage') {
@@ -646,7 +654,7 @@ class BandMember {
         if (this._image["imageState"]!==setImageState) {
             this._image["imageState"]=setImageState; 
             this._image[setImageState][2]=0;
-            this._lastDirChange=Date.now();
+            this._lastDirChange=Number(Date.now());
         }
     } 
 
@@ -658,7 +666,7 @@ class BandMember {
         this._party=this._party-BANDMEMBER_PARTY_RECOVERY;
         if (this._party<0) this._party=0;
         // Check to see if the cooldown period has expired
-        if (this.cooldown>0 && this._cooldown<Date.now()) {
+        if (this.cooldown>0 && this._cooldown<Number(Date.now())) {
             this._cooldown=0;
         }
     }
@@ -669,7 +677,7 @@ class BandMember {
         const maxCol=this._image[this._image["imageState"]][1];
         let curCol=this._image[this._image["imageState"]][2];
         const lastUpdate=this._image.lastUpdate;
-        const currentTime=Date.now();
+        const currentTime=Number(Date.now());
         let newPosX=0;
         let newPosY=0;
 
@@ -713,7 +721,7 @@ class Player {
         this._posX=positionX;
         this._posY=positionY;
         this._state=PLAYER_DEFAULT_STATE;
-        this._lastStateChange=Date.now();        
+        this._lastStateChange=Number(Date.now());        
         this._image=Object.assign({}, playerCharacter.image);
 
         this._imageDiv=document.createElement("div");
@@ -770,7 +778,7 @@ class Player {
     get state() { return this._state; }
     set state(setState) { 
         if (setState!==this._state) {
-            this._lastStateChange=Date.now();
+            this._lastStateChange=Number(Date.now());
         }        
         this._state=setState; 
     }
@@ -796,7 +804,7 @@ class Player {
         const maxCol=this._image[this._image["imageState"]][1];
         let curCol=this._image[this._image["imageState"]][2];
         const lastUpdate=this._image.lastUpdate;
-        const currentTime=Date.now();
+        const currentTime=Number(Date.now());
         let newPosX=0;
         let newPosY=0;
 
@@ -875,7 +883,7 @@ function loadGameSounds() {
 
 }
 
-loadGameSounds();
+
 
 /*=========================================
 // Control game sounds and music
@@ -976,7 +984,7 @@ function displayGameBoard(level) {
 function dropPlayfieldObject(updateType, when) {
 
     let playfieldObjectType="";
-    let currentTime=Date.now();
+    let currentTime=Number(Date.now());
     let tryX=0;
     let tryY=0;
 
@@ -1039,7 +1047,7 @@ Keyboard Detection
 
 function handleKeyboardEvents(event) {
 
-const currentTime=Date.now();
+const currentTime=Number(Date.now());
 
 if (!event) {
     document.addEventListener('keydown', handleKeyboardEvents);
@@ -1093,9 +1101,9 @@ function movePlayer1() {
              (blockMovement[1]["collisionType"]==='bandMember2') || 
              (blockMovement[1]["collisionType"]==='bandMember3') || 
              (blockMovement[1]["collisionType"]==='bandMember4') ) {
-                console.log(blockMovement[1]["collisionType"]);
+                // console.log(blockMovement[1]["collisionType"]);
                 soundController("play", "once", "sound_effect", "impact6");
-                player1.health=player1.health-2;
+                player1.health=player1.health-0.5;
             }
     }
 
@@ -1167,7 +1175,10 @@ function moveBandMember(bandMember, actionType, checkDirection, collisionResults
             (blockMovement[1]["collisionType"]==='bandMember4') ) {
                 //console.log(blockMovement[1]["collisionType"]);
                 bounceBack=true;
-                // bandMember.health=bandMember.health-2;
+                if (blockMovement[1]["collisionType"]==='player1') {
+                    player1.health=player1.health-0.5;
+                }
+                //bandMember.health=bandMember.health-2;
             }
             else {
                 if (actionType!=="CheckOnly") {
@@ -1228,7 +1239,7 @@ function moveBandMember(bandMember, actionType, checkDirection, collisionResults
 
 function followDirection(player, character) {
 
-    const currentTime=Date.now();
+    const currentTime=Number(Date.now());
     let direction="";
     let checkCollisionResults={};
     let failedDirections="";
@@ -1315,7 +1326,7 @@ Process Playfield Object Interactions
 function processPlayfieldInteractions(character, collision, collisionType) {
 
     if (character.id==="player1") {
-        console.log(collision, collisionType);
+        //console.log(collision, collisionType);
         if (collisionType==="Beer") {
             player1Score+=25;
             soundController("play", "once", "sound_effect", "coins");
@@ -1373,13 +1384,11 @@ function processPlayfieldInteractions(character, collision, collisionType) {
             soundController("play", "once", "sound_effect", "coins");
             soundController("play", "once", "bandmember", "Stage");
             character.state="Stage";
-            character.imageState="Hidden";
         }
 
         if (collisionType==="Pit") {
             soundController("play", "once", "bandmember", "Die");
-            character.state='Dead';
-            character.imageState='Die';            
+            character.state='Dead';      
         }
 
         else if (collisionType==="Beer") {
@@ -1396,7 +1405,7 @@ function processPlayfieldInteractions(character, collision, collisionType) {
         else if (collisionType==="Bomb") {
             soundController("play", "once", "bandmember", "Oh Ya");
             if (character.hasBomb===0) {
-                character.hasBomb=Date.now;
+                character.hasBomb=Number(Date.now());
                 collision.collisionDomRef.remove();
                 currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
             }
@@ -1412,7 +1421,7 @@ function processPlayfieldInteractions(character, collision, collisionType) {
         else if (collisionType==="Handgun") {
             soundController("play", "once", "bandmember", "Ha Ha");
             if (character.hasGun===0) {
-                character.hasGun=Date.now;
+                character.hasGun=Number(Date.now());
                 collision.collisionDomRef.remove();
                 currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
             }
@@ -1420,7 +1429,7 @@ function processPlayfieldInteractions(character, collision, collisionType) {
         else if (collisionType==="Lighter") {
             soundController("play", "once", "bandmember", "Oh Ya");
             if (character.hasLighter===0) {
-                character.haslighter=Date.now;
+                character.haslighter=Number(Date.now());
                 collision.collisionDomRef.remove();
                 currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
             }
@@ -1752,7 +1761,7 @@ function gameLevelUp() {
         
         currentLevel--;
 
-        const timeOnCurrentLevel=(Math.floor((Date.now()-levelStartTime)/1000));
+        const timeOnCurrentLevel=(Math.floor((Number(Date.now())-levelStartTime)/1000));
         const timeOnCurrentLevelStr=(timeOnCurrentLevel).toString().padStart(4, '0');
         const player1ScoreStr=(player1Score).toString().padStart(6, '0');
     
@@ -1857,6 +1866,8 @@ function promptGameStart() {
 
 function startNewGame(event) {
     event.preventDefault();
+
+    loadGameSounds();
 
     const player1TextInput = document.querySelector('.nameInput');
     let player1Name="Player 1";
@@ -1966,7 +1977,7 @@ function startNewGame(event) {
 
     handleKeyboardEvents("");
 
-    levelStartTime=Date.now();
+    levelStartTime=Number(Date.now());
 
     // Play the game background music
     soundController("play", "loop", "music_score", "main");
@@ -2011,7 +2022,7 @@ function startNextLevel(event) {
 
     handleKeyboardEvents("");
 
-    levelStartTime=Date.now();
+    levelStartTime=Number(Date.now());
 
 
     mainGameLoopIntervalId = window.setInterval(mainGameLoop, 100);
@@ -2025,7 +2036,7 @@ function startNextLevel(event) {
 
 function displayScoreBoard() {
 
-    const timeOnCurrentLevel=(Math.floor((Date.now()-levelStartTime)/1000));
+    const timeOnCurrentLevel=(Math.floor((Number(Date.now())-levelStartTime)/1000));
     const timeOnCurrentLevelStr=(timeOnCurrentLevel).toString().padStart(4, '0');
     const player1ScoreStr=(player1Score).toString().padStart(6, '0');
 
@@ -2057,6 +2068,9 @@ function displayCharacterStatus(action) {
         gameDom["gameContainerBandMember1"].innerHTML = `
             <div class="bt-character-outer">
                 <img src="${bandMember1.image.thumbnail}" alt="Band Member 1" class="bt-character">
+                <img src="${overlayImages['Gun Overlay']}" alt="Gun" class="bt-character-overlay gun${bandMember1.id}">
+                <img src="${overlayImages['Bomb Overlay']}" alt="Bomb" class="bt-character-overlay bomb${bandMember1.id}">
+                <img src="${overlayImages['Lighter Overlay']}" alt="Lighter" class="bt-character-overlay lighter${bandMember1.id}">
                 <div class="bt-character-status-health">                    
                     <img src="./assets/greenbar.png" class="health-bar">
                 </div>
@@ -2069,6 +2083,9 @@ function displayCharacterStatus(action) {
         gameDom["gameContainerBandMember2"].innerHTML = `    
             <div class="bt-character-outer">
                 <img src="${bandMember2.image.thumbnail}" alt="Band Member 2" class="bt-character">
+                <img src="${overlayImages['Gun Overlay']}" alt="Gun" class="bt-character-overlay gun${bandMember2.id}">
+                <img src="${overlayImages['Bomb Overlay']}" alt="Bomb" class="bt-character-overlay bomb${bandMember2.id}">
+                <img src="${overlayImages['Lighter Overlay']}" alt="Lighter" class="bt-character-overlay lighter${bandMember2.id}">
                 <div class="bt-character-status-health">                    
                     <img src="./assets/greenbar.png" class="health-bar">
                 </div>
@@ -2081,6 +2098,9 @@ function displayCharacterStatus(action) {
         gameDom["gameContainerBandMember3"].innerHTML = `
             <div class="bt-character-outer">
                 <img src="${bandMember3.image.thumbnail}" alt="Band Member 3" class="bt-character">
+                <img src="${overlayImages['Gun Overlay']}" alt="Gun" class="bt-character-overlay gun${bandMember3.id}">
+                <img src="${overlayImages['Bomb Overlay']}" alt="Bomb" class="bt-character-overlay bomb${bandMember3.id}">
+                <img src="${overlayImages['Lighter Overlay']}" alt="Lighter" class="bt-character-overlay lighter${bandMember3.id}">
                 <div class="bt-character-status-health">                    
                     <img src="./assets/greenbar.png" class="health-bar">
                 </div>
@@ -2093,6 +2113,9 @@ function displayCharacterStatus(action) {
         gameDom["gameContainerBandMember4"].innerHTML = `
             <div class="bt-character-outer">
                 <img src="${bandMember4.image.thumbnail}" alt="Band Member 4" class="bt-character">
+                <img src="${overlayImages['Gun Overlay']}" alt="Gun" class="bt-character-overlay gun${bandMember4.id}">
+                <img src="${overlayImages['Bomb Overlay']}" alt="Bomb" class="bt-character-overlay bomb${bandMember4.id}">
+                <img src="${overlayImages['Lighter Overlay']}" alt="Lighter" class="bt-character-overlay lighter${bandMember4.id}">
                 <div class="bt-character-status-health">                    
                     <img src="./assets/greenbar.png" class="health-bar">
                 </div>
@@ -2140,6 +2163,40 @@ function displayCharacterStatus(action) {
 
         bandMember4HealthBar.style.width = ((bandMember4.health/100)*120+1).toString()+"px";
         bandMember4PartyBar.style.width = ((bandMember4.party/100)*120+1).toString()+"px";
+
+        // Hide or display each band member's posession of a gun, bomb, or lighter
+        for (bandMember of [bandMember1, bandMember2, bandMember3, bandMember4] )
+        {
+            console.log(bandMember);
+            if (bandMember.hasGun>0)   { 
+                const overlayTarget = gameDom["gameContainerCharacters"].querySelector(`img.bt-character-overlay.gun${bandMember.id}`); 
+                console.log("Before:", overlayTarget);
+                overlayTarget.style.visibility="visible";
+                console.log("After:", overlayTarget);
+            }
+            else {
+                const overlayTarget = gameDom["gameContainerCharacters"].querySelector(`img.bt-character-overlay.gun${bandMember.id}`); 
+                overlayTarget.style.visibility="hidden";
+            }
+            if (bandMember.hasBomb>0)   { 
+                const overlayTarget = gameDom["gameContainerCharacters"].querySelector(`img.bt-character-overlay.bomb${bandMember.id}`); 
+                overlayTarget.style.visibility="visible";
+            }
+            else {
+                const overlayTarget = gameDom["gameContainerCharacters"].querySelector(`img.bt-character-overlay.bomb${bandMember.id}`); 
+                overlayTarget.style.visibility="hidden";
+            }
+            if (bandMember.hasLighter>0)   { 
+                const overlayTarget = gameDom["gameContainerCharacters"].querySelector(`img.bt-character-overlay.lighter${bandMember.id}`); 
+                overlayTarget.style.visibility="visible";
+            }
+            else {
+                const overlayTarget = gameDom["gameContainerCharacters"].querySelector(`img.bt-character-overlay.lighter${bandMember.id}`); 
+                overlayTarget.style.visibility="hidden";
+            }
+        }
+
+
     }
 
 
@@ -2153,7 +2210,7 @@ function gameOver() {
     const divSplash = document.querySelector('#outerSplash');
 
     //gameContainer.removeChild(divSplash);
-    const timeOnCurrentLevel=(Math.floor((Date.now()-levelStartTime)/1000));
+    const timeOnCurrentLevel=(Math.floor((Number(Date.now())-levelStartTime)/1000));
     const timeOnCurrentLevelStr=(timeOnCurrentLevel).toString().padStart(4, '0');
     const player1ScoreStr=(player1Score).toString().padStart(6, '0');
 
@@ -2187,13 +2244,13 @@ function gameOver() {
     startGameButton.addEventListener('click', () => {window.location="index.html";} );    
 }
 
-/*==========================================================================
+/*==================================================================================================
 Main Game Loop
-===========================================================================*/
+===================================================================================================*/
 
 function mainGameLoop(event) {
 
-const currentTime=Date.now();
+const currentTime=Number(Date.now());
 
 // console.log("Starting mainGameLoop");
 

@@ -289,7 +289,19 @@ div.bt-character {
 
 div.bt-character-outer {
     margin: 0px 0px 30px 0px;
+    position:relative;
 }
+
+div.bt-character-outer img.bt-character-overlay {
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    visibility: hidden;
+}
+
+
 
 div.bt-character-status-party, div.bt-character-status-health  {
     width: 120px;
