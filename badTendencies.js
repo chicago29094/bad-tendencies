@@ -161,6 +161,9 @@ const bandMemberCharacters=[
             "Idle Left": [2, 3, 0 ],  
             "Idle Right": [3, 3, 0 ],  
             "Die": [4, 9, 0],  
+            "Pit Die": [4, 9, 0],  
+            "Fire Die": [4, 9, 0],  
+            "Bomb Die": [4, 9, 0],  
             "Dizzy": [5, 2, 0], 
             "Hurt": [6, 2, 0],  
             "Throwing Left": [7, 7, 0], 
@@ -168,6 +171,7 @@ const bandMemberCharacters=[
             "Shoot Left": [9, 3, 0], 
             "Shoot Right": [10, 3, 0],
             "Hidden": [10, 0, 0],
+            "Stage Hidden": [10, 0, 0],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
@@ -188,6 +192,9 @@ const bandMemberCharacters=[
             "Idle Left": [2, 3, 0 ],  
             "Idle Right": [3, 3, 0 ],  
             "Die": [4, 9, 0],  
+            "Pit Die": [4, 9, 0],  
+            "Fire Die": [4, 9, 0],  
+            "Bomb Die": [4, 9, 0],  
             "Dizzy": [5, 2, 0], 
             "Hurt": [6, 3, 0],  
             "Throwing Left": [7, 7, 0], 
@@ -195,6 +202,7 @@ const bandMemberCharacters=[
             "Shoot Left": [9, 3, 0], 
             "Shoot Right": [10, 3, 0],
             "Hidden": [10, 0, 0],
+            "Stage Hidden": [10, 0, 0],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
@@ -215,6 +223,9 @@ const bandMemberCharacters=[
             "Idle Left": [2, 3, 0 ],  
             "Idle Right": [3, 3, 0 ],  
             "Die": [4, 11, 0],  
+            "Pit Die": [4, 11, 0],  
+            "Fire Die": [4, 11, 0],  
+            "Bomb Die": [4, 11, 0],  
             "Dizzy": [5, 3, 0], 
             "Hurt": [6, 3, 0],  
             "Throwing Left": [7, 4, 0], 
@@ -222,6 +233,7 @@ const bandMemberCharacters=[
             "Shoot Left": [9, 4, 0], 
             "Shoot Right": [10, 4, 0],
             "Hidden": [10, 0, 0],
+            "Stage Hidden": [10, 0, 0],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
@@ -242,6 +254,9 @@ const bandMemberCharacters=[
             "Idle Left": [2, 3, 0 ],  
             "Idle Right": [3, 3, 0 ],  
             "Die": [4, 11, 0],  
+            "Pit Die": [4, 11, 0],  
+            "Fire Die": [4, 11, 0],  
+            "Bomb Die": [4, 11, 0],  
             "Dizzy": [5, 3, 0], 
             "Hurt": [6, 3, 0],  
             "Throwing Left": [7, 6, 0], 
@@ -249,6 +264,7 @@ const bandMemberCharacters=[
             "Shoot Left": [9, 4, 0], 
             "Shoot Right": [10, 4, 0],
             "Hidden": [10, 0, 0],
+            "Stage Hidden": [10, 0, 0],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
@@ -271,11 +287,15 @@ const playerCharacters =[
                     "Idle Right": [2, 1, 0],
                     "Idle Left": [3, 1, 0],  
                     "Die": [4, 11, 0],  
+                    "Pit Die": [4, 11, 0],  
+                    "Fire Die": [4, 11, 0],  
+                    "Bomb Die": [4, 11, 0],  
                     "Dizzy": [5, 3, 0], 
                     "Hurt": [6, 3, 0],  
                     "Throwing Right": [7, 5, 0], 
                     "Throwing Left": [8, 5, 0],
                     "Hidden": [8, 0, 0],
+                    "Stage Hidden": [8, 0, 0],
                     "imageState" : "Idle Right",
                     "lastUpdate" : 0,
         },
@@ -1918,7 +1938,7 @@ for (let row=currentGridRow; row>=0; row--) {
     hitDistance=currentGridRow-row;
 
     if (squareHas==='W') { hitFlag=false; hitType="Wall"; break; }
-    if (squareHas!==' ') { hitFlag=true; hitType=squareHas; break; }
+    if ( (squareHas!=='P') && (squareHas!==' ') ) { hitFlag=true; hitType=squareHas; break; }
  
     if ( (player1GridCol===currentGridCol) && (player1GridRow===row) ) {
         hitFlag=true; hitType="player1"; break; }
@@ -1948,7 +1968,7 @@ for (let row=currentGridRow; row<32; row++) {
     hitDistance=row-currentGridRow;
 
     if (squareHas==='W') { hitFlag=false; hitType="Wall"; break; }
-    if (squareHas!==' ') { hitFlag=true; hitType=squareHas; break; }
+    if ( (squareHas!=='P') && (squareHas!==' ') ) { hitFlag=true; hitType=squareHas; break; }
  
     if ( (player1GridCol===currentGridCol) && (player1GridRow===row) ) {
         hitFlag=true; hitType="player1"; break; }
@@ -1977,7 +1997,7 @@ for (let col=currentGridCol; col>=0; col--) {
     hitDistance=currentGridCol-col;
 
     if (squareHas==='W') { hitFlag=false; hitType="Wall"; break; }
-    if (squareHas!==' ') { hitFlag=true; hitType=squareHas; break; }
+    if ( (squareHas!=='P') && (squareHas!==' ') ) { hitFlag=true; hitType=squareHas; break; }
  
     if ( (player1GridCol===col) && (player1GridRow===currentGridRow) ) {
         hitFlag=true; hitType="player1"; break; }
@@ -2006,7 +2026,7 @@ for (let col=currentGridCol; col<32; col++) {
     hitDistance=col-currentGridCol;
 
     if (squareHas==='W') { hitFlag=false; hitType="Wall"; break; }
-    if (squareHas!==' ') { hitFlag=true; hitType=squareHas; break; }
+    if ( (squareHas!=='P') && (squareHas!==' ') ) { hitFlag=true; hitType=squareHas; break; }
  
     if ( (player1GridCol===col) && (player1GridRow===currentGridRow) ) {
         hitFlag=true; hitType="player1"; break; }
@@ -2058,10 +2078,15 @@ for (playfieldObject of rankedCompArray ) {
 }
 
 // console.log(`1. character=[${bandMember.name}] direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
-// console.log(losResults);
+console.log(losResults);
 // console.log("analyze", direction);
 
+console.log(`0. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
+
 moveBandMember(bandMember, "CheckOnly", direction, checkCollisionResults);
+
+console.log(`1. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
+
 
 if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
     return direction;
@@ -2078,6 +2103,27 @@ if (failedDirections.indexOf('E')===-1) remainingDirections.push('E');
 direction=remainingDirections[Math.round(Math.random()*(remainingDirections.length-1))];
 
 moveBandMember(bandMember, "CheckOnly", direction, checkCollisionResults);
+
+console.log(`2. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
+
+if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
+    return direction;
+}
+else {
+    failedDirections=failedDirections+direction;
+}
+
+remainingDirections=[];
+if (failedDirections.indexOf('N')===-1) remainingDirections.push('N');
+if (failedDirections.indexOf('S')===-1) remainingDirections.push('S');
+if (failedDirections.indexOf('W')===-1) remainingDirections.push('W');
+if (failedDirections.indexOf('E')===-1) remainingDirections.push('E');
+
+direction=remainingDirections[Math.round(Math.random()*(remainingDirections.length-1))];
+
+moveBandMember(bandMember, "CheckOnly", direction, checkCollisionResults);
+
+console.log(`3. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
 
 if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
     return direction;
@@ -2096,22 +2142,8 @@ direction=remainingDirections[Math.round(Math.random()*(remainingDirections.leng
 
 moveBandMember(bandMember, "CheckOnly", direction, checkCollisionResults);
 
-if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
-    return direction;
-}
-else {
-    failedDirections=failedDirections+direction;
-}
+console.log(`4. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
 
-remainingDirections=[];
-if (failedDirections.indexOf('N')===-1) remainingDirections.push('N');
-if (failedDirections.indexOf('S')===-1) remainingDirections.push('S');
-if (failedDirections.indexOf('W')===-1) remainingDirections.push('W');
-if (failedDirections.indexOf('E')===-1) remainingDirections.push('E');
-
-direction=remainingDirections[Math.round(Math.random()*(remainingDirections.length-1))];
-
-moveBandMember(bandMember, "CheckOnly", direction, checkCollisionResults);
 
 if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
     return direction;
@@ -2119,6 +2151,9 @@ if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.co
 else {
     return ['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
 }      
+
+console.log(`5. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
+
 
 }
 
@@ -2769,7 +2804,7 @@ for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
             bandMember.health=0;
             bandMember.party=0;
             bandMember.status="Dead";
-            bandMember.imageStatus="Fire Die";
+            bandMember.imageState="Fire Die";
         }
     }
     if (bandMember.hasBomb) {
@@ -2778,7 +2813,7 @@ for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
             bandMember.health=0;
             bandMember.party=0;
             bandMember.status="Dead";
-            bandMember.imageStatus="Bomb Die";
+            bandMember.imageState="Bomb Die";
         }
     }
 }
