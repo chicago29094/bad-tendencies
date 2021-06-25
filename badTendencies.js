@@ -291,6 +291,7 @@ const playFieldAssetsClasses = {
     "W" : `playfield-wall`,
     " " : `playfield-floor`,
     "S" : `playfield-exit`,
+    "T" : `playfield-exit-title`,    
     'P' : `playfield-pit`,
     "a" : `playfield-floor`,
     "b" : `playfield-floor`,    
@@ -367,7 +368,7 @@ const gameLevel1 = [
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W',' ',' ','W',' ',' ','W',' ',' ','W'],
-    ['W',' ','S','S',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ','T','S',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W',' ','S','S',' ',' ',' ','W',' ',' ',' ','W','W','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','P',' ',' ','W',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
@@ -1108,8 +1109,8 @@ function movePlayer1() {
         if ( (blockMovement[1]["collisionType"]==='Pit') ) {
             player1.health=0;
             soundController("play", "once", "player", "Die");
-            player1.state="Death";
-            player1.imageState="Die";
+            player1.state="Dead";
+            player1.imageState="Pit Die";
         }
 
     }
@@ -1391,13 +1392,13 @@ function processPlayfieldInteractions(character, collision, collisionType) {
             soundController("play", "once", "sound_effect", "coins");
             soundController("play", "once", "bandmember", "Stage");
             character.state="Stage";
-            character.imageState='Hidden';
+            character.imageState='Stage Hidden';
         }
 
         if (collisionType==="Pit") {
             soundController("play", "once", "bandmember", "Die");
             character.state='Dead';
-            character.imageState='Die';
+            character.imageState='Pit Die';
         }
 
         else if (collisionType==="Beer") {
@@ -1618,7 +1619,7 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
                     collisionResults.isAllowed=false;
                     return;
                 }
-                else if (gridSquare.classList.contains('playfield-exit')) {
+                else if ( (gridSquare.classList.contains('playfield-exit')) || (gridSquare.classList.contains('playfield-exit-title')) ) {
                     // gridSquare.style.borderTop="1px solid #00ff00";
                     collisionResults.collision=true;
                     collisionResults.collisionType="Stage";
@@ -2614,15 +2615,15 @@ for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
     if (bandMember.hasLighter) {
         bandMember.health=0;
         if (Math.random()<(bandMember.party/200)) {
-            bandMember.status="Death";
+            bandMember.status="Dead";
             bandMember.imageStatus="Fire Die";
         }
     }
     if (bandMember.hasBomb) {
         bandMember.health=0;
         if (Math.random()<(bandMember.party/200)) {
-            bandMember.status="Death";
-            bandMember.imageStatus="Bomb  Death";
+            bandMember.status="Dead";
+            bandMember.imageStatus="Bomb Die";
         }
     }
 }

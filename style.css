@@ -125,6 +125,11 @@
     background: url('./assets/exit_4.png') 0px 0px;
 }
 
+.playfield-exit-title {
+    background-color: #000000;
+    background: url('./assets/exit_4_title.png') 0px 0px;
+}
+
 .playfield-pit {
     background-color: #000000;
     background: url('./assets/pit_01.png') 0px 0px;
