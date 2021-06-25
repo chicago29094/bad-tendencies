@@ -542,7 +542,7 @@ class BandMember {
         this._posY=positionY;
         this._state=BANDMEMBER_DEFAULT_STATE;
         this._lastStateChange=Number(Date.now());
-        this._lastDirChange=Number(Date.now());
+        this._lastDirChange=0;
         this._lastDirection='';
         this._lastDirChangeReason='';
         this._hasLighter=0;
@@ -837,6 +837,130 @@ class Player {
         }
     }
 }
+
+
+// Bullet Class
+
+class Bullet {
+    constructor (bullet, positionX, positionY) {
+        this._id=bullet.id;
+        this._speed=bullet.speed;
+        this._direction='';
+        this._posX=positionX;
+        this._posY=positionY;
+        this._state=BULLET_DEFAULT_STATE;
+        this._lastStateChange=Number(Date.now());
+        this._image=Object.assign({}, bullet.image);
+
+        this._imageDiv=document.createElement("div");
+        this._imageDiv.setAttribute('class', 'bullet-div');
+        this._imageDiv.setAttribute('id', this._id);
+        this._imageDiv.style.position="absolute";
+        this._imageDiv.style.left=this._posX+"px";
+        this._imageDiv.style.top=this._posY+"px";
+        this._imagePtag=document.createElement("p");
+        this._imagePtag.setAttribute('class', "bullet-ptag");
+        this._imagePtag.setAttribute('id', this._id + '-ptag');
+        this._imagePtag.style.width="32px";
+        this._imagePtag.style.height="32px";
+        this._imagePtag.style.background=`url('${this._image.src}') 0px 0px`
+        this._imageDiv.appendChild(this._imagePtag);
+        gameDom["gameContainerPlayfield"].appendChild(this._imageDiv);        
+    }
+
+    get lastStateChange() { return this._lastStateChange; }
+
+    get id() { return this._id; }
+
+    get speed() { return this._speed; }
+    set speed(setSpeed) { this._speed=setSpeed; }
+
+    get direction() { return this._direction; }
+    set direction(setDirection) {
+            this._lastDirection=this._direction;
+            this._direction=setDirection; 
+    }
+
+    get posX() { return this._posX; }
+    set posX(setPosX) { 
+        this._posX=setPosX; 
+        this._imageDiv.style.left=this._posX+"px";
+
+    }
+        
+    get posY() { return this._posY; }
+    set posY(setPosY) { 
+        this._posY=setPosY; 
+        this._imageDiv.style.top=this._posY+"px";
+    }
+
+    get posXY() { return [this._posX, this.posY];}
+    set posXY([setPosX, setPosY]) {         
+        this._posX=setPosX; this._posY=setPosY; 
+        this._imageDiv.style.left=this._posX+"px";
+        this._imageDiv.style.top=this._posY+"px";
+    }
+    
+    get state() { return this._state; }
+    set state(setState) { 
+        if (setState!==this._state) {
+            this._lastStateChange=Number(Date.now());
+        }
+        this._state=setState; 
+        if (this._state==='Stage') {
+            this._posX=-5000;
+            this._posY=-5000;
+        }
+    }
+    
+    get image() { return this._image; }
+    
+    get imageState() { return this._image["imageState"]}
+    set imageState(setImageState) { 
+        if (this._image["imageState"]!==setImageState) {
+            this._image["imageState"]=setImageState; 
+            this._image[setImageState][2]=0;
+            this._lastDirChange=Number(Date.now());
+        }
+    }     
+
+    incrementImageAnimation() {
+        const row=this._image[this._image["imageState"]][0];
+        const maxCol=this._image[this._image["imageState"]][1];
+        let curCol=this._image[this._image["imageState"]][2];
+        const lastUpdate=this._image.lastUpdate;
+        const currentTime=Number(Date.now());
+        let newPosX=0;
+        let newPosY=0;
+
+        if ( (currentTime-lastUpdate) > ANIMATION_FRAME_DELAY ) {
+            this._image.lastUpdate=currentTime;
+
+            if (curCol===maxCol) {
+                if ( (this._image["imageState"]!=='Die') && 
+                    (this._image["imageState"]!=='Shoot Left') && 
+                    (this._image["imageState"]!=='Shoot Right') ) {
+                        curCol=0;
+                }
+            }
+            else curCol=curCol+1;
+
+            if (this._image["imageState"]==='Hidden') {
+                curCol=8;
+            }
+
+            this._image[this._image["imageState"]][2]=curCol;
+
+            newPosX=(curCol*-64);
+            newPosY=(row*-64);
+
+            this._imagePtag.style.backgroundPosition=`${newPosX}px ${newPosY}px`;
+        }
+    }
+
+}
+
+
 
 
 /*==========================================================================
@@ -1483,7 +1607,6 @@ Collision Detection
 
 function checkCollisions(gameCharacter, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY) {
 
-    // console.log("Here:00000");
     let stepwiseX=0;
     let stepwiseY=0;
 
@@ -2636,6 +2759,7 @@ const bandMember4LOS=lineOfSight(bandMember4, "");
 // if (bandMember4LOS.length>0) console.log("BM4", bandMember4LOS);
 
 
+
 // Check for gun, lighter, bomb interactions 
 
 for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
@@ -2659,6 +2783,7 @@ for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
     }
 }
 
+
 // Check to see if any band members should change in or out of the follow state
 
 for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
@@ -2671,6 +2796,7 @@ for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
     }
 }
 
+
 // Process band members that are in the follow state
 
 for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
@@ -2681,6 +2807,7 @@ for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
         moveBandMember(bandMember, "", "", "");
     }
 }
+
 
 // Process the band members that are in the Wander state
 
@@ -2709,12 +2836,14 @@ for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
     }
 }
 
+
 // Next, update animations as necessary
 player1.incrementImageAnimation();
 bandMember1.incrementImageAnimation();
 bandMember2.incrementImageAnimation();
 bandMember3.incrementImageAnimation();
 bandMember4.incrementImageAnimation();
+
 
 //Next, update player and band member health and party levels
 player1.updateVitalsCooldown();
