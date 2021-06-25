@@ -306,7 +306,15 @@ div.bt-character-outer img.bt-character-overlay {
     visibility: hidden;
 }
 
-
+div.bt-character-outer img.bt-character-underlay {
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: -100;
+    visibility: hidden;
+}
 
 div.bt-character-status-party, div.bt-character-status-health  {
     width: 120px;

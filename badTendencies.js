@@ -9,7 +9,8 @@ const BANDMEMBER_DIR_CHANGE_DELAY=8000;
 const BANDMEMBER_FOLLOW_CHANGE_DELAY=500;
 const BANDMEMBER_MOVE_MAXHISTORY=20;  
 const BANDMEMBER_HEALTH_RECOVERY=0.1;
-const BANDMEMBER_PARTY_RECOVERY=0.1;
+const BANDMEMBER_PARTY_RECOVERY=0.05;
+const BANDMEMBER_FIGHT_FACTOR=25;
 const BANDMEMBER_COOLDOWN=3000; // milliseconds
 const FOLLOW_DISTANCE=200;
 const BOUNCEBACK_FACTOR=3;
@@ -339,6 +340,7 @@ const overlayImages = {
     "Lighter Overlay" : './assets/lighter_overlay.png',
     "Flame Overlay" : './assets/flame_overlay64.gif',
     "Explosion Overlay" : './assets/explosion_overlay64.gif',
+    "Health Overlay" : './assets/health_overlay.png',
 }
 
 const gameLevel1 = [
@@ -1398,6 +1400,8 @@ function processPlayfieldInteractions(character, collision, collisionType) {
         if (collisionType==="Pit") {
             soundController("play", "once", "bandmember", "Die");
             character.state='Dead';
+            character.health=0;
+            character.party=0;
             character.imageState='Pit Die';
         }
 
@@ -1795,15 +1799,19 @@ for (let row=currentGridRow; row>=0; row--) {
  
     if ( (player1GridCol===currentGridCol) && (player1GridRow===row) ) {
         hitFlag=true; hitType="player1"; break; }
-    if ( (bandMember.id!=="bandMember1") && (bandMember1GridCol===currentGridCol) && (bandMember1GridRow===row) ) {
-        hitFlag=true; hitType="bandMember1"; break; }
-    if ( (bandMember.id!=="bandMember2") &&  (bandMember2GridCol===currentGridCol) && (bandMember2GridRow===row) ) {
-        hitFlag=true; hitType="bandMember2"; break; }
-    if (  (bandMember.id!=="bandMember3") && (bandMember3GridCol===currentGridCol) && (bandMember3GridRow===row) ) {
-        hitFlag=true; hitType="bandMember3"; break; }
-    if (  (bandMember.id!=="bandMember4") && (bandMember4GridCol===currentGridCol) && (bandMember4GridRow===row) ) {
-        hitFlag=true; hitType="bandMember4"; break; }
+
+    if (bandMember.party>BANDMEMBER_FIGHT_FACTOR) {    
+        if ( (bandMember.id!=="bandMember1") && (bandMember1GridCol===currentGridCol) && (bandMember1GridRow===row) ) {
+            hitFlag=true; hitType="bandMember1"; break; }
+        if ( (bandMember.id!=="bandMember2") &&  (bandMember2GridCol===currentGridCol) && (bandMember2GridRow===row) ) {
+            hitFlag=true; hitType="bandMember2"; break; }
+        if (  (bandMember.id!=="bandMember3") && (bandMember3GridCol===currentGridCol) && (bandMember3GridRow===row) ) {
+            hitFlag=true; hitType="bandMember3"; break; }
+        if (  (bandMember.id!=="bandMember4") && (bandMember4GridCol===currentGridCol) && (bandMember4GridRow===row) ) {
+            hitFlag=true; hitType="bandMember4"; break; }
+    }
 }
+
 
 if ( ( (hitFlag) && (!distance) ) ||  ( (hitFlag) && (distance) && (hitDistance<=distance) ) ) {
     lineOfSightHitResults.push( { "direction": "N", "type": hitType, "distance": hitDistance} );
@@ -1821,14 +1829,17 @@ for (let row=currentGridRow; row<32; row++) {
  
     if ( (player1GridCol===currentGridCol) && (player1GridRow===row) ) {
         hitFlag=true; hitType="player1"; break; }
-    if ( (bandMember.id!=="bandMember1") && (bandMember1GridCol===currentGridCol) && (bandMember1GridRow===row) ) {
-        hitFlag=true; hitType="bandMember1"; break; }
-    if ( (bandMember.id!=="bandMember2") &&  (bandMember2GridCol===currentGridCol) && (bandMember2GridRow===row) ) {
-        hitFlag=true; hitType="bandMember2"; break; }
-    if (  (bandMember.id!=="bandMember3") && (bandMember3GridCol===currentGridCol) && (bandMember3GridRow===row) ) {
-        hitFlag=true; hitType="bandMember3"; break; }
-    if (  (bandMember.id!=="bandMember4") && (bandMember4GridCol===currentGridCol) && (bandMember4GridRow===row) ) {
-        hitFlag=true; hitType="bandMember4"; break; }
+
+    if (bandMember.party>BANDMEMBER_FIGHT_FACTOR) {        
+        if ( (bandMember.id!=="bandMember1") && (bandMember1GridCol===currentGridCol) && (bandMember1GridRow===row) ) {
+            hitFlag=true; hitType="bandMember1"; break; }
+        if ( (bandMember.id!=="bandMember2") &&  (bandMember2GridCol===currentGridCol) && (bandMember2GridRow===row) ) {
+            hitFlag=true; hitType="bandMember2"; break; }
+        if (  (bandMember.id!=="bandMember3") && (bandMember3GridCol===currentGridCol) && (bandMember3GridRow===row) ) {
+            hitFlag=true; hitType="bandMember3"; break; }
+        if (  (bandMember.id!=="bandMember4") && (bandMember4GridCol===currentGridCol) && (bandMember4GridRow===row) ) {
+            hitFlag=true; hitType="bandMember4"; break; }
+    }
 }
 
 if ( ( (hitFlag) && (!distance) ) ||  ( (hitFlag) && (distance) && (hitDistance<=distance) ) ) {
@@ -1847,14 +1858,17 @@ for (let col=currentGridCol; col>=0; col--) {
  
     if ( (player1GridCol===col) && (player1GridRow===currentGridRow) ) {
         hitFlag=true; hitType="player1"; break; }
-    if ( (bandMember.id!=="bandMember1") && (bandMember1GridCol===col) && (bandMember1GridRow===currentGridRow) ) {
+
+    if (bandMember.party>BANDMEMBER_FIGHT_FACTOR) {        
+        if ( (bandMember.id!=="bandMember1") && (bandMember1GridCol===col) && (bandMember1GridRow===currentGridRow) ) {
         hitFlag=true; hitType="bandMember1"; break; }
-    if ( (bandMember.id!=="bandMember2") &&  (bandMember2GridCol===col) && (bandMember2GridRow===currentGridRow) ) {
-        hitFlag=true; hitType="bandMember2"; break; }
-    if (  (bandMember.id!=="bandMember3") && (bandMember3GridCol===col) && (bandMember3GridRow===currentGridRow) ) {
-        hitFlag=true; hitType="bandMember3"; break; }
-    if (  (bandMember.id!=="bandMember4") && (bandMember4GridCol===col) && (bandMember4GridRow===currentGridRow) ) {
-        hitFlag=true; hitType="bandMember4"; break; }
+        if ( (bandMember.id!=="bandMember2") &&  (bandMember2GridCol===col) && (bandMember2GridRow===currentGridRow) ) {
+            hitFlag=true; hitType="bandMember2"; break; }
+        if (  (bandMember.id!=="bandMember3") && (bandMember3GridCol===col) && (bandMember3GridRow===currentGridRow) ) {
+            hitFlag=true; hitType="bandMember3"; break; }
+        if (  (bandMember.id!=="bandMember4") && (bandMember4GridCol===col) && (bandMember4GridRow===currentGridRow) ) {
+            hitFlag=true; hitType="bandMember4"; break; }
+    }
 }
 
 if ( ( (hitFlag) && (!distance) ) ||  ( (hitFlag) && (distance) && (hitDistance<=distance) ) ) { 
@@ -1873,14 +1887,17 @@ for (let col=currentGridCol; col<32; col++) {
  
     if ( (player1GridCol===col) && (player1GridRow===currentGridRow) ) {
         hitFlag=true; hitType="player1"; break; }
-    if ( (bandMember.id!=="bandMember1") && (bandMember1GridCol===col) && (bandMember1GridRow===currentGridRow) ) {
+
+    if (bandMember.party>BANDMEMBER_FIGHT_FACTOR) {        
+        if ( (bandMember.id!=="bandMember1") && (bandMember1GridCol===col) && (bandMember1GridRow===currentGridRow) ) {
         hitFlag=true; hitType="bandMember1"; break; }
-    if ( (bandMember.id!=="bandMember2") &&  (bandMember2GridCol===col) && (bandMember2GridRow===currentGridRow) ) {
-        hitFlag=true; hitType="bandMember2"; break; }
-    if (  (bandMember.id!=="bandMember3") && (bandMember3GridCol===col) && (bandMember3GridRow===currentGridRow) ) {
-        hitFlag=true; hitType="bandMember3"; break; }
-    if (  (bandMember.id!=="bandMember4") && (bandMember4GridCol===col) && (bandMember4GridRow===currentGridRow) ) {
-        hitFlag=true; hitType="bandMember4"; break; }
+        if ( (bandMember.id!=="bandMember2") &&  (bandMember2GridCol===col) && (bandMember2GridRow===currentGridRow) ) {
+            hitFlag=true; hitType="bandMember2"; break; }
+        if (  (bandMember.id!=="bandMember3") && (bandMember3GridCol===col) && (bandMember3GridRow===currentGridRow) ) {
+            hitFlag=true; hitType="bandMember3"; break; }
+        if (  (bandMember.id!=="bandMember4") && (bandMember4GridCol===col) && (bandMember4GridRow===currentGridRow) ) {
+            hitFlag=true; hitType="bandMember4"; break; }
+    }
 }
 
 if ( ( (hitFlag) && (!distance) ) ||  ( (hitFlag) && (distance) && (hitDistance<=distance) ) ) { 
@@ -1910,7 +1927,7 @@ const rankedCompArray = ['player1', 'bandMember1', 'bandMember2', 'bandMember3',
 
 for (playfieldObject of rankedCompArray ) {
     for (let i=0; i<losResults.length && (direction===""); i++) {
-        if (losResults[i].type===playfieldObject) {
+        if (losResults[i].type===playfieldObject) {            
             direction=losResults[i].direction;
             break;
         }
@@ -2375,6 +2392,7 @@ function displayCharacterStatus(action) {
 
         gameDom["gameContainerPlayer1"].innerHTML = `
             <div class="bt-character-outer">
+                <img src="${overlayImages['Health Overlay']}" alt="Health Warning" class="bt-character-underlay healthPlayer1">
                 <img src="${player1.image.thumbnail}" alt="Player 1" class="bt-character">
                 <div class="bt-character-status-health">
                     <img src="./assets/greenbar.png" class="health-bar">
@@ -2400,6 +2418,14 @@ function displayCharacterStatus(action) {
 
         player1HealthBar.style.width = ((player1.health/100)*120).toString()+"px";
 
+        if (player1.health<=25)   { 
+            const overlayTarget = gameDom["gameContainerCharacters"].querySelector(`img.bt-character-underlay.healthPlayer1`); 
+            overlayTarget.style.visibility="visible";
+        } else {
+            const overlayTarget = gameDom["gameContainerCharacters"].querySelector(`img.bt-character-underlay.healthPlayer1`); 
+            overlayTarget.style.visibility="hidden";
+        }
+
         bandMember1HealthBar.style.width = ((bandMember1.health/100)*120+1).toString()+"px";
         bandMember1PartyBar.style.width = ((bandMember1.party/100)*120+1).toString()+"px";
 
@@ -2412,7 +2438,7 @@ function displayCharacterStatus(action) {
         bandMember4HealthBar.style.width = ((bandMember4.health/100)*120+1).toString()+"px";
         bandMember4PartyBar.style.width = ((bandMember4.party/100)*120+1).toString()+"px";
 
-        // Hide or display each band member's posession of a gun, bomb, or lighter
+        // Hide or display each band member's possession of a gun, bomb, or lighter
         for (bandMember of [bandMember1, bandMember2, bandMember3, bandMember4] )
         {
             // console.log(bandMember);
@@ -2592,6 +2618,7 @@ movePlayer1();
 for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
     if (bandMember.health<=0) {
         bandMember.health=0;
+        bandMember.party=0;
         bandMember.state='Dead';   
         bandMember.imageState="Die";
     }
@@ -2615,6 +2642,8 @@ for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
     if (bandMember.hasLighter) {
         bandMember.health=0;
         if (Math.random()<(bandMember.party/200)) {
+            bandMember.health=0;
+            bandMember.party=0;
             bandMember.status="Dead";
             bandMember.imageStatus="Fire Die";
         }
@@ -2622,6 +2651,8 @@ for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
     if (bandMember.hasBomb) {
         bandMember.health=0;
         if (Math.random()<(bandMember.party/200)) {
+            bandMember.health=0;
+            bandMember.party=0;
             bandMember.status="Dead";
             bandMember.imageStatus="Bomb Die";
         }
