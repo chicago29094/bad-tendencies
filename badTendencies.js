@@ -2030,11 +2030,21 @@ hitFlag=false;
 hitType="";
 hitDistance=0;
 for (let row=currentGridRow; row>=0; row--) {
-    const squareHas = currentGameLevel[row][currentGridCol];
+    let squareHas = currentGameLevel[row][currentGridCol];
     hitDistance=currentGridRow-row;
 
+    if (squareHas==='P') squareHas=' ';
+    if (squareHas==='d') squareHas=' ';
+    if (squareHas==='e') squareHas=' ';
+    if (squareHas==='f') squareHas=' ';
+    if (squareHas==='g') squareHas=' ';
+    if (squareHas==='i') squareHas=' ';
+    if (squareHas==='j') squareHas=' ';
+    if (squareHas==='q') squareHas=' ';
+    if (squareHas==='r') squareHas=' ';
+
     if (squareHas==='W') { hitFlag=false; hitType="Wall"; break; }
-    if ( (squareHas!=='P') && (squareHas!==' ') ) { hitFlag=true; hitType=squareHas; break; }
+    if (squareHas!==' ') { hitFlag=true; hitType=squareHas; break; }
  
     if ( (player1GridCol===currentGridCol) && (player1GridRow===row) ) {
         hitFlag=true; hitType="player1"; break; }
@@ -2053,7 +2063,7 @@ for (let row=currentGridRow; row>=0; row--) {
 
 
 if ( ( (hitFlag) && (!distance) ) ||  ( (hitFlag) && (distance) && (hitDistance<=distance) ) ) {
-    lineOfSightHitResults.push( { "direction": "N", "type": hitType, "distance": hitDistance} );
+    if (hitDistance>0) lineOfSightHitResults.push({ "direction": "N", "type": hitType, "distance": hitDistance});
 }
 
 // Check South
@@ -2082,7 +2092,7 @@ for (let row=currentGridRow; row<32; row++) {
 }
 
 if ( ( (hitFlag) && (!distance) ) ||  ( (hitFlag) && (distance) && (hitDistance<=distance) ) ) {
-    lineOfSightHitResults.push( { "direction": "S", "type": hitType,  "distance": hitDistance} );
+    if (hitDistance>0) lineOfSightHitResults.push({ "direction": "S", "type": hitType,  "distance": hitDistance});
 }
 
 // Check West
@@ -2111,7 +2121,7 @@ for (let col=currentGridCol; col>=0; col--) {
 }
 
 if ( ( (hitFlag) && (!distance) ) ||  ( (hitFlag) && (distance) && (hitDistance<=distance) ) ) { 
-    lineOfSightHitResults.push( { "direction": "W", "type": hitType,  "distance": hitDistance} );
+    if (hitDistance>0) lineOfSightHitResults.push({ "direction": "W", "type": hitType,  "distance": hitDistance});
 }
 
 // Check East
@@ -2140,7 +2150,7 @@ for (let col=currentGridCol; col<32; col++) {
 }
 
 if ( ( (hitFlag) && (!distance) ) ||  ( (hitFlag) && (distance) && (hitDistance<=distance) ) ) { 
-    lineOfSightHitResults.push( { "direction": "E", "type": hitType,  "distance": hitDistance} );
+    if (hitDistance>0) lineOfSightHitResults.push({ "direction": "E", "type": hitType,  "distance": hitDistance});
 }
 
 return lineOfSightHitResults;
@@ -2161,7 +2171,7 @@ let failedDirections="";
 let remainingDirections=[];
 
 
-const rankedCompArray = ['player1', 'bandMember1', 'bandMember2', 'bandMember3', "bandMember4",
+const rankedCompArray = ['S', 'player1', 'bandMember1', 'bandMember2', 'bandMember3', "bandMember4",
 'o', 'p', 'a', 'b', 'l', 'm', 'n', 'c', 'h', 'k'];
 
 for (playfieldObject of rankedCompArray ) {
@@ -2173,16 +2183,13 @@ for (playfieldObject of rankedCompArray ) {
     }    
 }
 
-// console.log(`1. character=[${bandMember.name}] direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
-// console.log(losResults);
-// console.log("analyze", direction);
+console.log(`1. character=[${bandMember.name}] direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
+console.log(losResults);
+console.log("analyze", direction);
 
-// console.log(`0. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
+if (direction==="") direction=['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
 
 moveBandMember(bandMember, "CheckOnly", direction, checkCollisionResults);
-
-//console.log(`1. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
-
 
 if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
     return direction;
@@ -2200,7 +2207,22 @@ direction=remainingDirections[Math.round(Math.random()*(remainingDirections.leng
 
 moveBandMember(bandMember, "CheckOnly", direction, checkCollisionResults);
 
-//console.log(`2. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
+if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
+    if (direction!="") return direction;
+}
+else {
+    failedDirections=failedDirections+direction;
+}
+
+remainingDirections=[];
+if (failedDirections.indexOf('N')===-1) remainingDirections.push('N');
+if (failedDirections.indexOf('S')===-1) remainingDirections.push('S');
+if (failedDirections.indexOf('W')===-1) remainingDirections.push('W');
+if (failedDirections.indexOf('E')===-1) remainingDirections.push('E');
+
+direction=remainingDirections[Math.round(Math.random()*(remainingDirections.length-1))];
+
+moveBandMember(bandMember, "CheckOnly", direction, checkCollisionResults);
 
 if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
     return direction;
@@ -2218,28 +2240,6 @@ if (failedDirections.indexOf('E')===-1) remainingDirections.push('E');
 direction=remainingDirections[Math.round(Math.random()*(remainingDirections.length-1))];
 
 moveBandMember(bandMember, "CheckOnly", direction, checkCollisionResults);
-
-//console.log(`3. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
-
-if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
-    return direction;
-}
-else {
-    failedDirections=failedDirections+direction;
-}
-
-remainingDirections=[];
-if (failedDirections.indexOf('N')===-1) remainingDirections.push('N');
-if (failedDirections.indexOf('S')===-1) remainingDirections.push('S');
-if (failedDirections.indexOf('W')===-1) remainingDirections.push('W');
-if (failedDirections.indexOf('E')===-1) remainingDirections.push('E');
-
-direction=remainingDirections[Math.round(Math.random()*(remainingDirections.length-1))];
-
-moveBandMember(bandMember, "CheckOnly", direction, checkCollisionResults);
-
-//console.log(`4. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
-
 
 if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
     return direction;
@@ -2247,8 +2247,6 @@ if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.co
 else {
     return ['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
 }      
-
-//console.log(`5. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
 
 
 }
@@ -2961,7 +2959,7 @@ for (let bandMember of livingBandMembers()) {
     if (bandMember===bandMember4) bandMemberLOS=bandMember4LOS;
 
     if (bandMember.state==='Wander') {
-        if ( (bandMemberLOS.length>0) && ( (currentTime-bandMember.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY ) ) {
+        if ( (bandMemberLOS.length>0) /*&& ( (currentTime-bandMember.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY )*/ ) {
             const losDirection=analyzeLOS(bandMember, bandMemberLOS);
             bandMember.direction=losDirection;
             bandMember.imageState=directionToImageState[losDirection];
@@ -2983,14 +2981,6 @@ bandMember1.incrementImageAnimation();
 bandMember2.incrementImageAnimation();
 bandMember3.incrementImageAnimation();
 bandMember4.incrementImageAnimation();
-
-
-bandMember3.hasLighter=Date.now()
-bandMember3.hasBomb=Date.now();
-bandMember3.party=60;
-bandMember4.hasLighter=Date.now()
-bandMember4.hasBomb=Date.now();
-bandMember4.party=60;
 
 
 //Next, update player and band member health and party levels
