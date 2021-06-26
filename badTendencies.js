@@ -202,6 +202,7 @@ const bandMemberCharacters=[
             "Shoot Left": [9, 3, 0], 
             "Shoot Right": [10, 3, 0],
             "Hidden": [10, 0, 0],
+            "Stage": [10, 0, 0],
             "Stage Hidden": [10, 0, 0],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
@@ -234,6 +235,7 @@ const bandMemberCharacters=[
             "Shoot Right": [10, 4, 0],
             "Hidden": [10, 0, 0],
             "Stage Hidden": [10, 0, 0],
+            "Stage": [10, 0, 0],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
@@ -265,6 +267,7 @@ const bandMemberCharacters=[
             "Shoot Right": [10, 4, 0],
             "Hidden": [10, 0, 0],
             "Stage Hidden": [10, 0, 0],
+            "Stage": [10, 0, 0],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
@@ -296,6 +299,7 @@ const playerCharacters =[
                     "Throwing Left": [8, 5, 0],
                     "Hidden": [8, 0, 0],
                     "Stage Hidden": [8, 0, 0],
+                    "Stage": [8, 0, 0],
                     "imageState" : "Idle Right",
                     "lastUpdate" : 0,
         },
@@ -548,7 +552,9 @@ const gameLevel5 = [
 Classes
 ===========================================================================*/
 
+/*-------------------------------------------
 // BandMember Class
+-------------------------------------------*/
 
 class BandMember {
     constructor (bandMemberCharacter, positionX, positionY) {
@@ -664,7 +670,7 @@ class BandMember {
             this._lastStateChange=Number(Date.now());
         }
         this._state=setState; 
-        if (this._state==='Stage') {
+        if ( (this._state==='Stage') || (this._state==='Stage Hidden') ) {
             this._posX=-5000;
             this._posY=-5000;
         }
@@ -675,9 +681,19 @@ class BandMember {
     get imageState() { return this._image["imageState"]}
     set imageState(setImageState) { 
         if (this._image["imageState"]!==setImageState) {
+
+            //console.log(this._image["imageState"], setImageState);
+
             this._image["imageState"]=setImageState; 
             this._image[setImageState][2]=0;
             this._lastDirChange=Number(Date.now());
+
+            if (setImageState==="Fire Die") {
+                this.applyEffectOverlay("Flame Overlay")
+            }
+            if (setImageState==="Bomb Die") {
+                this.applyEffectOverlay("Explosion Overlay")
+            }            
         }
     } 
 
@@ -729,9 +745,32 @@ class BandMember {
         }
     }
 
+    applyEffectOverlay(overlay) {
+        this._effectLayer=document.createElement("img");
+        this._effectLayer.setAttribute('class', 'effect-layer-character-overlay');
+        this._effectLayer.setAttribute('id', this._id);
+        console.log(overlayImages[overlay]);
+        this._effectLayer.setAttribute('src', overlayImages[overlay]);
+        this._effectLayer.style.position="absolute";
+        this._effectLayer.style.left=this._posX+"px";
+        this._effectLayer.style.top=this._posY+"px";
+        // this._effectLayer.style.width="64px";
+        // this._effectLayer.style.height="64px";
+        gameDom["gameContainerPlayfield"].appendChild(this._effectLayer);
+
+        setTimeout( ()=> {
+            console.log(this._effectLayer);
+            gameDom["gameContainerPlayfield"].removeChild(this._effectLayer);
+            this._effectLayer="";
+        }, 3000);
+    }
+
+
 }
 
+/*------------------------------------------------------
 // Player Class
+------------------------------------------------------*/
 
 class Player {
     constructor (playerCharacter, setName, positionX, positionY) {
@@ -813,8 +852,34 @@ class Player {
             if (this._image["imageState"]!==setImageState) {
                 this._image["imageState"]=setImageState; 
                 this._image[setImageState][2]=0;
+
+                if (setImageState==="Fire Die") {
+                    this.applyEffectOverlay("Flame Overlay")
+                }
+                if (setImageState==="Bomb Die") {
+                    this.applyEffectOverlay("Explosion Overlay")
+                }     
             }
     }
+
+    applyEffectOverlay(overlay) {
+        this._effectLayer=document.createElement("img");
+        this._effectLayer.setAttribute('class', 'effect-layer-character-overlay');
+        this._effectLayer.setAttribute('id', this._id);
+        this._effectLayer.setAttribute('src', overlayImages[overlay]);
+        this._effectLayer.style.position="absolute";
+        this._effectLayer.style.left=this._posX+"px";
+        this._effectLayer.style.top=this._posY+"px";
+        // this._effectLayer.style.width="64px";
+        // this._effectLayer.style.height="64px";
+        gameDom["gameContainerPlayfield"].appendChild(this._effectLayer);
+
+        setTimeout( ()=> {
+            console.log(this._effectLayer);
+            gameDom["gameContainerPlayfield"].removeChild(this._effectLayer);
+            this._effectLayer="";
+        }, 3000);
+    }    
 
     updateVitalsCooldown ()  { 
         // Update the health vitals on each game loop
@@ -859,7 +924,9 @@ class Player {
 }
 
 
+/*-------------------------------------------
 // Bullet Class
+-------------------------------------------*/
 
 class Bullet {
     constructor (bullet, positionX, positionY) {
@@ -927,12 +994,8 @@ class Bullet {
             this._lastStateChange=Number(Date.now());
         }
         this._state=setState; 
-        if (this._state==='Stage') {
-            this._posX=-5000;
-            this._posY=-5000;
-        }
     }
-    
+
     get image() { return this._image; }
     
     get imageState() { return this._image["imageState"]}
@@ -943,6 +1006,25 @@ class Bullet {
             this._lastDirChange=Number(Date.now());
         }
     }     
+
+    applyEffectOverlay(overlay) {
+        this._effectLayer=document.createElement("img");
+        this._effectLayer.setAttribute('class', 'effect-layer-character-overlay');
+        this._effectLayer.setAttribute('id', this._id);
+        this._effectLayer.setAttribute('src', overlayImages[overlay]);
+        this._effectLayer.style.position="absolute";
+        this._effectLayer.style.left=this._posX+"px";
+        this._effectLayer.style.top=this._posY+"px";
+        // this._effectLayer.style.width="64px";
+        // this._effectLayer.style.height="64px";
+        gameDom["gameContainerPlayfield"].appendChild(this._effectLayer);
+
+        setTimeout( ()=> {
+            console.log(this._effectLayer);
+            gameDom["gameContainerPlayfield"].removeChild(this._effectLayer);
+            this._effectLayer="";
+        }, 3000);
+    }    
 
     incrementImageAnimation() {
         const row=this._image[this._image["imageState"]][0];
@@ -1030,17 +1112,31 @@ function loadGameSounds() {
 
 }
 
+/*===========================================
+Return Array of Living Band Members
+===========================================*/
 
+function livingBandMembers() {
+    const theLiving=[];
+
+    if ( (bandMember1.state!=="Dead") && (bandMember1.health>0) )  theLiving.push(bandMember1);
+    if ( (bandMember2.state!=="Dead") && (bandMember2.health>0) )  theLiving.push(bandMember2);
+    if ( (bandMember3.state!=="Dead") && (bandMember3.health>0) )  theLiving.push(bandMember3);
+    if ( (bandMember4.state!=="Dead") && (bandMember4.health>0) )  theLiving.push(bandMember4);
+
+    return theLiving;
+}
 
 /*=========================================
 // Control game sounds and music
 =========================================*/
 
-function soundController(action, actionModifier, category, sound) {
+function soundController(action, actionModifier, category, sound, volumeLevel) {
 
     try {
         if (action==="play" || action==="Play") {
             soundDomLookup[category][sound].play();
+            soundDomLookup[category][sound].volume=volumeLevel;
             if (actionModifier==="loop" || actionModifier==="Loop") {
                 soundDomLookup[category][sound].loop=true;
             }
@@ -1249,12 +1345,12 @@ function movePlayer1() {
              (blockMovement[1]["collisionType"]==='bandMember3') || 
              (blockMovement[1]["collisionType"]==='bandMember4') ) {
                 // console.log(blockMovement[1]["collisionType"]);
-                soundController("play", "once", "sound_effect", "impact6");
+                soundController("play", "once", "sound_effect", "impact6", 1);
                 player1.health=player1.health-0.5;
         }
         if ( (blockMovement[1]["collisionType"]==='Pit') ) {
             player1.health=0;
-            soundController("play", "once", "player", "Die");
+            soundController("play", "once", "player", "Die", 1);
             player1.state="Dead";
             player1.imageState="Pit Die";
         }
@@ -1483,49 +1579,49 @@ function processPlayfieldInteractions(character, collision, collisionType) {
         //console.log(collision, collisionType);
         if (collisionType==="Beer") {
             player1Score+=25;
-            soundController("play", "once", "sound_effect", "coins");
+            soundController("play", "once", "sound_effect", "coins", 1);
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }
         else if (collisionType==="Bomb") {
             player1Score+=50;
-            soundController("play", "once", "sound_effect", "coins");
+            soundController("play", "once", "sound_effect", "coins", 1);
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }
         else if (collisionType==="Coin") {
             player1Score+=100;
-            soundController("play", "once", "sound_effect", "coins");
+            soundController("play", "once", "sound_effect", "coins", 1);
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }
         else if (collisionType==="Gem") {
             player1Score+=250;
-            soundController("play", "once", "sound_effect", "coins");
+            soundController("play", "once", "sound_effect", "coins", 1);
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }
         else if (collisionType==="Handgun") {
             player1Score+=175;
-            soundController("play", "once", "sound_effect", "coins");
+            soundController("play", "once", "sound_effect", "coins", 1);
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }        
         else if (collisionType==="Lighter") {
             player1Score+=50;
-            soundController("play", "once", "sound_effect", "coins");
+            soundController("play", "once", "sound_effect", "coins", 1);
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }                        
         else if (collisionType==="Pills") {
             player1Score+=50;
-            soundController("play", "once", "sound_effect", "coins");
+            soundController("play", "once", "sound_effect", "coins", 1);
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }
         else if (collisionType==="Wine") {
             player1Score+=250;
-            soundController("play", "once", "sound_effect", "coins");
+            soundController("play", "once", "sound_effect", "coins", 1);
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }       
@@ -1535,14 +1631,14 @@ function processPlayfieldInteractions(character, collision, collisionType) {
 
         if (collisionType==="Stage") {
             player1Score=player1Score+1000;
-            soundController("play", "once", "sound_effect", "coins");
-            soundController("play", "once", "bandmember", "Stage");
+            soundController("play", "once", "sound_effect", "coins", 1);
+            soundController("play", "once", "bandmember", "Stage", 1);
             character.state="Stage";
             character.imageState='Stage Hidden';
         }
 
         if (collisionType==="Pit") {
-            soundController("play", "once", "bandmember", "Die");
+            soundController("play", "once", "bandmember", "Die", 1);
             character.state='Dead';
             character.health=0;
             character.party=0;
@@ -1551,10 +1647,10 @@ function processPlayfieldInteractions(character, collision, collisionType) {
 
         else if (collisionType==="Beer") {
             const pick=[0,1,2,3][Math.round(Math.random()*3)];
-            if (pick===0) soundController("play", "once", "bandmember", "Awesome");
-            if (pick===1) soundController("play", "once", "bandmember", "Guitar Riff");
-            if (pick===2) soundController("play", "once", "bandmember", "Ha Ha");
-            if (pick===3) soundController("play", "once", "bandmember", "Oh Ya");
+            if (pick===0) soundController("play", "once", "bandmember", "Awesome", 1);
+            if (pick===1) soundController("play", "once", "bandmember", "Guitar Riff", 1);
+            if (pick===2) soundController("play", "once", "bandmember", "Ha Ha", 1);
+            if (pick===3) soundController("play", "once", "bandmember", "Oh Ya", 1);
             character.health=character.health-5;
             character.party=character.party+20;
             collision.collisionDomRef.remove();
@@ -1562,7 +1658,7 @@ function processPlayfieldInteractions(character, collision, collisionType) {
         }
         else if (collisionType==="Bomb") {
             if (character.hasBomb===0) {
-                soundController("play", "once", "bandmember", "Oh Ya");
+                soundController("play", "once", "bandmember", "Oh Ya", 1);
                 character.hasBomb=Number(Date.now());
                 collision.collisionDomRef.remove();
                 currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
@@ -1578,7 +1674,7 @@ function processPlayfieldInteractions(character, collision, collisionType) {
         }
         else if (collisionType==="Handgun") {
             if (character.hasGun===0) {
-                soundController("play", "once", "bandmember", "Ha Ha");
+                soundController("play", "once", "bandmember", "Ha Ha", 1);
                 character.hasGun=Number(Date.now());
                 collision.collisionDomRef.remove();
                 currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
@@ -1586,7 +1682,7 @@ function processPlayfieldInteractions(character, collision, collisionType) {
         }        
         else if (collisionType==="Lighter") {
             if (character.hasLighter===0) {
-                soundController("play", "once", "bandmember", "Oh Ya");
+                soundController("play", "once", "bandmember", "Oh Ya", 1);
                 character.haslighter=Number(Date.now());
                 collision.collisionDomRef.remove();
                 currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
@@ -1594,10 +1690,10 @@ function processPlayfieldInteractions(character, collision, collisionType) {
         }                        
         else if (collisionType==="Pills") {
             const pick=[0,1,2,3][Math.round(Math.random()*3)];
-            if (pick===0) soundController("play", "once", "bandmember", "Awesome");
-            if (pick===1) soundController("play", "once", "bandmember", "Guitar Riff");
-            if (pick===2) soundController("play", "once", "bandmember", "Ha Ha");
-            if (pick===3) soundController("play", "once", "bandmember", "Oh Ya");
+            if (pick===0) soundController("play", "once", "bandmember", "Awesome", 1);
+            if (pick===1) soundController("play", "once", "bandmember", "Guitar Riff", 1);
+            if (pick===2) soundController("play", "once", "bandmember", "Ha Ha", 1);
+            if (pick===3) soundController("play", "once", "bandmember", "Oh Ya", 1);
             character.health=character.health-20;
             character.party=character.party+50;
             collision.collisionDomRef.remove();
@@ -1605,10 +1701,10 @@ function processPlayfieldInteractions(character, collision, collisionType) {
         }
         else if (collisionType==="Wine") {
             const pick=[0,1,2,3][Math.round(Math.random()*3)];
-            if (pick===0) soundController("play", "once", "bandmember", "Awesome");
-            if (pick===1) soundController("play", "once", "bandmember", "Guitar Riff");
-            if (pick===2) soundController("play", "once", "bandmember", "Ha Ha");
-            if (pick===3) soundController("play", "once", "bandmember", "Oh Ya");
+            if (pick===0) soundController("play", "once", "bandmember", "Awesome", 1);
+            if (pick===1) soundController("play", "once", "bandmember", "Guitar Riff", 1);
+            if (pick===2) soundController("play", "once", "bandmember", "Ha Ha", 1);
+            if (pick===3) soundController("play", "once", "bandmember", "Oh Ya", 1);
             character.health=character.health-10;
             character.party=character.party+30;
             collision.collisionDomRef.remove();
@@ -2078,14 +2174,14 @@ for (playfieldObject of rankedCompArray ) {
 }
 
 // console.log(`1. character=[${bandMember.name}] direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
-console.log(losResults);
+// console.log(losResults);
 // console.log("analyze", direction);
 
-console.log(`0. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
+// console.log(`0. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
 
 moveBandMember(bandMember, "CheckOnly", direction, checkCollisionResults);
 
-console.log(`1. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
+//console.log(`1. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
 
 
 if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
@@ -2104,26 +2200,7 @@ direction=remainingDirections[Math.round(Math.random()*(remainingDirections.leng
 
 moveBandMember(bandMember, "CheckOnly", direction, checkCollisionResults);
 
-console.log(`2. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
-
-if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
-    return direction;
-}
-else {
-    failedDirections=failedDirections+direction;
-}
-
-remainingDirections=[];
-if (failedDirections.indexOf('N')===-1) remainingDirections.push('N');
-if (failedDirections.indexOf('S')===-1) remainingDirections.push('S');
-if (failedDirections.indexOf('W')===-1) remainingDirections.push('W');
-if (failedDirections.indexOf('E')===-1) remainingDirections.push('E');
-
-direction=remainingDirections[Math.round(Math.random()*(remainingDirections.length-1))];
-
-moveBandMember(bandMember, "CheckOnly", direction, checkCollisionResults);
-
-console.log(`3. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
+//console.log(`2. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
 
 if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
     return direction;
@@ -2142,7 +2219,26 @@ direction=remainingDirections[Math.round(Math.random()*(remainingDirections.leng
 
 moveBandMember(bandMember, "CheckOnly", direction, checkCollisionResults);
 
-console.log(`4. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
+//console.log(`3. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
+
+if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
+    return direction;
+}
+else {
+    failedDirections=failedDirections+direction;
+}
+
+remainingDirections=[];
+if (failedDirections.indexOf('N')===-1) remainingDirections.push('N');
+if (failedDirections.indexOf('S')===-1) remainingDirections.push('S');
+if (failedDirections.indexOf('W')===-1) remainingDirections.push('W');
+if (failedDirections.indexOf('E')===-1) remainingDirections.push('E');
+
+direction=remainingDirections[Math.round(Math.random()*(remainingDirections.length-1))];
+
+moveBandMember(bandMember, "CheckOnly", direction, checkCollisionResults);
+
+//console.log(`4. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
 
 
 if ( (checkCollisionResults.collisionType!=='Wall') && (checkCollisionResults.collisionType!=='Pit') ) {
@@ -2152,7 +2248,7 @@ else {
     return ['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
 }      
 
-console.log(`5. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
+//console.log(`5. direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
 
 
 }
@@ -2403,7 +2499,7 @@ function startNewGame(event) {
     levelStartTime=Number(Date.now());
 
     // Play the game background music
-    soundController("play", "loop", "music_score", "main");
+    soundController("play", "loop", "music_score", "main", 1);
 
     mainGameLoopIntervalId = window.setInterval(mainGameLoop, 100);
 }
@@ -2699,8 +2795,8 @@ if (player1.health<=0) {
     player1.state='Dead';
     player1.imageState='Die';
     player1.incrementImageAnimation();
-    soundController("play", "once", "player", "Die");
-    soundController("stop", "loop", "sound_effect", "low_health");
+    soundController("play", "once", "player", "Die", 1);
+    soundController("stop", "loop", "sound_effect", "low_health", 1);
 
     if ( (currentTime-player1.lastStateChange)>3000 )
     {
@@ -2713,27 +2809,40 @@ if (player1.health<=0) {
         return;
     }
 }
-if ( (player1.health>0) && (player1.health<25) ) {
-    soundController("play", "loop", "sound_effect", "low_health");
+if ( (player1.health>0) && (player1.health<30) ) {
+    soundController("play", "loop", "sound_effect", "low_health", (1-(player1.health/30)) );
 }
 else 
 {
-    soundController("stop", "loop", "sound_effect", "low_health");
+    soundController("stop", "loop", "sound_effect", "low_health", 1);
 }
 
 
 // Check to See if All Band Members Have Entered the Stage
-if  (   ( (bandMember1.state==="Stage") || (bandMember1.state==="Dead") ) && 
-        ( (bandMember2.state==="Stage") || (bandMember2.state==="Dead") ) && 
-        ( (bandMember3.state==="Stage") || (bandMember3.state==="Dead") ) && 
-        ( (bandMember4.state==="Stage") || (bandMember4.state==="Dead") )  
-    ) {
-    clearInterval(mainGameLoopIntervalId);
-    currentLevel=currentLevel+1;
-    gameLevelUp();
-    return;
+if  ( (bandMember1.state==="Stage") && (bandMember2.state==="Stage") && 
+          (bandMember3.state==="Stage") && (bandMember4.state==="Stage") ) {
+    // If we have completed the level, wait 3 seconds before proceeding to allow for animations and 
+    // sounds to play and complete.
+    gameLevelUpFlag=true;
+    setTimeout( ()=>{
+            clearInterval(mainGameLoopIntervalId); 
+            currentLevel=currentLevel+1;
+            gameLevelUp();
+    }, 3000);
 }
 
+// Check to See if All Band Members Have Died, Which is a Game Over scenario
+if  ( (bandMember1.state==="Dead") && (bandMember2.state==="Dead") && 
+      (bandMember3.state==="Dead") && (bandMember4.state==="Dead") ) {
+
+    // If all band members are dead, wait 3 seconds before proceeding to allow for animations and 
+    // sounds to play and complete.
+    gameOverFlag=true;
+    setTimeout( ()=>{
+            clearInterval(mainGameLoopIntervalId); 
+            gameOver();
+    }, 3000);
+}
 
 // Next check the player's keyboard actions
 if (currentKeysPressed.pressedKeys.has('ArrowUp')) { 
@@ -2793,26 +2902,22 @@ const bandMember4LOS=lineOfSight(bandMember4, "");
 // if (bandMember3LOS.length>0) console.log("BM3", bandMember3LOS);
 // if (bandMember4LOS.length>0) console.log("BM4", bandMember4LOS);
 
-
-
 // Check for gun, lighter, bomb interactions 
 
-for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
+for (let bandMember of livingBandMembers()) {
     if (bandMember.hasLighter) {
-        bandMember.health=0;
         if (Math.random()<(bandMember.party/200)) {
             bandMember.health=0;
             bandMember.party=0;
-            bandMember.status="Dead";
+            bandMember.state="Dead";
             bandMember.imageState="Fire Die";
         }
     }
     if (bandMember.hasBomb) {
-        bandMember.health=0;
         if (Math.random()<(bandMember.party/200)) {
             bandMember.health=0;
             bandMember.party=0;
-            bandMember.status="Dead";
+            bandMember.state="Dead";
             bandMember.imageState="Bomb Die";
         }
     }
@@ -2821,7 +2926,7 @@ for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
 
 // Check to see if any band members should change in or out of the follow state
 
-for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
+for (let bandMember of livingBandMembers()) {
 
     if ( (bandMember.state==='Follow') && (distanceBetweenCharacters(player1, bandMember)>FOLLOW_DISTANCE) ) {
         bandMember.state='Wander';
@@ -2834,7 +2939,7 @@ for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
 
 // Process band members that are in the follow state
 
-for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
+for (let bandMember of livingBandMembers()) {
     if (bandMember.state==='Follow') {
         const direction=followDirection(player1, bandMember);
         bandMember.direction=direction;
@@ -2846,7 +2951,7 @@ for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
 
 // Process the band members that are in the Wander state
 
-for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
+for (let bandMember of livingBandMembers()) {
     // console.log(bandMember);
     let bandMemberLOS={};
 
@@ -2880,12 +2985,20 @@ bandMember3.incrementImageAnimation();
 bandMember4.incrementImageAnimation();
 
 
+bandMember3.hasLighter=Date.now()
+bandMember3.hasBomb=Date.now();
+bandMember3.party=60;
+bandMember4.hasLighter=Date.now()
+bandMember4.hasBomb=Date.now();
+bandMember4.party=60;
+
+
 //Next, update player and band member health and party levels
-player1.updateVitalsCooldown();
-bandMember1.updateVitalsCooldown();
-bandMember2.updateVitalsCooldown();
-bandMember3.updateVitalsCooldown();
-bandMember4.updateVitalsCooldown();
+if ( (player1.state!=="Dead") && (player1.health>0) ) player1.updateVitalsCooldown();
+if ( (bandMember1!=="Dead") && (bandMember1.health>0) ) bandMember1.updateVitalsCooldown();
+if ( (bandMember2!=="Dead") && (bandMember2.health>0) ) bandMember2.updateVitalsCooldown();
+if ( (bandMember3!=="Dead") && (bandMember3.health>0) ) bandMember3.updateVitalsCooldown();
+if ( (bandMember4!=="Dead") && (bandMember4.health>0) ) bandMember4.updateVitalsCooldown();
 
 // Randomly drop playFIeld objects onto game board
 dropPlayfieldObject("Good");
