@@ -2422,6 +2422,10 @@ function startNewGame(event) {
         <div class="header-buttons">
             <div><button id="headerStartGameButton">New Game</button></div>
             <div><button id="headerQuitGameButton">Quit GAME</button></div>
+            <div>
+                <label for="volume" id="music-volume">Music</label>
+                <input type="range" name="volume" min="0" max="100" id="music-volume-input">
+            </div>                        
         </div>
     `;
     const headerStartGameButton=gameContainerHeader.querySelector('#headerStartGameButton');
@@ -2815,20 +2819,6 @@ else
     soundController("stop", "loop", "sound_effect", "low_health", 1);
 }
 
-
-// Check to See if All Band Members Have Entered the Stage
-if  ( (bandMember1.state==="Stage") && (bandMember2.state==="Stage") && 
-          (bandMember3.state==="Stage") && (bandMember4.state==="Stage") ) {
-    // If we have completed the level, wait 3 seconds before proceeding to allow for animations and 
-    // sounds to play and complete.
-    gameLevelUpFlag=true;
-    setTimeout( ()=>{
-            clearInterval(mainGameLoopIntervalId); 
-            currentLevel=currentLevel+1;
-            gameLevelUp();
-    }, 3000);
-}
-
 // Check to See if All Band Members Have Died, Which is a Game Over scenario
 if  ( (bandMember1.state==="Dead") && (bandMember2.state==="Dead") && 
       (bandMember3.state==="Dead") && (bandMember4.state==="Dead") ) {
@@ -2841,6 +2831,22 @@ if  ( (bandMember1.state==="Dead") && (bandMember2.state==="Dead") &&
             gameOver();
     }, 3000);
 }
+
+// Check to See if All Band Members Have Entered the Stage
+if  (    ( (bandMember1.state==="Stage") || (bandMember1.state==="Dead") ) && 
+         ( (bandMember2.state==="Stage") || (bandMember2.state==="Dead") ) && 
+         ( (bandMember3.state==="Stage") || (bandMember3.state==="Dead") ) && 
+         ( (bandMember4.state==="Stage") || (bandMember4.state==="Dead") ) ) {
+    // If we have completed the level, wait 3 seconds before proceeding to allow for animations and 
+    // sounds to play and complete.
+    gameLevelUpFlag=true;
+    setTimeout( ()=>{
+            clearInterval(mainGameLoopIntervalId); 
+            currentLevel=currentLevel+1;
+            gameLevelUp();
+    }, 3000);
+}
+
 
 // Next check the player's keyboard actions
 if (currentKeysPressed.pressedKeys.has('ArrowUp')) { 
@@ -2872,7 +2878,7 @@ else {
     }
     else {
         player1.state='Idle Right';
-        player1.iamgeState='Idle Right';
+        player1.imageState='Idle Right';
     }
 }
 

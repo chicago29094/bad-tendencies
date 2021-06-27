@@ -367,4 +367,21 @@ div.header-buttons {
     position: absolute;
     top: 0px;
     right: 0px;
+    text-align: right;
+}
+
+div.header-buttons  #music-volume {
+    display: inline-block;
+    color: #ffffff;
+    font-size: 1rem;
+    margin: 6px 0px 0px 10px;
+}
+
+div.header-buttons #music-volume-input {
+    display: inline-block;
+    color: #808080;
+    width: 75px;
+    height: 10px;
+    margin: 6px 0px 0px 5px;
+}
 }
