@@ -32,6 +32,7 @@ let currentGameLevel="";
 let currentLevel=1;
 let player1Score=0;
 let levelStartTime=0;
+let levelFrameCounter=0;
 
 // Keyboard key press data structure
 
@@ -1063,8 +1064,7 @@ class Bullet {
             this._image.lastUpdate=currentTime;
 
             if (curCol===maxCol) {
-                if ( (this._image["imageState"]!=='Die') && 
-                    (this._image["imageState"]!=='Shoot Left') && 
+                if ((this._image["imageState"]!=='Shoot Left') && 
                     (this._image["imageState"]!=='Shoot Right') ) {
                         curCol=0;
                 }
@@ -1200,7 +1200,25 @@ function livingBandMembers() {
 function soundController(action, actionModifier, category, sound, volumeLevel) {
 
     try {
-        if (action==="play" || action==="Play") {
+        if ( ( (action==="playdistinct" || action==="PlayDistinct")) && 
+                  ( (actionModifier==="reset") || (actionModifier==="Reset") ) ) {
+                        soundDomLookup[category][sound].setAttribute("data-is-playing-distinct", "false");
+        }
+        else if (action==="playdistinct" || action==="PlayDistinct") {
+            if ( (!soundDomLookup[category][sound].dataset.isPlayingDistinct) || 
+                 ((soundDomLookup[category][sound].dataset.isPlayingDistinct) && 
+                 (soundDomLookup[category][sound].dataset.isPlayingDistinct!=='true') ) ) {
+
+                soundDomLookup[category][sound].setAttribute("data-is-playing-distinct", "true");
+                soundDomLookup[category][sound].play();
+                soundDomLookup[category][sound].volume=volumeLevel;
+
+                if (actionModifier==="loop" || actionModifier==="Loop") {
+                    soundDomLookup[category][sound].loop=true;
+                }
+            }
+        }
+        else if (action==="play" || action==="Play") {
             soundDomLookup[category][sound].play();
             soundDomLookup[category][sound].volume=volumeLevel;
             if (actionModifier==="loop" || actionModifier==="Loop") {
@@ -1429,7 +1447,7 @@ function movePlayer1() {
                 soundController("play", "once", "sound_effect", "impact6", 1);
                 player1.health=player1.health-0.5;
         }
-        if ( (blockMovement[1]["collisionType"]==='Pit') ) {
+        if ( (blockMovement[0]["collisionType"]==='Pit') ) {
             player1.health=0;
             soundController("play", "once", "player", "Die", 1);
             player1.state="Dead";
@@ -1565,7 +1583,7 @@ function moveBandMember(bandMember, actionType, checkDirection, collisionResults
 }
 
 /*==========================================================================
- Return compass direction to follow player
+ Return compass direction for band member to follow player
 ===========================================================================*/
 
 function followDirection(player, character) {
@@ -1736,6 +1754,7 @@ function processPlayfieldInteractions(character, collision, collisionType) {
             character.party=character.party+20;
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
+            bandMember.actionQueue.enqueue( { "state": "Dizzy", "durationType": "time", "duration":  1000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
         }
         else if (collisionType==="Bomb") {
             if (character.hasBomb===0) {
@@ -1779,6 +1798,7 @@ function processPlayfieldInteractions(character, collision, collisionType) {
             character.party=character.party+50;
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
+            bandMember.actionQueue.enqueue( { "state": "Dizzy", "durationType": "time", "duration":  3000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
         }
         else if (collisionType==="Wine") {
             const pick=[0,1,2,3][Math.round(Math.random()*3)];
@@ -1790,6 +1810,7 @@ function processPlayfieldInteractions(character, collision, collisionType) {
             character.party=character.party+30;
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
+            bandMember.actionQueue.enqueue( { "state": "Dizzy", "durationType": "time", "duration":  2000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
         }               
 
     }
@@ -2583,6 +2604,7 @@ function startNewGame(event) {
     handleKeyboardEvents("");
 
     levelStartTime=Number(Date.now());
+    levelFrameCounter=0;
 
     // Play the game background music
     soundController("play", "loop", "music_score", "main", 1);
@@ -2628,6 +2650,7 @@ function startNextLevel(event) {
     handleKeyboardEvents("");
 
     levelStartTime=Number(Date.now());
+    levelFrameCounter=0;
 
 
     mainGameLoopIntervalId = window.setInterval(mainGameLoop, 1000);
@@ -2865,27 +2888,36 @@ Main Game Loop
 
 function mainGameLoop(event) {
 
+// Utilized for the display of elapsed time and timed interaction based on elapsed time in seconds
 const currentTime=Number(Date.now());
+
+// Utilized to control action queues and timed interactions based on game frames
+levelFrameCounter++;
 
 // console.log("Starting mainGameLoop");
 
 // Update the health and other status items of the game characters
 displayCharacterStatus("update");
 
-// DIsplay the Scoreboard header
+// Display the Scoreboard header
 displayScoreBoard();
 
-// Check is the player is Dead
+
+
+// Check if the player is Dead
 if (player1.health<=0) {
     player1.health=0;
+
+    soundController("playdistinct", "once", "player", "Die", 1);
+    soundController("stop", "loop", "sound_effect", "low_health", 1);
+
     player1.state='Dead';
     player1.imageState='Die';
     player1.incrementImageAnimation();
-    soundController("play", "once", "player", "Die", 1);
-    soundController("stop", "loop", "sound_effect", "low_health", 1);
 
     if ( (currentTime-player1.lastStateChange)>3000 )
     {
+        soundController("playdistinct", "reset", "player", "Die", 1);
         gameStatus="Game Over";
         clearInterval(mainGameLoopIntervalId);
         gameOver();
@@ -2970,12 +3002,13 @@ movePlayer1();
 
 // Check to see if any band members should be Dead
 
-for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
+for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4] ) {
     if (bandMember.health<=0) {
         bandMember.health=0;
         bandMember.party=0;
         bandMember.state='Dead';   
         bandMember.imageState="Die";
+        soundController("play", "", "bandmember", "Die", 1);
     }
 }
 
@@ -2999,6 +3032,7 @@ for (let bandMember of livingBandMembers()) {
             bandMember.party=0;
             bandMember.state="Dead";
             bandMember.imageState="Fire Die";
+            soundController("play", "", "sound_effect", "death2", 1);
         }
     }
     if (bandMember.hasBomb) {
@@ -3007,6 +3041,8 @@ for (let bandMember of livingBandMembers()) {
             bandMember.party=0;
             bandMember.state="Dead";
             bandMember.imageState="Bomb Die";
+            soundController("play", "", "sound_effect", "death1", 1);
+            soundController("play", "", "sound_effect", "shotgun", 1);
         }
     }
 }
