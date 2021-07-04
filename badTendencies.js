@@ -786,6 +786,34 @@ class BandMember {
         }, 3000);
     }
 
+    processActionQueue() {
+
+        if (this.actionQueue.isEmpty()) {
+            return;
+        }
+        const action=this.actionQueue.peek();
+        const currentTime=Date.now();
+
+        if ( (action.durationType) && (action.durationType==="time") ) {
+            if ((currentTime-action.startTime)<=action.duration) {
+                if (action.state) this.state=action.state;
+                if (action.imageState) this.imageState=action.imageState;
+            }
+            else this.actionQueue.dequeue();
+        }
+        else if ( (action.durationType) && (action.durationType==="frame") ) {
+            if ((levelFrameCounter-action.startFrame)<=action.duration) {
+                if (action.state) this.state=action.state;
+                if (action.imageState) this.imageState=action.imageState;
+            }
+            else this.actionQueue.dequeue();
+        }
+        else if ( (!action.durationType) ) {
+            if (action.state) this.state=action.state;
+            if (action.imageState) this.imageState=action.imageState;  
+            this.actionQueue.dequeue();
+        }
+    }
 
 }
 
@@ -944,6 +972,42 @@ class Player {
             this._imagePtag.style.backgroundPosition=`${newPosX}px ${newPosY}px`;
         }
     }
+
+    processActionQueue() {
+
+        if (this.actionQueue.isEmpty()) {
+            return;
+        }
+
+        const action=this.actionQueue.peek();
+        const currentTime=Date.now();
+ 
+        if ( (action.durationType) && (action.durationType==="time") ) {
+
+            if ((currentTime-action.startTime)<=action.duration) {
+                if (action.state) this.state=action.state;
+                if (action.imageState) this.imageState=action.imageState;
+            }
+            else {
+                    this.actionQueue.dequeue();
+            }
+        }
+        else if ( (action.durationType) && (action.durationType==="frame") ) {
+            if ((levelFrameCounter-action.startFrame)<=action.duration) {
+                if (action.state) this.state=action.state;
+                if (action.imageState) this.imageState=action.imageState;
+            }
+            else {
+                    this.actionQueue.dequeue();
+            }
+        }
+        else if ( (!action.durationType) ) {
+            if (action.state) this.state=action.state;
+            if (action.imageState) this.imageState=action.imageState;  
+            this.actionQueue.dequeue();
+        }
+    }
+
 }
 
 
@@ -1084,6 +1148,35 @@ class Bullet {
         }
     }
 
+    processActionQueue() {
+        if (this.actionQueue.isEmpty()) {
+            return;
+        }
+
+        const action=this.actionQueue.peek();
+        const currentTime=Date.now();
+ 
+        if ( (action.durationType) && (action.durationType==="time") ) {
+            if ((currentTime-action.startTime)<=action.duration) {
+                if (action.state) this.state=action.state;
+                if (action.imageState) this.imageState=action.imageState;
+            }
+            else this.actionQueue.dequeue();
+        }
+        else if ( (action.durationType) && (action.durationType==="frame") ) {
+            if ((levelFrameCounter-action.startFrame)<=action.duration) {
+                if (action.state) this.state=action.state;
+                if (action.imageState) this.imageState=action.imageState;
+            }
+            else this.actionQueue.dequeue();
+        }
+        else if ( (!action.durationType) ) {
+            if (action.state) this.state=action.state;
+            if (action.imageState) this.imageState=action.imageState;  
+            this.actionQueue.dequeue();
+        }
+    }
+
 }
 
 /*-------------------------------------------
@@ -1198,6 +1291,7 @@ function livingBandMembers() {
 =========================================*/
 
 function soundController(action, actionModifier, category, sound, volumeLevel) {
+
 
     try {
         if ( ( (action==="playdistinct" || action==="PlayDistinct")) && 
@@ -1674,6 +1768,8 @@ Process Playfield Object Interactions
 
 function processPlayfieldInteractions(character, collision, collisionType) {
 
+    const currentTime=Date.now();
+
     if (character.id==="player1") {
         //console.log(collision, collisionType);
         if (collisionType==="Beer") {
@@ -1754,7 +1850,12 @@ function processPlayfieldInteractions(character, collision, collisionType) {
             character.party=character.party+20;
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
-            bandMember.actionQueue.enqueue( { "state": "Dizzy", "durationType": "time", "duration":  1000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+
+            soundController("play", "once", "bandmember", "Dizzy", 1);
+
+            character.actionQueue.enqueue( { "state": "Dizzy", "imageState": "Dizzy", "durationType": "time", "duration":  2000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+
+            character.actionQueue.enqueue( {"state": character.state, "imageState": character.imageState});
         }
         else if (collisionType==="Bomb") {
             if (character.hasBomb===0) {
@@ -1798,7 +1899,12 @@ function processPlayfieldInteractions(character, collision, collisionType) {
             character.party=character.party+50;
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
-            bandMember.actionQueue.enqueue( { "state": "Dizzy", "durationType": "time", "duration":  3000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+
+            soundController("play", "once", "bandmember", "Dizzy", 1);
+
+            character.actionQueue.enqueue( { "state": "Dizzy", "imageState": "Dizzy", "durationType": "time", "duration":  4000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+
+            character.actionQueue.enqueue( {"state": character.state, "imageState": character.imageState});
         }
         else if (collisionType==="Wine") {
             const pick=[0,1,2,3][Math.round(Math.random()*3)];
@@ -1810,9 +1916,13 @@ function processPlayfieldInteractions(character, collision, collisionType) {
             character.party=character.party+30;
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
-            bandMember.actionQueue.enqueue( { "state": "Dizzy", "durationType": "time", "duration":  2000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
-        }               
 
+            soundController("play", "once", "bandmember", "Dizzy", 1);
+
+            character.actionQueue.enqueue( { "state": "Dizzy", "imageState": "Dizzy", "durationType": "time", "duration":  3000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+
+            character.actionQueue.enqueue( {"state": character.state, "imageState": character.imageState} );
+        }               
     }
 
 }
@@ -2145,6 +2255,10 @@ for (let row=currentGridRow; row>=0; row--) {
     if (squareHas==='q') squareHas=' ';
     if (squareHas==='r') squareHas=' ';
 
+    if ( (bandMember.hasBomb>0) && (squareHas==='c') ) squareHas=' ';
+    if ( (bandMember.hasGun>0) && ( (squareHas==='l') || (squareHas==='m') ) ) squareHas=' ';
+    if ( (bandMember.hasLighter>0) && (squareHas==='n') ) squareHas=' ';
+    
     if (squareHas==='W') { hitFlag=false; hitType="Wall"; break; }
     if (squareHas!==' ') { hitFlag=true; hitType=squareHas; break; }
  
@@ -2172,8 +2286,22 @@ if ( ( (hitFlag) && (!distance) ) ||  ( (hitFlag) && (distance) && (hitDistance<
 hitFlag=false;
 hitType="";
 for (let row=currentGridRow; row<32; row++) {
-    const squareHas = currentGameLevel[row][currentGridCol];
+    let squareHas = currentGameLevel[row][currentGridCol];
     hitDistance=row-currentGridRow;
+
+    if (squareHas==='P') squareHas=' ';
+    if (squareHas==='d') squareHas=' ';
+    if (squareHas==='e') squareHas=' ';
+    if (squareHas==='f') squareHas=' ';
+    if (squareHas==='g') squareHas=' ';
+    if (squareHas==='i') squareHas=' ';
+    if (squareHas==='j') squareHas=' ';
+    if (squareHas==='q') squareHas=' ';
+    if (squareHas==='r') squareHas=' ';
+
+    if ( (bandMember.hasBomb>0) && (squareHas==='c') ) squareHas=' ';
+    if ( (bandMember.hasGun>0) && ( (squareHas==='l') || (squareHas==='m') ) ) squareHas=' ';
+    if ( (bandMember.hasLighter>0) && (squareHas==='n') ) squareHas=' ';
 
     if (squareHas==='W') { hitFlag=false; hitType="Wall"; break; }
     if ( (squareHas!=='P') && (squareHas!==' ') ) { hitFlag=true; hitType=squareHas; break; }
@@ -2201,8 +2329,22 @@ if ( ( (hitFlag) && (!distance) ) ||  ( (hitFlag) && (distance) && (hitDistance<
 hitFlag=false;
 hitType="";
 for (let col=currentGridCol; col>=0; col--) {
-    const squareHas = currentGameLevel[currentGridRow][col];
+    let squareHas = currentGameLevel[currentGridRow][col];
     hitDistance=currentGridCol-col;
+
+    if (squareHas==='P') squareHas=' ';
+    if (squareHas==='d') squareHas=' ';
+    if (squareHas==='e') squareHas=' ';
+    if (squareHas==='f') squareHas=' ';
+    if (squareHas==='g') squareHas=' ';
+    if (squareHas==='i') squareHas=' ';
+    if (squareHas==='j') squareHas=' ';
+    if (squareHas==='q') squareHas=' ';
+    if (squareHas==='r') squareHas=' ';
+
+    if ( (bandMember.hasBomb>0) && (squareHas==='c') ) squareHas=' ';
+    if ( (bandMember.hasGun>0) && ( (squareHas==='l') || (squareHas==='m') ) ) squareHas=' ';
+    if ( (bandMember.hasLighter>0) && (squareHas==='n') ) squareHas=' ';
 
     if (squareHas==='W') { hitFlag=false; hitType="Wall"; break; }
     if ( (squareHas!=='P') && (squareHas!==' ') ) { hitFlag=true; hitType=squareHas; break; }
@@ -2230,8 +2372,22 @@ if ( ( (hitFlag) && (!distance) ) ||  ( (hitFlag) && (distance) && (hitDistance<
 hitFlag=false;
 hitType="";
 for (let col=currentGridCol; col<32; col++) {
-    const squareHas = currentGameLevel[currentGridRow][col];
+    let squareHas = currentGameLevel[currentGridRow][col];
     hitDistance=col-currentGridCol;
+
+    if (squareHas==='P') squareHas=' ';
+    if (squareHas==='d') squareHas=' ';
+    if (squareHas==='e') squareHas=' ';
+    if (squareHas==='f') squareHas=' ';
+    if (squareHas==='g') squareHas=' ';
+    if (squareHas==='i') squareHas=' ';
+    if (squareHas==='j') squareHas=' ';
+    if (squareHas==='q') squareHas=' ';
+    if (squareHas==='r') squareHas=' ';
+
+    if ( (bandMember.hasBomb>0) && (squareHas==='c') ) squareHas=' ';
+    if ( (bandMember.hasGun>0) && ( (squareHas==='l') || (squareHas==='m') ) ) squareHas=' ';
+    if ( (bandMember.hasLighter>0) && (squareHas==='n') ) squareHas=' ';
 
     if (squareHas==='W') { hitFlag=false; hitType="Wall"; break; }
     if ( (squareHas!=='P') && (squareHas!==' ') ) { hitFlag=true; hitType=squareHas; break; }
@@ -2285,9 +2441,9 @@ for (playfieldObject of rankedCompArray ) {
     }    
 }
 
-console.log(`1. character=[${bandMember.name}] direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
-console.log(losResults);
-console.log("analyze", direction);
+// console.log(`1. character=[${bandMember.name}] direction=[${direction}] remainingDirections=[${remainingDirections}] failedDirections=[${failedDirections}]`)
+// console.log(losResults);
+// console.log("analyze", direction);
 
 if (direction==="") direction=['N', 'S', 'W', 'E'][Math.round(Math.random()*3)];
 
@@ -3006,9 +3162,11 @@ for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4] ) {
     if (bandMember.health<=0) {
         bandMember.health=0;
         bandMember.party=0;
+        if (bandMember.state!=='Dead') {
+            soundController("play", "", "bandmember", "Die", 1);
+        }
         bandMember.state='Dead';   
         bandMember.imageState="Die";
-        soundController("play", "", "bandmember", "Die", 1);
     }
 }
 
@@ -3024,9 +3182,10 @@ const bandMember4LOS=lineOfSight(bandMember4, "");
 // if (bandMember4LOS.length>0) console.log("BM4", bandMember4LOS);
 
 // Check for gun, lighter, bomb interactions 
+// Random deaths can occur based on bandMembers' "party" intoxication level 
 
 for (let bandMember of livingBandMembers()) {
-    if (bandMember.hasLighter) {
+    if (bandMember.hasLighter>0) {
         if (Math.random()<(bandMember.party/200)) {
             bandMember.health=0;
             bandMember.party=0;
@@ -3035,7 +3194,7 @@ for (let bandMember of livingBandMembers()) {
             soundController("play", "", "sound_effect", "death2", 1);
         }
     }
-    if (bandMember.hasBomb) {
+    if (bandMember.hasBomb>0) {
         if (Math.random()<(bandMember.party/200)) {
             bandMember.health=0;
             bandMember.party=0;
@@ -3045,6 +3204,11 @@ for (let bandMember of livingBandMembers()) {
             soundController("play", "", "sound_effect", "shotgun", 1);
         }
     }
+    if (bandMember.hasGun>0) {
+        if (Math.random()<(bandMember.party/200)) {
+            soundController("play", "", "sound_effect", "shotgun", 1);
+        }
+    }    
 }
 
 
@@ -3055,7 +3219,7 @@ for (let bandMember of livingBandMembers()) {
     if ( (bandMember.state==='Follow') && (distanceBetweenCharacters(player1, bandMember)>FOLLOW_DISTANCE) ) {
         bandMember.state='Wander';
     }
-    else if ( (bandMember.state!=='Follow') && (distanceBetweenCharacters(player1, bandMember)<FOLLOW_DISTANCE) ) {
+    else if ( (bandMember.state==='Wander') && (distanceBetweenCharacters(player1, bandMember)<FOLLOW_DISTANCE) ) {
         bandMember.state='Follow';
     }
 }
@@ -3099,6 +3263,13 @@ for (let bandMember of livingBandMembers()) {
         moveBandMember(bandMember, "", "", "");
     }
 }
+
+// Next, process character actionQueues
+player1.processActionQueue();
+bandMember1.processActionQueue();
+bandMember2.processActionQueue();
+bandMember3.processActionQueue();
+bandMember4.processActionQueue();
 
 
 // Next, update animations as necessary
