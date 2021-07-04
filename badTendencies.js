@@ -306,6 +306,24 @@ const playerCharacters =[
     },
 ];
 
+const bullet =[
+    {
+        "name" : 'Standard Bullet',
+        "id" : "bullet1",
+        "speed" : 30,
+        "image" : {
+                    "src": './assets/bullet_001_32x32.png',
+                    "Shoot Left": [0, 4, 0],  // Sprite Row, Total Frames, Current Frame
+                    "Shoot Right": [1, 4, 0],  
+                    "Shoot Down": [3, 4, 0],
+                    "Shoot Up": [2, 4, 0],  
+                    "Hidden": [4, 4, 0],  
+                    "imageState" : "Hidden",
+                    "lastUpdate" : 0,
+        },
+    },
+];
+
 
 
 /*==========================================================================
@@ -591,7 +609,9 @@ class BandMember {
         this._imagePtag.style.height="64px";
         this._imagePtag.style.background=`url('${this._image.src}') 0px 0px`
         this._imageDiv.appendChild(this._imagePtag);
-        gameDom["gameContainerPlayfield"].appendChild(this._imageDiv);        
+        gameDom["gameContainerPlayfield"].appendChild(this._imageDiv);
+        
+        this.actionQueue=new Queue();
     }
 
 
@@ -800,6 +820,8 @@ class Player {
         this._imagePtag.style.background=`url('${this._image.src}') 0px 0px`
         this._imageDiv.appendChild(this._imagePtag);
         gameDom["gameContainerPlayfield"].appendChild(this._imageDiv);
+
+        this.actionQueue=new Queue();
     }
 
     get lastStateChange() { return this._lastStateChange; }
@@ -952,7 +974,9 @@ class Bullet {
         this._imagePtag.style.height="32px";
         this._imagePtag.style.background=`url('${this._image.src}') 0px 0px`
         this._imageDiv.appendChild(this._imagePtag);
-        gameDom["gameContainerPlayfield"].appendChild(this._imageDiv);        
+        gameDom["gameContainerPlayfield"].appendChild(this._imageDiv);    
+        
+        this.actionQueue=new Queue();
     }
 
     get lastStateChange() { return this._lastStateChange; }
@@ -1062,8 +1086,50 @@ class Bullet {
 
 }
 
+/*-------------------------------------------
+// Queue Abstract Data Structure Class
+-------------------------------------------*/
 
+class Queue {
+    constructor () {
+        this._queue=[];
+    }
 
+    enqueue(element) {
+        this._queue.push(element);
+    }
+
+    add(element) {
+        this.enqueue(element);
+    }
+
+    dequeue() {
+        return this._queue.shift();
+    }
+
+    remove() {
+        return dequeue();
+    }
+
+    peek() {
+        if (this._queue.length===0) return null;
+        else return this._queue[0];
+    }
+
+    length() {
+        return this._queue.length;
+    }
+
+    size() {
+        return this.length();
+    }
+
+    isEmpty() {
+        if (this._queue.length===0) return true;
+        else return false;
+    }
+
+}
 
 /*==========================================================================
 Utility Functions
@@ -1155,6 +1221,21 @@ function soundController(action, actionModifier, category, sound, volumeLevel) {
         console.log(error);
     }
 }
+
+/*=========================================
+  soundVolume Event Controller
+=========================================*/
+
+function handleSoundVolume(event) {
+    
+    const volumeSlider = document.querySelector('#music-volume-input');
+
+    let volumeLevel = (volumeSlider.value/100);
+
+    soundController("play", "", "music_score", "main", volumeLevel)
+
+}
+
 
 
 /*==========================================================================
@@ -2433,6 +2514,9 @@ function startNewGame(event) {
 
     const headerQuitGameButton=gameContainerHeader.querySelector('#headerQuitGameButton');
     headerQuitGameButton.addEventListener('click', gameOver);
+
+    const headerMusicVolume=gameContainerHeader.querySelector('#music-volume-input');
+    headerMusicVolume.addEventListener('click', handleSoundVolume);
 
     const gameContainerScoreboard=document.createElement('div');
     gameContainerScoreboard.setAttribute('class', 'game-container-scoreboard');
