@@ -313,7 +313,7 @@ const bulletTypes =[
     {
         "name" : 'Standard Bullet',
         "id" : "bullet1",
-        "speed" : 30,
+        "speed" : 60,
         "image" : {
                     "src": './assets/bullet_001_32x32.png',
                     "Shoot Left": [0, 4, 0],  // Sprite Row, Total Frames, Current Frame
@@ -2266,10 +2266,6 @@ function moveBullet(bullet, actionType, checkDirection, collisionResults) {
                 
             }
     }
-
-    if ( (!blockMovement[0]) && (blockMovement[1]["collision"]===true) ) {
-        processBulletPlayfieldInteractions(bullet, blockMovement[1], blockMovement[1]["collisionType"]);
-    }
  
     if (bullet.direction==='N') bullet.posY = stepwiseCollisionXY[1];
     if (bullet.direction==='S') bullet.posY = stepwiseCollisionXY[1];
@@ -2303,7 +2299,7 @@ function checkBulletCollisions(bullet, currentPosX, currentPosY, newPosX, newPos
             // console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
             while ( collisionResults.isAllowed && (stepwiseX<newPosX) )  {
                 stepwiseX++;
-                checkPlayfieldCollisions(bullet, stepwiseX+16, currentPosY+12, 32, 52, collisionResults);
+                checkBulletPlayfieldCollisions(bullet, stepwiseX+5, currentPosY+12, 25, 9, collisionResults);
             }
             if (!collisionResults.isAllowed) {
                 stepwiseX--;
@@ -2318,7 +2314,7 @@ function checkBulletCollisions(bullet, currentPosX, currentPosY, newPosX, newPos
             let stepwiseX=currentPosX;
             while ( collisionResults.isAllowed && (stepwiseX>newPosX) ) {
                 stepwiseX--;
-                checkPlayfieldCollisions(bullet, stepwiseX+16, currentPosY+12, 32, 52, collisionResults);
+                checkBulletPlayfieldCollisions(bullet, stepwiseX+5, currentPosY+12, 25, 9, collisionResults);
             }
             if (!collisionResults.isAllowed) {
                 stepwiseX++;
@@ -2335,7 +2331,7 @@ function checkBulletCollisions(bullet, currentPosX, currentPosY, newPosX, newPos
             // console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
             while ( collisionResults.isAllowed && (stepwiseY<newPosY) )  {
                 stepwiseY++;
-                checkPlayfieldCollisions(bullet, currentPosX+16, stepwiseY+12, 32, 52, collisionResults);
+                checkBulletPlayfieldCollisions(bullet, currentPosX+5, stepwiseY+12, 25, 9, collisionResults);
             }
             if (!collisionResults.isAllowed) {
                 stepwiseY--;
@@ -2350,7 +2346,7 @@ function checkBulletCollisions(bullet, currentPosX, currentPosY, newPosX, newPos
             let stepwiseY=currentPosY;
             while ( collisionResults.isAllowed && (stepwiseY>newPosY) ) {
                 stepwiseY--;
-                checkPlayfieldCollisions(bullet, currentPosX+16, stepwiseY+12, 32, 52, collisionResults);
+                checkBulletPlayfieldCollisions(bullet, currentPosX+5, stepwiseY+12, 25, 9, collisionResults);
             }
             if (!collisionResults.isAllowed) {
                 stepwiseY++;
