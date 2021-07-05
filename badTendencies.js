@@ -617,6 +617,10 @@ class BandMember {
         this.actionQueue=new Queue();
     }
 
+    deleteFromGameDom() {
+        this._imageState='Hidden';
+        gameDom["gameContainerPlayfield"].removeChild(this._imageDiv);
+    }    
 
     get cooldown() { return this._cooldown; }
     set cooldown(setCooldown) { this._cooldown=Number(Date.now())+setCooldown};
@@ -864,6 +868,11 @@ class Player {
         this.actionQueue=new Queue();
     }
 
+    deleteFromGameDom() {
+        this._imageState='Hidden';
+        gameDom["gameContainerPlayfield"].removeChild(this._imageDiv);
+    }    
+
     get lastStateChange() { return this._lastStateChange; }
 
     get id() { return this._id; }
@@ -1053,6 +1062,12 @@ class Bullet {
         gameDom["gameContainerPlayfield"].appendChild(this._imageDiv);    
         
         this.actionQueue=new Queue();
+    }
+
+    deleteFromGameDom() {
+        this._state='Collided';
+        this._imageState='Hidden';
+        gameDom["gameContainerPlayfield"].removeChild(this._imageDiv);
     }
 
     get lastStateChange() { return this._lastStateChange; }
@@ -1968,7 +1983,7 @@ function checkCollisions(gameCharacter, currentPosX, currentPosY, newPosX, newPo
             // console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
             while ( collisionResults.isAllowed && (stepwiseX<newPosX) )  {
                 stepwiseX++;
-                checkPlayfieldCollisions(gameCharacter, stepwiseX+16, currentPosY+12, 32, 52, collisionResults);
+                checkPlayfieldCollisions(gameCharacter, stepwiseX+16, currentPosY+12, 32, 47, collisionResults);
             }
             if (!collisionResults.isAllowed) {
                 stepwiseX--;
@@ -1983,7 +1998,7 @@ function checkCollisions(gameCharacter, currentPosX, currentPosY, newPosX, newPo
             let stepwiseX=currentPosX;
             while ( collisionResults.isAllowed && (stepwiseX>newPosX) ) {
                 stepwiseX--;
-                checkPlayfieldCollisions(gameCharacter, stepwiseX+16, currentPosY+12, 32, 52, collisionResults);
+                checkPlayfieldCollisions(gameCharacter, stepwiseX+16, currentPosY+12, 32, 47, collisionResults);
             }
             if (!collisionResults.isAllowed) {
                 stepwiseX++;
@@ -2000,7 +2015,7 @@ function checkCollisions(gameCharacter, currentPosX, currentPosY, newPosX, newPo
             // console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
             while ( collisionResults.isAllowed && (stepwiseY<newPosY) )  {
                 stepwiseY++;
-                checkPlayfieldCollisions(gameCharacter, currentPosX+16, stepwiseY+12, 32, 52, collisionResults);
+                checkPlayfieldCollisions(gameCharacter, currentPosX+16, stepwiseY+12, 32, 47, collisionResults);
             }
             if (!collisionResults.isAllowed) {
                 stepwiseY--;
@@ -2015,7 +2030,7 @@ function checkCollisions(gameCharacter, currentPosX, currentPosY, newPosX, newPo
             let stepwiseY=currentPosY;
             while ( collisionResults.isAllowed && (stepwiseY>newPosY) ) {
                 stepwiseY--;
-                checkPlayfieldCollisions(gameCharacter, currentPosX+16, stepwiseY+12, 32, 52, collisionResults);
+                checkPlayfieldCollisions(gameCharacter, currentPosX+16, stepwiseY+12, 32, 47, collisionResults);
             }
             if (!collisionResults.isAllowed) {
                 stepwiseY++;
@@ -2110,35 +2125,35 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
     // Next check to see if this movement will collide with any other game character 
 
     if ( (gameCharacter.id!==player1.id) && (player1.health>0) && 
-        (collides(posX, posY, width, height, player1.posX+16, player1.posY+12, 32, 52)) ) {
+        (collides(posX, posY, width, height, player1.posX+16, player1.posY+12, 32, 47)) ) {
         collisionResults.collision=true;
         collisionResults.collisionType="player1";
         collisionResults.isAllowed=false;
         return;
     }
     if ( (gameCharacter.id!==bandMember1.id) && (bandMember1.health>0) &&  
-        (collides(posX, posY, width, height, bandMember1.posX+16, bandMember1.posY+12, 32, 52)) ) {
+        (collides(posX, posY, width, height, bandMember1.posX+16, bandMember1.posY+12, 32, 47)) ) {
         collisionResults.collision=true;
         collisionResults.collisionType="bandMember1";
         collisionResults.isAllowed=false;
         return;
     }
     if ( (gameCharacter.id!==bandMember2.id) && (bandMember2.health>0) && 
-        (collides(posX, posY, width, height, bandMember2.posX+16, bandMember2.posY+12, 32, 52)) ) {
+        (collides(posX, posY, width, height, bandMember2.posX+16, bandMember2.posY+12, 32, 47)) ) {
         collisionResults.collision=true;
         collisionResults.collisionType="bandMember2";
         collisionResults.isAllowed=false;
         return;
     }
     if ( (gameCharacter.id!==bandMember3.id) && (bandMember3.health>0) && 
-        (collides(posX, posY, width, height, bandMember3.posX+16, bandMember3.posY+12, 32, 52)) ) {
+        (collides(posX, posY, width, height, bandMember3.posX+16, bandMember3.posY+12, 32, 47)) ) {
         collisionResults.collision=true;
         collisionResults.collisionType="bandMember3";
         collisionResults.isAllowed=false;
         return;
     }
     if ( (gameCharacter.id!==bandMember4.id) && (bandMember4.health>0) && 
-        (collides(posX, posY, width, height, bandMember4.posX+16, bandMember4.posY+12, 32, 52)) ) {
+        (collides(posX, posY, width, height, bandMember4.posX+16, bandMember4.posY+12, 32, 47)) ) {
         collisionResults.collision=true;
         collisionResults.collisionType="bandMember4";
         collisionResults.isAllowed=false;
@@ -2232,8 +2247,6 @@ function moveBullet(bullet, actionType, checkDirection, collisionResults) {
     let newPosX = currentPosX;
     let newPosY = currentPosY;
 
-    let bounceBack=false;
-
     if (bullet.direction==='N') newPosY = bullet.posY - bullet.speed;
     if (bullet.direction==='S') newPosY = bullet.posY + bullet.speed;
     if (bullet.direction==='W') newPosX = bullet.posX - bullet.speed;
@@ -2244,27 +2257,59 @@ function moveBullet(bullet, actionType, checkDirection, collisionResults) {
     const blockMovement=checkBulletCollisions(bullet, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
 
     if (blockMovement[0]) {
-        if ((blockMovement[1]["collisionType"]==='player1') || 
-            (blockMovement[1]["collisionType"]==='bandMember1') || 
-            (blockMovement[1]["collisionType"]==='bandMember2') || 
-            (blockMovement[1]["collisionType"]==='bandMember3') || 
-            (blockMovement[1]["collisionType"]==='bandMember4') ) {
-                //console.log(blockMovement[1]["collisionType"]);
-                
-                if (blockMovement[1]["collisionType"]==='player1') {
-                    player1.health=player1.health-0.5;
+        bullet.lastDirChange=0;
+        if (blockMovement[1]["collisionType"]==='Wall')  {
+            bullet.deleteFromGameDom();
+            for (index=0; index<bullets.length; index++) {
+                if (bullets[index]===bullet)  {
+                    bullets.splice(index, 1);
                 }
-                //bandMember.health=bandMember.health-2;
             }
-            else {
-     
-                bullet.lastDirChange=0;
-                if (blockMovement[1]["collisionType"]==='Wall')  {
-                    bullet.lastDirection=bullet.direction;
-                    bullet.lastDirChangeReason='Wall';
+            return;
+        }
+    }
+
+    if (blockMovement[1]) {
+        let removeBulletFlag=false;
+
+        if ( (blockMovement[1]["collisionType"]==='player1') ) {
+            player1.health=0;
+            removeBulletFlag=true;
+        } 
+
+        if ( (blockMovement[1]["collisionType"]==='bandMember1') ) {
+            soundController('play', 'once', 'sound_effect', 'death2');
+            bandMember1.health=0;
+            removeBulletFlag=true;
+        } 
+
+        if ( (blockMovement[1]["collisionType"]==='bandMember2') ) {
+            soundController('play', 'once', 'sound_effect', 'death2');
+            bandMember2.health=0;
+            removeBulletFlag=true;
+        } 
+
+        if ( (blockMovement[1]["collisionType"]==='bandMember3') ) {
+            soundController('play', 'once', 'sound_effect', 'death2');
+            bandMember3.health=0;
+            removeBulletFlag=true;
+        } 
+
+        if ( (blockMovement[1]["collisionType"]==='bandMember4') ) {
+            soundController('play', 'once', 'sound_effect', 'death2');
+            bandMember4.health=0;
+            removeBulletFlag=true;
+        } 
+
+        if (removeBulletFlag===true) {
+            bullet.deleteFromGameDom();
+            for (index=0; index<bullets.length; index++) {
+                if (bullets[index]===bullet)  {
+                    bullets.splice(index, 1);
                 }
-                
-            }
+            }            
+        }
+
     }
  
     if (bullet.direction==='N') bullet.posY = stepwiseCollisionXY[1];
@@ -2427,35 +2472,35 @@ function checkBulletPlayfieldCollisions(bullet, posX, posY, width, height, colli
     // Next check to see if this movement will collide with any other game character 
 
     if ( (bullet.id!==player1.id) && (player1.health>0) && 
-        (collides(posX, posY, width, height, player1.posX+16, player1.posY+12, 32, 52)) ) {
+        (collides(posX, posY, width, height, player1.posX+16, player1.posY+12, 32, 47)) ) {
         collisionResults.collision=true;
         collisionResults.collisionType="player1";
         collisionResults.isAllowed=true;
         return;
     }
     if ( (bullet.id!==bandMember1.id) && (bandMember1.health>0) &&  
-        (collides(posX, posY, width, height, bandMember1.posX+16, bandMember1.posY+12, 32, 52)) ) {
+        (collides(posX, posY, width, height, bandMember1.posX+16, bandMember1.posY+12, 32, 47)) ) {
         collisionResults.collision=true;
         collisionResults.collisionType="bandMember1";
         collisionResults.isAllowed=true;
         return;
     }
     if ( (bullet.id!==bandMember2.id) && (bandMember2.health>0) && 
-        (collides(posX, posY, width, height, bandMember2.posX+16, bandMember2.posY+12, 32, 52)) ) {
+        (collides(posX, posY, width, height, bandMember2.posX+16, bandMember2.posY+12, 32, 47)) ) {
         collisionResults.collision=true;
         collisionResults.collisionType="bandMember2";
         collisionResults.isAllowed=true;
         return;
     }
     if ( (bullet.id!==bandMember3.id) && (bandMember3.health>0) && 
-        (collides(posX, posY, width, height, bandMember3.posX+16, bandMember3.posY+12, 32, 52)) ) {
+        (collides(posX, posY, width, height, bandMember3.posX+16, bandMember3.posY+12, 32, 47)) ) {
         collisionResults.collision=true;
         collisionResults.collisionType="bandMember3";
         collisionResults.isAllowed=true;
         return;
     }
     if ( (bullet.id!==bandMember4.id) && (bandMember4.health>0) && 
-        (collides(posX, posY, width, height, bandMember4.posX+16, bandMember4.posY+12, 32, 52)) ) {
+        (collides(posX, posY, width, height, bandMember4.posX+16, bandMember4.posY+12, 32, 47)) ) {
         collisionResults.collision=true;
         collisionResults.collisionType="bandMember4";
         collisionResults.isAllowed=true;
@@ -2479,24 +2524,24 @@ if ( (bandMember.posY<0) || (bandMember.posY>=1024) ) return [];
 let hitDistance=0;
 
 const currentPosX = bandMember.posX+16+(32/2);
-const currentPosY = bandMember.posY+12+(52/2);
+const currentPosY = bandMember.posY+12+(47/2);
 const currentGridRow = Math.floor(currentPosY/32);
 const currentGridCol = Math.floor(currentPosX/32);
 
 const player1GridCol=Math.floor((player1.posX+16+(32/2))/32);
-const player1GridRow=Math.floor((player1.posY+12+(52/2))/32);
+const player1GridRow=Math.floor((player1.posY+12+(47/2))/32);
 
 const bandMember1GridCol=Math.floor((bandMember1.posX+16+(32/2))/32);
-const bandMember1GridRow=Math.floor((bandMember1.posY+12+(52/2))/32);
+const bandMember1GridRow=Math.floor((bandMember1.posY+12+(47/2))/32);
 
 const bandMember2GridCol=Math.floor((bandMember2.posX+16+(32/2))/32);
-const bandMember2GridRow=Math.floor((bandMember2.posY+12+(52/2))/32);
+const bandMember2GridRow=Math.floor((bandMember2.posY+12+(47/2))/32);
 
 const bandMember3GridCol=Math.floor((bandMember3.posX+16+(32/2))/32);
-const bandMember3GridRow=Math.floor((bandMember3.posY+12+(52/2))/32);
+const bandMember3GridRow=Math.floor((bandMember3.posY+12+(47/2))/32);
 
 const bandMember4GridCol=Math.floor((bandMember4.posX+16+(32/2))/32);
-const bandMember4GridRow=Math.floor((bandMember4.posY+12+(52/2))/32);
+const bandMember4GridRow=Math.floor((bandMember4.posY+12+(47/2))/32);
 
 let lineOfSightHitResults=[];
 let hitFlag=false;
