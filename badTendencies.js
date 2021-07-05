@@ -16,6 +16,7 @@ const FOLLOW_DISTANCE=200;
 const BOUNCEBACK_FACTOR=3;
 const PLAYER_DEFAULT_STATE="Chase";
 const PLAYER_HEALTH_RECOVERY=1;
+const BULLET_DEFAULT_STATE="Moving";
 const ANIMATION_FRAME_DELAY=100; // milliseconds
 const SPLASH_SCREEN_DELAY=3000; // milliseconds
 
@@ -62,6 +63,7 @@ let bandMember1 = {};
 let bandMember2 = {};
 let bandMember3 = {};
 let bandMember4 = {};
+let bullets = [];
 
 // Grab and cache fixed DOM elements
 
@@ -307,7 +309,7 @@ const playerCharacters =[
     },
 ];
 
-const bullet =[
+const bulletTypes =[
     {
         "name" : 'Standard Bullet',
         "id" : "bullet1",
@@ -593,7 +595,7 @@ class BandMember {
         this._hasLighter=0;
         this._hasBomb=0;
         this._hasGun=0;    
-        this._hasGunBullets=0;
+        this._gunBullets=0;
         this._cooldown=0;
         this._image=Object.assign({}, bandMemberCharacter.image);
 
@@ -628,7 +630,16 @@ class BandMember {
     get hasGun() { return this._hasGun; }
     set hasGun(setTimeValue) { 
             this._hasGun=setTimeValue;
-            this._hasGunBullets=6;
+            this._gunBullets=6;
+    }
+
+    get gunBullets() { return this._gunBullets; }
+    decrementGunBullets() { 
+            this._gunBullets--;
+            if (this._gunBullets<=0) {
+                this._gunBullets=0;
+                this._hasGun=0;
+            }
     }
 
     get lastStateChange() { return this._lastStateChange; }
@@ -1016,10 +1027,10 @@ class Player {
 -------------------------------------------*/
 
 class Bullet {
-    constructor (bullet, positionX, positionY) {
-        this._id=bullet.id;
+    constructor (bullet, direction, positionX, positionY) {
+        this._id=`${bullet.id}-${levelFrameCounter}+${Math.round(Math.random()*100000)}`;
         this._speed=bullet.speed;
-        this._direction='';
+        this._direction=direction;
         this._posX=positionX;
         this._posY=positionY;
         this._state=BULLET_DEFAULT_STATE;
@@ -3184,7 +3195,9 @@ const bandMember4LOS=lineOfSight(bandMember4, "");
 // Check for gun, lighter, bomb interactions 
 // Random deaths can occur based on bandMembers' "party" intoxication level 
 
+
 for (let bandMember of livingBandMembers()) {
+
     if (bandMember.hasLighter>0) {
         if (Math.random()<(bandMember.party/200)) {
             bandMember.health=0;
@@ -3194,6 +3207,7 @@ for (let bandMember of livingBandMembers()) {
             soundController("play", "", "sound_effect", "death2", 1);
         }
     }
+
     if (bandMember.hasBomb>0) {
         if (Math.random()<(bandMember.party/200)) {
             bandMember.health=0;
@@ -3204,12 +3218,63 @@ for (let bandMember of livingBandMembers()) {
             soundController("play", "", "sound_effect", "shotgun", 1);
         }
     }
-    if (bandMember.hasGun>0) {
-        if (Math.random()<(bandMember.party/200)) {
-            soundController("play", "", "sound_effect", "shotgun", 1);
+
+    if ( (bandMember.hasGun>0) && (bandMember.gunBullets>0) && (bandMember.cooldown===0) ) {
+        if (bandMember===bandMember1) bandMemberLOS=bandMember1LOS;
+        else if (bandMember===bandMember2) bandMemberLOS=bandMember2LOS;
+        else if (bandMember===bandMember3) bandMemberLOS=bandMember3LOS;
+        else if (bandMember===bandMember4) bandMemberLOS=bandMember4LOS;
+
+        if (bandMemberLOS.length>0) {
+
+            let gunTarget=false;
+
+            bandMemberLOS.sort( (losA, losB) => {
+                return [-1, 0, 1][Math.round(Math.random()*2)];
+            } );
+
+            let index=0;
+            for (let i=0; i<bandMemberLOS.length; i++) {
+                if ( (bandMemberLOS[i].direction!=='W') && (bandMemberLOS[i].direction!=='E') ) {
+                    continue;
+                }
+                index=i;
+                if (bandMemberLOS[i].type==="bandMember1") gunTarget=true;
+                if (bandMemberLOS[i].type==="bandMember2") gunTarget=true;
+                if (bandMemberLOS[i].type==="bandMember3") gunTarget=true;
+                if (bandMemberLOS[i].type==="bandMember4") gunTarget=true;
+                if (bandMemberLOS[i].type==="player1") gunTarget=true;
+                if (gunTarget) break;
+            }
+
+            if ( (gunTarget) && (Math.random()<(bandMember.party/200)) ) {
+        
+                if (bandMemberLOS[index].direction==='W') {
+                    bandMember.actionQueue.enqueue( { "state": "Shoot Left", "imageState": "Shoot Left", "durationType": "frame", "duration":  5, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+                    bandMember.actionQueue.enqueue( { "state": "Wander", "imageState": "Walk Left"} );
+                }
+                else if (bandMemberLOS[index].direction==='E') { 
+                    const currentState=bandMember.state;
+                    const currentImageState=bandMember.imageState;                    
+                    bandMember.actionQueue.enqueue( { "state": "Shoot Right", "imageState": "Shoot Right", "durationType": "frame", "duration":  5, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+                    bandMember.actionQueue.enqueue( { "state": "Wander", "imageState": "Walk Right"} );
+                }
+                soundController("play", "", "sound_effect", "shotgun", 1);
+                bandMember.cooldown=BANDMEMBER_COOLDOWN;
+                bandMember.decrementGunBullets();
+
+                const newBullet = new Bullet(bulletTypes[0], bandMemberLOS[index].direction, bandMember.posX, bandMember.posY);
+                bullets.push(newBullet);
+            }
         }
     }    
 }
+
+bandMember1.party=50;
+bandMember2.party=50;
+bandMember3.party=50;
+bandMember4.party=50;
+
 
 
 // Check to see if any band members should change in or out of the follow state
@@ -3244,9 +3309,9 @@ for (let bandMember of livingBandMembers()) {
     let bandMemberLOS={};
 
     if (bandMember===bandMember1) bandMemberLOS=bandMember1LOS;
-    if (bandMember===bandMember2) bandMemberLOS=bandMember2LOS;
-    if (bandMember===bandMember3) bandMemberLOS=bandMember3LOS;
-    if (bandMember===bandMember4) bandMemberLOS=bandMember4LOS;
+    else if (bandMember===bandMember2) bandMemberLOS=bandMember2LOS;
+    else if (bandMember===bandMember3) bandMemberLOS=bandMember3LOS;
+    else if (bandMember===bandMember4) bandMemberLOS=bandMember4LOS;
 
     if (bandMember.state==='Wander') {
         if ( (bandMemberLOS.length>0) /*&& ( (currentTime-bandMember.lastDirChange)>BANDMEMBER_DIR_CHANGE_DELAY )*/ ) {
@@ -3278,6 +3343,13 @@ bandMember1.incrementImageAnimation();
 bandMember2.incrementImageAnimation();
 bandMember3.incrementImageAnimation();
 bandMember4.incrementImageAnimation();
+
+// Process, bullet animations and movements 
+for (let i=0; i<bullets.length; i++) {
+    console.log(bullets[i])
+    bullets[i].processActionQueue();
+    bullets[i].incrementImageAnimation();
+}
 
 
 //Next, update player and band member health and party levels
