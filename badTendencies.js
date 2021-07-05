@@ -165,7 +165,7 @@ const bandMemberCharacters=[
             "Idle Left": [2, 3, 0 ],  
             "Idle Right": [3, 3, 0 ],  
             "Die": [4, 9, 0],  
-            "Pit Die": [4, 9, 0],  
+            "Pit Die": [11, 9, 0],  
             "Fire Die": [4, 9, 0],  
             "Bomb Die": [4, 9, 0],  
             "Dizzy": [5, 2, 0], 
@@ -197,7 +197,7 @@ const bandMemberCharacters=[
             "Idle Left": [2, 3, 0 ],  
             "Idle Right": [3, 3, 0 ],  
             "Die": [4, 9, 0],  
-            "Pit Die": [4, 9, 0],  
+            "Pit Die": [11, 9, 0],  
             "Fire Die": [4, 9, 0],  
             "Bomb Die": [4, 9, 0],  
             "Dizzy": [5, 2, 0], 
@@ -229,7 +229,7 @@ const bandMemberCharacters=[
             "Idle Left": [2, 3, 0 ],  
             "Idle Right": [3, 3, 0 ],  
             "Die": [4, 11, 0],  
-            "Pit Die": [4, 11, 0],  
+            "Pit Die": [11, 9, 0],  
             "Fire Die": [4, 11, 0],  
             "Bomb Die": [4, 11, 0],  
             "Dizzy": [5, 3, 0], 
@@ -261,7 +261,7 @@ const bandMemberCharacters=[
             "Idle Left": [2, 3, 0 ],  
             "Idle Right": [3, 3, 0 ],  
             "Die": [4, 11, 0],  
-            "Pit Die": [4, 11, 0],  
+            "Pit Die": [11, 9, 0],  
             "Fire Die": [4, 11, 0],  
             "Bomb Die": [4, 11, 0],  
             "Dizzy": [5, 3, 0], 
@@ -295,7 +295,7 @@ const playerCharacters =[
                     "Idle Right": [2, 1, 0],
                     "Idle Left": [3, 1, 0],  
                     "Die": [4, 11, 0],  
-                    "Pit Die": [4, 11, 0],  
+                    "Pit Die": [9, 9, 0],  
                     "Fire Die": [4, 11, 0],  
                     "Bomb Die": [4, 11, 0],  
                     "Dizzy": [5, 3, 0], 
@@ -746,6 +746,7 @@ class BandMember {
     
 
     incrementImageAnimation() {
+
         const row=this._image[this._image["imageState"]][0];
         const maxCol=this._image[this._image["imageState"]][1];
         let curCol=this._image[this._image["imageState"]][2];
@@ -774,6 +775,8 @@ class BandMember {
             }
 
             this._image[this._image["imageState"]][2]=curCol;
+
+            console.log(this._image["imageState"], curCol, row);
 
             newPosX=(curCol*-64);
             newPosY=(row*-64);
@@ -961,6 +964,7 @@ class Player {
     }
 
     incrementImageAnimation() {
+ 
         const row=this._image[this._image["imageState"]][0];
         const maxCol=this._image[this._image["imageState"]][1];
         let curCol=this._image[this._image["imageState"]][2];
@@ -971,10 +975,12 @@ class Player {
 
         if ( (currentTime-lastUpdate) > ANIMATION_FRAME_DELAY ) {
 
+
             this._image.lastUpdate=currentTime;
 
             if (curCol>=maxCol) {
                 if (    (this._image["imageState"]!=='Die') && 
+                        (this._image["imageState"]!=='Pit Die') &&
                         (this._image["imageState"]!=='Hidden') && 
                         (this._image["imageState"]!=='Shoot Left') && 
                         (this._image["imageState"]!=='Shoot Right') ) {
@@ -3404,8 +3410,11 @@ if (player1.health<=0) {
     soundController("playdistinct", "once", "player", "Die", 1);
     soundController("stop", "loop", "sound_effect", "low_health", 1);
 
-    player1.state='Dead';
-    player1.imageState='Die';
+    if (player1.state!=='Dead') {
+        player1.state='Dead';
+        player1.imageState='Die';
+    }
+
     player1.incrementImageAnimation();
 
     if ( (currentTime-player1.lastStateChange)>3000 )
@@ -3420,8 +3429,8 @@ if (player1.health<=0) {
         return;
     }
 }
-if ( (player1.health>0) && (player1.health<30) ) {
-    soundController("play", "loop", "sound_effect", "low_health", (1-(player1.health/30)) );
+if ( (player1.health>0) && (player1.health<35) ) {
+    soundController("play", "loop", "sound_effect", "low_health", (1-(player1.health/35)) );
 }
 else 
 {
@@ -3499,19 +3508,21 @@ for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4] ) {
     if (bandMember.health<=0) {
         bandMember.health=0;
         bandMember.party=0;
-        if (bandMember.state!=='Dead') {
-            soundController("play", "", "bandmember", "Die", 1);
-        }
 
-        bandMember.actionQueue.enqueue( { "state": "Dead", "imageState": "Die", "durationType": "time", "duration":  2000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+        if (bandMember.state!=='Dead') {
+            bandMember.state='Dead';   
+            bandMember.imageState="Die";            
+            soundController("play", "", "bandmember", "Die", 1);
+    
+            bandMember.actionQueue.enqueue( { "state": "Dead", "imageState": "Die", "durationType": "time", "duration":  2000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+        }
 
         bandMember.actionQueue.enqueue( { custom: () => { 
                 bandMember.posX=-5000;
                 bandMember.posY=-5000;
-            } } );
+        } } );
 
-        bandMember.state='Dead';   
-        bandMember.imageState="Die";
+
     }
 }
 
