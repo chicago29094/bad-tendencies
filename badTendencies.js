@@ -88,6 +88,7 @@ const mediaSoundsLibrary = [
     {
         "sound_effect" : {
             "coins" :  './sounds/sfx_coin_cluster3.wav',
+            "bigexplosion" : './sounds/sfx_exp_long4.wav',
             "death1" :  './sounds/sfx_deathscream_human5.wav',
             "death2" :  './sounds/sfx_deathscream_human14.wav',
             "shot1" :  './sounds/sfx_exp_short_hard5.wav',
@@ -392,10 +393,10 @@ const overlayImages = {
 const gameLevel1 = [
     ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','a','b','c','d','e','f','g','h',' ',' ','k','l','m','n','o','p','W'],
-    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ','P',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W','W','W','W',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ','l',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
-    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','p',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','P',' ','p',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W',' ',' ','W'],
     ['W',' ',' ','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W','W','W','W',' ',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
@@ -1572,14 +1573,19 @@ function movePlayer1() {
                 soundController("play", "once", "sound_effect", "impact6", 1);
                 player1.health=player1.health-0.5;
         }
-        if ( (blockMovement[0]["collisionType"]==='Pit') ) {
+    }
+
+    if (!blockMovement[0]) {
+        if ( (blockMovement[1]["collisionType"]==='Pit') ) {
             player1.health=0;
+            // player1.posX=blockMovement[1].collisionGridCol*32;
+            // player1.posY=blockMovement[1].collisionGridRow*32;            
             soundController("play", "once", "player", "Die", 1);
             player1.state="Dead";
             player1.imageState="Pit Die";
         }
-
     }
+
 
     if ( (!blockMovement[0]) && (blockMovement[1]["collision"]===true) ) {
             processPlayfieldInteractions(player1, blockMovement[1], blockMovement[1]["collisionType"]);
@@ -1878,6 +1884,8 @@ function processPlayfieldInteractions(character, collision, collisionType) {
         }
 
         if (collisionType==="Pit") {
+            // character.posX=collision.collisionGridCol*32;
+            // character.posY=collision.collisionGridRow*32;
             soundController("play", "once", "bandmember", "Die", 1);
             character.state='Dead';
             character.health=0;
@@ -2128,10 +2136,12 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
                 }
                 else if (gridSquare.classList.contains('playfield-pit')) {
                     // gridSquare.style.borderTop="1px solid #00ff00";
-                    collisionResults.collision=true;
-                    collisionResults.collisionType="Pit";
-                    collisionResults.isAllowed=true;
-                    return;
+                    if (collides(posX, posY+26, width, height/2, gridPosX, gridPosY, gridWidth, gridHeight)) {
+                        collisionResults.collision=true;
+                        collisionResults.collisionType="Pit";
+                        collisionResults.isAllowed=true;
+                        return;
+                    }
                 }
                 
             }
@@ -3539,7 +3549,7 @@ for (let bandMember of livingBandMembers()) {
             bandMember.state="Dead";
             bandMember.imageState="Bomb Die";
             soundController("play", "", "sound_effect", "death1", 1);
-            soundController("play", "", "sound_effect", "shotgun", 1);
+            soundController("play", "", "sound_effect", "bigexplosion", 1);
         }
     }
 
