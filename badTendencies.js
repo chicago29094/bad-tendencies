@@ -1687,6 +1687,9 @@ function moveBandMember(bandMember, actionType, checkDirection, collisionResults
 
 }
 
+
+
+
 /*==========================================================================
  Return compass direction for band member to follow player
 ===========================================================================*/
@@ -2210,6 +2213,261 @@ function checkPlayfieldCollisions(gameCharacter, posX, posY, width, height, coll
         }
     }
 }
+
+
+
+/*==========================================================================
+Control Bullet Movement and Collision Detection
+===========================================================================*/
+
+function moveBullet(bullet, actionType, checkDirection, collisionResults) {
+
+    if ( (bullet.state==='Collided') ) {
+        return;
+    }
+
+    const currentPosX = bullet.posX;
+    const currentPosY = bullet.posY;
+    const stepwiseCollisionXY = [];
+    let newPosX = currentPosX;
+    let newPosY = currentPosY;
+
+    let bounceBack=false;
+
+    if (bullet.direction==='N') newPosY = bullet.posY - bullet.speed;
+    if (bullet.direction==='S') newPosY = bullet.posY + bullet.speed;
+    if (bullet.direction==='W') newPosX = bullet.posX - bullet.speed;
+    if (bullet.direction==='E') newPosX = bullet.posX + bullet.speed;
+  
+    stepwiseCollisionXY[0]=currentPosX;
+    stepwiseCollisionXY[1]=currentPosY;
+    const blockMovement=checkBulletCollisions(bullet, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY);
+
+    if (blockMovement[0]) {
+        if ((blockMovement[1]["collisionType"]==='player1') || 
+            (blockMovement[1]["collisionType"]==='bandMember1') || 
+            (blockMovement[1]["collisionType"]==='bandMember2') || 
+            (blockMovement[1]["collisionType"]==='bandMember3') || 
+            (blockMovement[1]["collisionType"]==='bandMember4') ) {
+                //console.log(blockMovement[1]["collisionType"]);
+                
+                if (blockMovement[1]["collisionType"]==='player1') {
+                    player1.health=player1.health-0.5;
+                }
+                //bandMember.health=bandMember.health-2;
+            }
+            else {
+     
+                bullet.lastDirChange=0;
+                if (blockMovement[1]["collisionType"]==='Wall')  {
+                    bullet.lastDirection=bullet.direction;
+                    bullet.lastDirChangeReason='Wall';
+                }
+                
+            }
+    }
+
+    if ( (!blockMovement[0]) && (blockMovement[1]["collision"]===true) ) {
+        processBulletPlayfieldInteractions(bullet, blockMovement[1], blockMovement[1]["collisionType"]);
+    }
+ 
+    if (bullet.direction==='N') bullet.posY = stepwiseCollisionXY[1];
+    if (bullet.direction==='S') bullet.posY = stepwiseCollisionXY[1];
+    if (bullet.direction==='W') bullet.posX = stepwiseCollisionXY[0];
+    if (bullet.direction==='E') bullet.posX = stepwiseCollisionXY[0];
+
+}
+
+/*==========================================================================
+Collision Detection
+===========================================================================*/
+
+function checkBulletCollisions(bullet, currentPosX, currentPosY, newPosX, newPosY, stepwiseCollisionXY) {
+
+    let stepwiseX=0;
+    let stepwiseY=0;
+
+    let collisionResults={
+            "collision": false,
+            "collisionType": "",
+            "collisionDomRef": "",
+            "collisionDomObjType" : "",
+            "collisionGridCol": "",
+            "collisionGridRow": "",
+            "isAllowed": true,
+    };
+
+    if (currentPosX-newPosX!==0) {
+        if (currentPosX<newPosX) {
+            let stepwiseX=currentPosX;
+            // console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
+            while ( collisionResults.isAllowed && (stepwiseX<newPosX) )  {
+                stepwiseX++;
+                checkPlayfieldCollisions(bullet, stepwiseX+16, currentPosY+12, 32, 52, collisionResults);
+            }
+            if (!collisionResults.isAllowed) {
+                stepwiseX--;
+            }
+            stepwiseCollisionXY[0]=stepwiseX;
+            stepwiseCollisionXY[1]=newPosY;
+            // console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
+            if (collisionResults.isAllowed) return [false,collisionResults];
+            else return [true,collisionResults];
+        }
+        else {
+            let stepwiseX=currentPosX;
+            while ( collisionResults.isAllowed && (stepwiseX>newPosX) ) {
+                stepwiseX--;
+                checkPlayfieldCollisions(bullet, stepwiseX+16, currentPosY+12, 32, 52, collisionResults);
+            }
+            if (!collisionResults.isAllowed) {
+                stepwiseX++;
+            }
+            stepwiseCollisionXY[0]=stepwiseX;
+            stepwiseCollisionXY[1]=newPosY;
+            if (collisionResults.isAllowed) return [false,collisionResults];
+            else return [true,collisionResults];
+        }
+    }
+    else if (currentPosY-newPosY!==0) {
+        if (currentPosY<newPosY) {
+            let stepwiseY=currentPosY;
+            // console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
+            while ( collisionResults.isAllowed && (stepwiseY<newPosY) )  {
+                stepwiseY++;
+                checkPlayfieldCollisions(bullet, currentPosX+16, stepwiseY+12, 32, 52, collisionResults);
+            }
+            if (!collisionResults.isAllowed) {
+                stepwiseY--;
+            }
+            stepwiseCollisionXY[0]=newPosX;
+            stepwiseCollisionXY[1]=stepwiseY;
+            // console.log(`${stepwiseX} - ${stepwiseCollisionXY}`);
+            if (collisionResults.isAllowed) return [false,collisionResults];
+            else return [true,collisionResults];
+        }
+        else {
+            let stepwiseY=currentPosY;
+            while ( collisionResults.isAllowed && (stepwiseY>newPosY) ) {
+                stepwiseY--;
+                checkPlayfieldCollisions(bullet, currentPosX+16, stepwiseY+12, 32, 52, collisionResults);
+            }
+            if (!collisionResults.isAllowed) {
+                stepwiseY++;
+            }
+            stepwiseCollisionXY[0]=newPosX;
+            stepwiseCollisionXY[1]=stepwiseY;
+            if (collisionResults.isAllowed) return [false,collisionResults];
+            else return [true,collisionResults];
+        }
+
+    }
+    else {
+        stepwiseCollisionXY[0, 1]=[newPosX, newPosY];
+        return [false,collisionResults];
+    }
+
+}
+
+/*==================================
+// Check Play Field Collisions
+====================================*/
+
+function checkBulletPlayfieldCollisions(bullet, posX, posY, width, height, collisionResults) {
+
+    let returnFlag=false;
+
+    collisionResults.collision=false;
+    collisionResults.collisionType="";
+    collisionResults.isAllowed=true;
+
+    let gameGridStartRow=Math.floor(posY/32)-2; 
+    if (gameGridStartRow<0) gameGridStartRow=0;
+
+    let gameGridEndRow=Math.floor(posY/32)+2;
+    if (gameGridEndRow>31) gameGridEndRow=31;
+
+    gameGridStartColumn = Math.floor(posX/32)-2;
+    if (gameGridStartColumn<0) gameGridStartColumn=0;
+
+    gameGridEndColumn = Math.floor(posX/32)+2;
+    if (gameGridEndColumn>31) gameGridEndColumn=31;
+
+    // console.log(`${gameGridStartColumn} ${gameGridEndColumn} ${gameGridStartRow} ${gameGridEndRow} `);
+    // Iterate through surrounding playfield squares to see if we will collide with a wall, exit, or pit
+
+    for (let row=gameGridStartRow; row<=gameGridEndRow; row++) {
+        for (let col=gameGridStartColumn; col<=gameGridEndColumn; col++) {
+
+            const gridSquare = document.querySelector(`div[data-gsx='${col}'][data-gsy='${row}']`)
+            const squareHas = currentGameLevel[row][col];
+
+            // console.log(`${col} ${row} ${gridSquare}`);
+            // gridSquare.style.borderTop="1px solid #ff0000";
+            gridPosX=col*32;
+            gridPosY=row*32;
+            gridWidth=32;
+            gridHeight=32;
+
+            // Store position so this object may be processed or removed from the playfield faster
+            collisionResults.collisionGridCol=col;
+            collisionResults.collisionGridRow=row;
+            collisionResults.collisionDomObjType=squareHas;
+
+            if (collides(posX, posY, width, height, gridPosX, gridPosY, gridWidth, gridHeight)) {
+                
+                if (gridSquare.classList.contains('playfield-wall')) {
+                    // gridSquare.style.borderTop="1px solid #00ff00";
+                    collisionResults.collision=true;
+                    collisionResults.collisionType="Wall";
+                    collisionResults.isAllowed=false;
+                    return;
+                }
+                
+            }
+        }
+    }
+
+    // Next check to see if this movement will collide with any other game character 
+
+    if ( (bullet.id!==player1.id) && (player1.health>0) && 
+        (collides(posX, posY, width, height, player1.posX+16, player1.posY+12, 32, 52)) ) {
+        collisionResults.collision=true;
+        collisionResults.collisionType="player1";
+        collisionResults.isAllowed=true;
+        return;
+    }
+    if ( (bullet.id!==bandMember1.id) && (bandMember1.health>0) &&  
+        (collides(posX, posY, width, height, bandMember1.posX+16, bandMember1.posY+12, 32, 52)) ) {
+        collisionResults.collision=true;
+        collisionResults.collisionType="bandMember1";
+        collisionResults.isAllowed=true;
+        return;
+    }
+    if ( (bullet.id!==bandMember2.id) && (bandMember2.health>0) && 
+        (collides(posX, posY, width, height, bandMember2.posX+16, bandMember2.posY+12, 32, 52)) ) {
+        collisionResults.collision=true;
+        collisionResults.collisionType="bandMember2";
+        collisionResults.isAllowed=true;
+        return;
+    }
+    if ( (bullet.id!==bandMember3.id) && (bandMember3.health>0) && 
+        (collides(posX, posY, width, height, bandMember3.posX+16, bandMember3.posY+12, 32, 52)) ) {
+        collisionResults.collision=true;
+        collisionResults.collisionType="bandMember3";
+        collisionResults.isAllowed=true;
+        return;
+    }
+    if ( (bullet.id!==bandMember4.id) && (bandMember4.health>0) && 
+        (collides(posX, posY, width, height, bandMember4.posX+16, bandMember4.posY+12, 32, 52)) ) {
+        collisionResults.collision=true;
+        collisionResults.collisionType="bandMember4";
+        collisionResults.isAllowed=true;
+        return;
+    }
+
+}
+
 
 /*=============================================================================================
 // Check Line of Sight Object Detection with optional distance parameter 
@@ -3346,9 +3604,10 @@ bandMember4.incrementImageAnimation();
 
 // Process, bullet animations and movements 
 for (let i=0; i<bullets.length; i++) {
-    console.log(bullets[i])
+    //console.log(bullets[i])
     bullets[i].processActionQueue();
     bullets[i].incrementImageAnimation();
+    moveBullet(bullets[i]);
 }
 
 
