@@ -173,8 +173,9 @@ const bandMemberCharacters=[
             "Throwing Right": [8, 7, 0],
             "Shoot Left": [9, 3, 0], 
             "Shoot Right": [10, 3, 0],
-            "Hidden": [10, 0, 0],
-            "Stage Hidden": [10, 0, 0],
+            "Hidden": [10, 1, 10],
+            "Stage": [10, 1, 10],
+            "Stage Hidden": [10, 1, 10],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
@@ -204,9 +205,9 @@ const bandMemberCharacters=[
             "Throwing Right": [8, 7, 0],
             "Shoot Left": [9, 3, 0], 
             "Shoot Right": [10, 3, 0],
-            "Hidden": [10, 0, 0],
-            "Stage": [10, 0, 0],
-            "Stage Hidden": [10, 0, 0],
+            "Hidden": [10, 1, 10],
+            "Stage": [10, 1, 10],
+            "Stage Hidden": [10, 1, 10],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
@@ -236,9 +237,9 @@ const bandMemberCharacters=[
             "Throwing Right": [8, 4, 0],
             "Shoot Left": [9, 4, 0], 
             "Shoot Right": [10, 4, 0],
-            "Hidden": [10, 0, 0],
-            "Stage Hidden": [10, 0, 0],
-            "Stage": [10, 0, 0],
+            "Hidden": [10, 1, 10],
+            "Stage Hidden": [10, 1, 10],
+            "Stage": [10, 1, 10],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
@@ -268,9 +269,9 @@ const bandMemberCharacters=[
             "Throwing Right": [8, 6, 0],
             "Shoot Left": [9, 4, 0], 
             "Shoot Right": [10, 4, 0],
-            "Hidden": [10, 0, 0],
-            "Stage Hidden": [10, 0, 0],
-            "Stage": [10, 0, 0],
+            "Hidden": [10, 1, 10],
+            "Stage Hidden": [10, 1, 10],
+            "Stage": [10, 1, 10],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
         },
@@ -300,9 +301,9 @@ const playerCharacters =[
                     "Hurt": [6, 3, 0],  
                     "Throwing Right": [7, 5, 0], 
                     "Throwing Left": [8, 5, 0],
-                    "Hidden": [8, 0, 0],
-                    "Stage Hidden": [8, 0, 0],
-                    "Stage": [8, 0, 0],
+                    "Hidden": [8, 1, 10],
+                    "Stage Hidden": [8, 1, 10],
+                    "Stage": [8, 1, 10],
                     "imageState" : "Idle Right",
                     "lastUpdate" : 0,
         },
@@ -706,10 +707,6 @@ class BandMember {
             this._lastStateChange=Number(Date.now());
         }
         this._state=setState; 
-        if ( (this._state==='Stage') || (this._state==='Stage Hidden') ) {
-            this._posX=-5000;
-            this._posY=-5000;
-        }
     }
     
     get image() { return this._image; }
@@ -759,8 +756,11 @@ class BandMember {
         if ( (currentTime-lastUpdate) > ANIMATION_FRAME_DELAY ) {
             this._image.lastUpdate=currentTime;
 
-            if (curCol===maxCol) {
+            if (curCol>=maxCol) {
                 if ( (this._image["imageState"]!=='Die') && 
+                    (this._image["imageState"]!=='Stage') && 
+                    (this._image["imageState"]!=='Stage Hidden') && 
+                    (this._image["imageState"]!=='Hidden') && 
                     (this._image["imageState"]!=='Shoot Left') && 
                     (this._image["imageState"]!=='Shoot Right') ) {
                         curCol=0;
@@ -826,6 +826,7 @@ class BandMember {
         else if ( (!action.durationType) ) {
             if (action.state) this.state=action.state;
             if (action.imageState) this.imageState=action.imageState;  
+            if (action.custom) { action.custom(); }
             this.actionQueue.dequeue();
         }
     }
@@ -971,10 +972,11 @@ class Player {
 
             this._image.lastUpdate=currentTime;
 
-            if (curCol===maxCol) {
-                if ( (this._image["imageState"]!=='Die') && 
-                    (this._image["imageState"]!=='Shoot Left') && 
-                    (this._image["imageState"]!=='Shoot Right') ) {
+            if (curCol>=maxCol) {
+                if (    (this._image["imageState"]!=='Die') && 
+                        (this._image["imageState"]!=='Hidden') && 
+                        (this._image["imageState"]!=='Shoot Left') && 
+                        (this._image["imageState"]!=='Shoot Right') ) {
                         curCol=0;
                 }
             }
@@ -1024,6 +1026,7 @@ class Player {
         else if ( (!action.durationType) ) {
             if (action.state) this.state=action.state;
             if (action.imageState) this.imageState=action.imageState;  
+            if (action.custom) { action.custom(); }
             this.actionQueue.dequeue();
         }
     }
@@ -1153,8 +1156,9 @@ class Bullet {
         if ( (currentTime-lastUpdate) > ANIMATION_FRAME_DELAY ) {
             this._image.lastUpdate=currentTime;
 
-            if (curCol===maxCol) {
+            if (curCol=>maxCol) {
                 if ((this._image["imageState"]!=='Shoot Left') && 
+                    (this._image["imageState"]!=='Hidden') && 
                     (this._image["imageState"]!=='Shoot Right') ) {
                         curCol=0;
                 }
@@ -1198,7 +1202,8 @@ class Bullet {
         }
         else if ( (!action.durationType) ) {
             if (action.state) this.state=action.state;
-            if (action.imageState) this.imageState=action.imageState;  
+            if (action.imageState) this.imageState=action.imageState;
+            if (action.custom) { action.custom(); }  
             this.actionQueue.dequeue();
         }
     }
@@ -1859,6 +1864,17 @@ function processPlayfieldInteractions(character, collision, collisionType) {
             soundController("play", "once", "bandmember", "Stage", 1);
             character.state="Stage";
             character.imageState='Stage Hidden';
+
+           character.actionQueue.enqueue( { "state": "Stage", "imageState": "Stage Hidden", "durationType": "time", "duration":  1000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+
+            bandMember.actionQueue.enqueue( { custom: () => { 
+                    character.posX=-5000;
+                    character.posY=-5000;
+                } } );
+    
+            character.state='Stage';   
+            character.imageState='Stage Hidden';            
+
         }
 
         if (collisionType==="Pit") {
@@ -2273,30 +2289,31 @@ function moveBullet(bullet, actionType, checkDirection, collisionResults) {
         let removeBulletFlag=false;
 
         if ( (blockMovement[1]["collisionType"]==='player1') ) {
+            soundController('play', 'once', 'sound_effect', 'death2', 1);
             player1.health=0;
             removeBulletFlag=true;
         } 
 
         if ( (blockMovement[1]["collisionType"]==='bandMember1') ) {
-            soundController('play', 'once', 'sound_effect', 'death2');
+            soundController('play', 'once', 'sound_effect', 'death2',1 );
             bandMember1.health=0;
             removeBulletFlag=true;
         } 
 
         if ( (blockMovement[1]["collisionType"]==='bandMember2') ) {
-            soundController('play', 'once', 'sound_effect', 'death2');
+            soundController('play', 'once', 'sound_effect', 'death2', 1);
             bandMember2.health=0;
             removeBulletFlag=true;
         } 
 
         if ( (blockMovement[1]["collisionType"]==='bandMember3') ) {
-            soundController('play', 'once', 'sound_effect', 'death2');
+            soundController('play', 'once', 'sound_effect', 'death2', 1);
             bandMember3.health=0;
             removeBulletFlag=true;
         } 
 
         if ( (blockMovement[1]["collisionType"]==='bandMember4') ) {
-            soundController('play', 'once', 'sound_effect', 'death2');
+            soundController('play', 'once', 'sound_effect', 'death2', 1);
             bandMember4.health=0;
             removeBulletFlag=true;
         } 
@@ -3475,6 +3492,14 @@ for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4] ) {
         if (bandMember.state!=='Dead') {
             soundController("play", "", "bandmember", "Die", 1);
         }
+
+        bandMember.actionQueue.enqueue( { "state": "Dead", "imageState": "Die", "durationType": "time", "duration":  2000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+
+        bandMember.actionQueue.enqueue( { custom: () => { 
+                bandMember.posX=-5000;
+                bandMember.posY=-5000;
+            } } );
+
         bandMember.state='Dead';   
         bandMember.imageState="Die";
     }
