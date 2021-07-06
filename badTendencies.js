@@ -266,8 +266,8 @@ const bandMemberCharacters=[
             "Bomb Die": [4, 11, 0],  
             "Dizzy": [5, 3, 0], 
             "Hurt": [6, 3, 0],  
-            "Throwing Left": [7, 6, 0], 
-            "Throwing Right": [8, 6, 0],
+            "Throwing Left": [7, 5, 0], 
+            "Throwing Right": [8, 5, 0],
             "Shoot Left": [9, 4, 0], 
             "Shoot Right": [10, 4, 0],
             "Hidden": [10, 1, 10],
@@ -1667,7 +1667,7 @@ function moveBandMember(bandMember, actionType, checkDirection, collisionResults
                         bandMember.actionQueue.enqueue( { "state": "Fight", "imageState": "Throwing Left", "durationType": "time", "duration":  3000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
                         bandMember.actionQueue.enqueue( {"state": bandMember.state, "imageState": bandMember.imageState});
                         soundController("play", "once", "bandmember", "Throwing Left", 1);
-                        if (blockMovement[1]["collisionType"]==='player1')  { bounceBack=true; player1.health=player1.health-1; }
+                        if (blockMovement[1]["collisionType"]==='player1')  { player1.health=player1.health-1; }
                         if (blockMovement[1]["collisionType"]==='bandMember1') bandMember1.health=bandMember1.health-1;
                         if (blockMovement[1]["collisionType"]==='bandMember2') bandMember2.health=bandMember2.health-1;
                         if (blockMovement[1]["collisionType"]==='bandMember3') bandMember3.health=bandMember3.health-1;
@@ -1685,7 +1685,6 @@ function moveBandMember(bandMember, actionType, checkDirection, collisionResults
                         if (blockMovement[1]["collisionType"]==='bandMember4') bandMember4.health=bandMember4.health-1;
                     }
                     else {
-                        bounceBack=true;
                         if (blockMovement[1]["collisionType"]==='player1') {
                             player1.health=player1.health-0.5;
                         }                        
