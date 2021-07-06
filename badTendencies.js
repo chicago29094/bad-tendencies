@@ -1663,10 +1663,19 @@ function moveBandMember(bandMember, actionType, checkDirection, collisionResults
                 if ( (bandMember.party>BANDMEMBER_FIGHT_FACTOR) && (bandMember.cooldown===0) ) {  
                     const currentTime=Date.now();
                     if (bandMember.direction==='W') {
+
                         console.log("Throwing Left");
-                        bandMember.actionQueue.enqueue( { "state": "Fight", "imageState": "Throwing Left", "durationType": "time", "duration":  3000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+
+                        bandMember.actionQueue.enqueue( { "state": "Fight", "imageState": "Throwing Left", "durationType": "time", "duration":  1000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+
                         bandMember.actionQueue.enqueue( {"state": bandMember.state, "imageState": bandMember.imageState});
+
+                        bandMember.actionQueue.enqueue( { custom: () => { 
+                            bandMember.cooldown=BANDMEMBER_COOLDOWN;
+                        } } );
+
                         soundController("play", "once", "bandmember", "Throwing Left", 1);
+
                         if (blockMovement[1]["collisionType"]==='player1')  { player1.health=player1.health-1; }
                         if (blockMovement[1]["collisionType"]==='bandMember1') bandMember1.health=bandMember1.health-1;
                         if (blockMovement[1]["collisionType"]==='bandMember2') bandMember2.health=bandMember2.health-1;
@@ -1674,17 +1683,27 @@ function moveBandMember(bandMember, actionType, checkDirection, collisionResults
                         if (blockMovement[1]["collisionType"]==='bandMember4') bandMember4.health=bandMember4.health-1;
                     }              
                     else if (bandMember.direction==='E') {
+
                         console.log("Throwing Right");
-                        bandMember.actionQueue.enqueue( { "state": "Fight", "imageState": "Throwing Right", "durationType": "time", "duration":  3000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+
+                        bandMember.actionQueue.enqueue( { "state": "Fight", "imageState": "Throwing Right", "durationType": "time", "duration":  1000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+
                         bandMember.actionQueue.enqueue( {"state": bandMember.state, "imageState": bandMember.imageState});
+
+                        bandMember.actionQueue.enqueue( { custom: () => { 
+                            bandMember.cooldown=BANDMEMBER_COOLDOWN;
+                        } } );
+
                         soundController("play", "once", "bandmember", "Throwing Right", 1);
-                        if (blockMovement[1]["collisionType"]==='player1') { bounceBack=true; player1.health=player1.health-1; }
+
+                        if (blockMovement[1]["collisionType"]==='player1') { player1.health=player1.health-1; }
                         if (blockMovement[1]["collisionType"]==='bandMember1') bandMember1.health=bandMember1.health-1;
                         if (blockMovement[1]["collisionType"]==='bandMember2') bandMember2.health=bandMember2.health-1;
                         if (blockMovement[1]["collisionType"]==='bandMember3') bandMember3.health=bandMember3.health-1;
                         if (blockMovement[1]["collisionType"]==='bandMember4') bandMember4.health=bandMember4.health-1;
                     }
                     else {
+                        bounceBack=true;
                         if (blockMovement[1]["collisionType"]==='player1') {
                             player1.health=player1.health-0.5;
                         }                        
