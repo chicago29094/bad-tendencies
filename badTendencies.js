@@ -405,7 +405,7 @@ const gameLevel1 = [
     ['W',' ',' ',' ','W',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ','W','W','W','W','W','W','W',' ','W','W',' ',' ','W'],
     ['W',' ',' ',' ','W',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ',' ','W','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','m',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W'],
     ['W',' ',' ','W','W','W',' ',' ',' ','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W',' ',' ',' ','W',' ',' ',' ','P',' ',' ',' ',' ','W'],
@@ -776,7 +776,7 @@ class BandMember {
 
             this._image[this._image["imageState"]][2]=curCol;
 
-            console.log(this._image["imageState"], curCol, row);
+            // console.log(this._image["imageState"], curCol, row);
 
             newPosX=(curCol*-64);
             newPosY=(row*-64);
@@ -1659,12 +1659,45 @@ function moveBandMember(bandMember, actionType, checkDirection, collisionResults
             (blockMovement[1]["collisionType"]==='bandMember2') || 
             (blockMovement[1]["collisionType"]==='bandMember3') || 
             (blockMovement[1]["collisionType"]==='bandMember4') ) {
-                //console.log(blockMovement[1]["collisionType"]);
-                bounceBack=true;
-                if (blockMovement[1]["collisionType"]==='player1') {
-                    player1.health=player1.health-0.5;
+
+                if ( (bandMember.party>BANDMEMBER_FIGHT_FACTOR) && (bandMember.cooldown===0) ) {  
+                    const currentTime=Date.now();
+                    if (bandMember.direction==='W') {
+                        console.log("Throwing Left");
+                        bandMember.actionQueue.enqueue( { "state": "Fight", "imageState": "Throwing Left", "durationType": "time", "duration":  3000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+                        bandMember.actionQueue.enqueue( {"state": bandMember.state, "imageState": bandMember.imageState});
+                        soundController("play", "once", "bandmember", "Throwing Left", 1);
+                        if (blockMovement[1]["collisionType"]==='player1')  { bounceBack=true; player1.health=player1.health-1; }
+                        if (blockMovement[1]["collisionType"]==='bandMember1') bandMember1.health=bandMember1.health-1;
+                        if (blockMovement[1]["collisionType"]==='bandMember2') bandMember2.health=bandMember2.health-1;
+                        if (blockMovement[1]["collisionType"]==='bandMember3') bandMember3.health=bandMember3.health-1;
+                        if (blockMovement[1]["collisionType"]==='bandMember4') bandMember4.health=bandMember4.health-1;
+                    }              
+                    else if (bandMember.direction==='E') {
+                        console.log("Throwing Right");
+                        bandMember.actionQueue.enqueue( { "state": "Fight", "imageState": "Throwing Right", "durationType": "time", "duration":  3000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+                        bandMember.actionQueue.enqueue( {"state": bandMember.state, "imageState": bandMember.imageState});
+                        soundController("play", "once", "bandmember", "Throwing Right", 1);
+                        if (blockMovement[1]["collisionType"]==='player1') { bounceBack=true; player1.health=player1.health-1; }
+                        if (blockMovement[1]["collisionType"]==='bandMember1') bandMember1.health=bandMember1.health-1;
+                        if (blockMovement[1]["collisionType"]==='bandMember2') bandMember2.health=bandMember2.health-1;
+                        if (blockMovement[1]["collisionType"]==='bandMember3') bandMember3.health=bandMember3.health-1;
+                        if (blockMovement[1]["collisionType"]==='bandMember4') bandMember4.health=bandMember4.health-1;
+                    }
+                    else {
+                        bounceBack=true;
+                        if (blockMovement[1]["collisionType"]==='player1') {
+                            player1.health=player1.health-0.5;
+                        }                        
+                    }
                 }
-                //bandMember.health=bandMember.health-2;
+                else {
+                    bounceBack=true;
+                    if (blockMovement[1]["collisionType"]==='player1') {
+                        player1.health=player1.health-0.5;
+                    }
+                }
+
             }
             else {
                 if (actionType!=="CheckOnly") {
@@ -2608,7 +2641,7 @@ for (let row=currentGridRow; row>=0; row--) {
     if ( (player1GridCol===currentGridCol) && (player1GridRow===row) ) {
         hitFlag=true; hitType="player1"; break; }
 
-    if (bandMember.party>BANDMEMBER_FIGHT_FACTOR) {    
+    if ( (bandMember.party>BANDMEMBER_FIGHT_FACTOR) && (bandMember.cooldown===0) ) {    
         if ( (bandMember.id!=="bandMember1") && (bandMember1GridCol===currentGridCol) && (bandMember1GridRow===row) ) {
             hitFlag=true; hitType="bandMember1"; break; }
         if ( (bandMember.id!=="bandMember2") &&  (bandMember2GridCol===currentGridCol) && (bandMember2GridRow===row) ) {
