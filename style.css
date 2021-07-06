@@ -243,16 +243,41 @@ text-align: left;
     align-items: start; 
 }
 
-.bt-scoreboard-item {
+.bt-scoreboard-item-level {
     font-family: "Hedgerow-Regular"; 
     color: #ffffff;      
     font-size: 2.2rem;
     text-align: center;
-    flex: 1 0;
+    flex: 1 1 auto;
 }
 
-.bt-scoreboard-item.fixed {
-    flex: 1 0;
+.bt-scoreboard-item-player {
+    font-family: "Hedgerow-Regular"; 
+    color: #ffffff;      
+    font-size: 2.2rem;
+    text-align: center;
+    flex: 2 0 auto;
+}
+
+.bt-scoreboard-item-score {
+    font-family: "Hedgerow-Regular"; 
+    color: #ffffff;      
+    font-size: 2.2rem;
+    text-align: center;
+    flex: 1 0 auto;
+}
+
+.bt-scoreboard-item-time {
+    font-family: "Hedgerow-Regular"; 
+    color: #ffffff;      
+    font-size: 2.2rem;
+    text-align: left;
+    width: 200px;
+    ;
+}
+
+.scoreboard-value {
+    color: #ffffff;
 }
 
 .bt-scoreboard-item p {

@@ -2941,8 +2941,8 @@ function gameLevelUp() {
             <div class="bt-gameover-item">                    
                  <p>LEVEL: <span class="scoreboard-value">${currentLevel}</span></p> 
             </div>
-            <div class="bt-gameover-item">                    
-                 <p>PLAYER: <span class="scoreboard-value">${player1.name}</span></p>
+            <div class="bt-gameover-item ovf">                    
+                 <p><nobr>PLAYER:<span class="scoreboard-value">${player1.name}</span></nobr></p>
             </div>
             <div class="bt-gameover-item">                    
                  <p>SCORE: <span class="scoreboard-value">${player1ScoreStr}</span></p>
@@ -3214,22 +3214,27 @@ function startNextLevel(event) {
 
 function displayScoreBoard() {
 
+    let localPlayer1Name="";
     const timeOnCurrentLevel=(Math.floor((Number(Date.now())-levelStartTime)/100));
     const timeOnCurrentLevelStr=(timeOnCurrentLevel).toString().padStart(4, '0');
     const player1ScoreStr=(player1Score).toString().padStart(6, '0');
+    if (player1.name.length>15) {
+        localPlayer1Name=player1.name.slice(0, 14)+'...';
+    }
+    else localPlayer1Name=player1.name;
 
     gameDom["gameContainerScoreboard"].innerHTML = `
     <div class="bt-scoreboard-outer">
-        <div class="bt-scoreboard-item">                    
+        <div class="bt-scoreboard-item-level">                    
              <p>LEVEL: <span class="scoreboard-value">${currentLevel}</span></p> 
         </div>
-        <div class="bt-scoreboard-item">                    
-             <p>PLAYER: <span class="scoreboard-value">${player1.name}</span></p>
+        <div class="bt-scoreboard-item-player">                    
+             <p><nobr>PLAYER: <span class="scoreboard-value">${localPlayer1Name}</span></nobr></p>
         </div>
-        <div class="bt-scoreboard-item">                    
+        <div class="bt-scoreboard-item-score">                    
              <p>SCORE: <span class="scoreboard-value">${player1ScoreStr}</span></p>
         </div>
-        <div class="bt-scoreboard-item fixed">                    
+        <div class="bt-scoreboard-item-time">                    
              <p>TIME: <span class="scoreboard-value"><nobr>${timeOnCurrentLevelStr}</nobr></span></p>
         </div>
     </div>`;
