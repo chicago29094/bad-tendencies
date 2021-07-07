@@ -271,7 +271,7 @@ const bandMemberCharacters=[
             "Shoot Left": [9, 4, 0], 
             "Shoot Right": [10, 4, 0],
             "Hidden": [10, 1, 10],
-            "Stage Hidden": [10, 1, 10],
+            "Stage Hidden": [11, 2, 23],
             "Stage": [10, 1, 10],
             "imageState" : "Idle Right",
             "lastUpdate" : 0,
@@ -750,13 +750,36 @@ class BandMember {
         const row=this._image[this._image["imageState"]][0];
         const maxCol=this._image[this._image["imageState"]][1];
         let curCol=this._image[this._image["imageState"]][2];
+
+        if (this._id==="bandMember4") {
+        console.log(`Here: 00001: bandmember4 row=${row} maxCol=${maxCol} curCol=${curCol}`);
+        console.log(this._image[this._image["imageState"]]);
+        console.log(this._image[this._image["imageState"]][0]);
+        console.log(this._image[this._image["imageState"]][1]);
+        console.log(this._image[this._image["imageState"]][2]);
+
+        console.log(this._image["Stage Hidden"]);
+        console.log(this._image["Stage Hidden"][0]);
+        console.log(this._image["Stage Hidden"][1]);
+        console.log(this._image["Stage Hidden"][2]);
+        }
+        
         const lastUpdate=this._image.lastUpdate;
         const currentTime=Number(Date.now());
         let newPosX=0;
         let newPosY=0;
 
+        if (this._id==="bandMember4") {
+            console.log(`Here: 00001: bandmember4 row=${row} maxCol=${maxCol} curCol=${curCol}  newPosX=${newPosX} newPosY=${newPosY}} imageState=${this._image["imageState"]}`);
+        }
+
         if ( (currentTime-lastUpdate) > ANIMATION_FRAME_DELAY ) {
             this._image.lastUpdate=currentTime;
+
+            if (this._id==="bandMember4") {
+                console.log(`Here: 00002: bandmember4 curCol=${curCol} row=${row} newPosX=${newPosX} newPosY=${newPosY}} imageState=${this._image["imageState"]}`);
+            }
+    
 
             if (curCol>=maxCol) {
                 if ( (this._image["imageState"]!=='Die') && 
@@ -770,16 +793,32 @@ class BandMember {
             }
             else curCol=curCol+1;
 
+            if (this._id==="bandMember4") {
+                console.log(`Here: 00005: bandmember4 curCol=${curCol} row=${row} newPosX=${newPosX} newPosY=${newPosY}} imageState=${this._image["imageState"]}`);
+            }
+
+            
             if (this._image["imageState"]==='Hidden') {
                 curCol=8;
             }
-
+            
             this._image[this._image["imageState"]][2]=curCol;
-
+            
             // console.log(this._image["imageState"], curCol, row);
+
+            if (this._id==="bandMember4") {
+                console.log(`Here: 00007: bandmember4 curCol=${curCol} row=${row} newPosX=${newPosX} newPosY=${newPosY}} imageState=${this._image["imageState"]}`);
+            }
+
 
             newPosX=(curCol*-64);
             newPosY=(row*-64);
+            
+            if (this._id==="bandMember4") {
+                console.log(`Here: 00008: bandmember4 curCol=${curCol} row=${row} newPosX=${newPosX} newPosY=${newPosY}} imageState=${this._image["imageState"]}`);
+            }
+
+
 
             this._imagePtag.style.backgroundPosition=`${newPosX}px ${newPosY}px`;
         }
@@ -1386,7 +1425,30 @@ function handleSoundVolume(event) {
 
 }
 
+/*==============================================
+  Randomly select empty playfield grid square
+===============================================*/
 
+function randomPlayfieldSquare() {
+
+let tryX=0;
+let tryY=0;
+
+tryY=(Math.round(Math.random()*(currentGameLevel.length-1)));
+tryX=(Math.round(Math.random()*(currentGameLevel[tryY].length-1)));
+
+while ( (currentGameLevel[tryY][tryX]!==' ') ||  
+        (currentGameLevel[tryY][tryX+1]!==' ') || 
+        (currentGameLevel[tryY+1][tryX]!==' ') || 
+        (currentGameLevel[tryY+1][tryX+1]!==' ') 
+       ) {
+    tryY=Math.round(Math.random()*(currentGameLevel.length-1));
+    tryX=Math.round(Math.random()*(currentGameLevel[tryY].length-1));
+}
+
+return [tryX, tryY];
+
+}
 
 /*==========================================================================
 Display Functions
@@ -1963,7 +2025,7 @@ function processPlayfieldInteractions(character, collision, collisionType) {
 
             soundController("play", "once", "bandmember", "Dizzy", 1);
 
-            character.actionQueue.enqueue( { "state": "Dizzy", "imageState": "Dizzy", "durationType": "time", "duration":  2000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+            character.actionQueue.enqueue( { "state": "Dizzy", "imageState": "Dizzy", "durationType": "time", "duration":  4000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
 
             character.actionQueue.enqueue( {"state": character.state, "imageState": character.imageState});
         }
@@ -2012,7 +2074,7 @@ function processPlayfieldInteractions(character, collision, collisionType) {
 
             soundController("play", "once", "bandmember", "Dizzy", 1);
 
-            character.actionQueue.enqueue( { "state": "Dizzy", "imageState": "Dizzy", "durationType": "time", "duration":  4000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+            character.actionQueue.enqueue( { "state": "Dizzy", "imageState": "Dizzy", "durationType": "time", "duration":  5000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
 
             character.actionQueue.enqueue( {"state": character.state, "imageState": character.imageState});
         }
@@ -2029,7 +2091,7 @@ function processPlayfieldInteractions(character, collision, collisionType) {
 
             soundController("play", "once", "bandmember", "Dizzy", 1);
 
-            character.actionQueue.enqueue( { "state": "Dizzy", "imageState": "Dizzy", "durationType": "time", "duration":  3000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
+            character.actionQueue.enqueue( { "state": "Dizzy", "imageState": "Dizzy", "durationType": "time", "duration":  4000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
 
             character.actionQueue.enqueue( {"state": character.state, "imageState": character.imageState} );
         }               
@@ -3004,7 +3066,7 @@ function promptGameStart() {
     const htmlMessage = `<div class="game-instructions">
         <h3>Game Instructions</h3>
            
-        <p>You are the band member for the rock band <nobr><em><u>Bad Tendencies</u></em></nobr>.
+        <p>You are the band manager for the rock band <nobr><em><u>Bad Tendencies</u></em></nobr>.
         Your job is to get the band members on stage and to keep them out of 
         trouble.  If you get close to a band member they will follow you to
         the stage, unless they are distracted or under the influence.  You 
@@ -3043,8 +3105,8 @@ function startNewGame(event) {
 
     if (player1TextInput && player1TextInput.value) {
         player1Name = player1TextInput.value;
-        if (player1Name.length>30) {
-            player1Name = player1Name.slice(1, 30);
+        if (player1Name.length>20) {
+            player1Name = player1Name.slice(1, 20);
         }
     }
 
@@ -3143,11 +3205,23 @@ function startNewGame(event) {
     if (currentLevel===1) currentGameLevel=gameLevel1;
     displayGameBoard(currentGameLevel);
 
-    player1 = new Player(playerCharacters[0], player1Name, 290, 250);
-    bandMember1 = new BandMember(bandMemberCharacters[0], 250, 250);
-    bandMember2 = new BandMember(bandMemberCharacters[1], 320, 350);
-    bandMember3 = new BandMember(bandMemberCharacters[2], 450, 420);
-    bandMember4 = new BandMember(bandMemberCharacters[3], 600, 550);
+    let randX=0;
+    let randY=0;
+
+    [randX, randY] = randomPlayfieldSquare();
+    player1 = new Player(playerCharacters[0], player1Name, randX*32, randY*32);
+
+    [randX, randY] = randomPlayfieldSquare();
+    bandMember1 = new BandMember(bandMemberCharacters[0], randX*32, randY*32);
+
+    [randX, randY] = randomPlayfieldSquare();
+    bandMember2 = new BandMember(bandMemberCharacters[1], randX*32, randY*32);
+
+    [randX, randY] = randomPlayfieldSquare();
+    bandMember3 = new BandMember(bandMemberCharacters[2], randX*32, randY*32);
+
+    [randX, randY] = randomPlayfieldSquare();
+    bandMember4 = new BandMember(bandMemberCharacters[3], randX*32, randY*32);
 
     displayCharacterStatus("initialize");
 
@@ -3217,11 +3291,7 @@ function displayScoreBoard() {
     let localPlayer1Name="";
     const timeOnCurrentLevel=(Math.floor((Number(Date.now())-levelStartTime)/100));
     const timeOnCurrentLevelStr=(timeOnCurrentLevel).toString().padStart(4, '0');
-    const player1ScoreStr=(player1Score).toString().padStart(6, '0');
-    if (player1.name.length>15) {
-        localPlayer1Name=player1.name.slice(0, 14)+'...';
-    }
-    else localPlayer1Name=player1.name;
+    const player1ScoreStr=(player1Score).toString().padStart(5, '0');
 
     gameDom["gameContainerScoreboard"].innerHTML = `
     <div class="bt-scoreboard-outer">
@@ -3229,7 +3299,7 @@ function displayScoreBoard() {
              <p>LEVEL: <span class="scoreboard-value">${currentLevel}</span></p> 
         </div>
         <div class="bt-scoreboard-item-player">                    
-             <p><nobr>PLAYER: <span class="scoreboard-value">${localPlayer1Name}</span></nobr></p>
+             <p><nobr>PLAYER: <span class="scoreboard-value">${player1.name}</span></nobr></p>
         </div>
         <div class="bt-scoreboard-item-score">                    
              <p>SCORE: <span class="scoreboard-value">${player1ScoreStr}</span></p>
