@@ -719,7 +719,12 @@ class BandMember {
             //console.log(this._image["imageState"], setImageState);
 
             this._image["imageState"]=setImageState; 
-            this._image[setImageState][2]=0;
+
+            // Do not reset the image animations to the zero frame for special cases
+            if ( (setImageState!=='Stage Hidden') || (setImageState!=='Hidden') ) {
+                this._image[setImageState][2]=0;
+            }
+
             this._lastDirChange=Number(Date.now());
 
             if (setImageState==="Fire Die") {
@@ -750,36 +755,14 @@ class BandMember {
         const row=this._image[this._image["imageState"]][0];
         const maxCol=this._image[this._image["imageState"]][1];
         let curCol=this._image[this._image["imageState"]][2];
-
-        if (this._id==="bandMember4") {
-        console.log(`Here: 00001: bandmember4 row=${row} maxCol=${maxCol} curCol=${curCol}`);
-        console.log(this._image[this._image["imageState"]]);
-        console.log(this._image[this._image["imageState"]][0]);
-        console.log(this._image[this._image["imageState"]][1]);
-        console.log(this._image[this._image["imageState"]][2]);
-
-        console.log(this._image["Stage Hidden"]);
-        console.log(this._image["Stage Hidden"][0]);
-        console.log(this._image["Stage Hidden"][1]);
-        console.log(this._image["Stage Hidden"][2]);
-        }
         
         const lastUpdate=this._image.lastUpdate;
         const currentTime=Number(Date.now());
         let newPosX=0;
         let newPosY=0;
 
-        if (this._id==="bandMember4") {
-            console.log(`Here: 00001: bandmember4 row=${row} maxCol=${maxCol} curCol=${curCol}  newPosX=${newPosX} newPosY=${newPosY}} imageState=${this._image["imageState"]}`);
-        }
-
         if ( (currentTime-lastUpdate) > ANIMATION_FRAME_DELAY ) {
             this._image.lastUpdate=currentTime;
-
-            if (this._id==="bandMember4") {
-                console.log(`Here: 00002: bandmember4 curCol=${curCol} row=${row} newPosX=${newPosX} newPosY=${newPosY}} imageState=${this._image["imageState"]}`);
-            }
-    
 
             if (curCol>=maxCol) {
                 if ( (this._image["imageState"]!=='Die') && 
@@ -792,11 +775,6 @@ class BandMember {
                 }
             }
             else curCol=curCol+1;
-
-            if (this._id==="bandMember4") {
-                console.log(`Here: 00005: bandmember4 curCol=${curCol} row=${row} newPosX=${newPosX} newPosY=${newPosY}} imageState=${this._image["imageState"]}`);
-            }
-
             
             if (this._image["imageState"]==='Hidden') {
                 curCol=8;
@@ -806,20 +784,9 @@ class BandMember {
             
             // console.log(this._image["imageState"], curCol, row);
 
-            if (this._id==="bandMember4") {
-                console.log(`Here: 00007: bandmember4 curCol=${curCol} row=${row} newPosX=${newPosX} newPosY=${newPosY}} imageState=${this._image["imageState"]}`);
-            }
-
-
             newPosX=(curCol*-64);
             newPosY=(row*-64);
             
-            if (this._id==="bandMember4") {
-                console.log(`Here: 00008: bandmember4 curCol=${curCol} row=${row} newPosX=${newPosX} newPosY=${newPosY}} imageState=${this._image["imageState"]}`);
-            }
-
-
-
             this._imagePtag.style.backgroundPosition=`${newPosX}px ${newPosY}px`;
         }
     }
@@ -966,7 +933,11 @@ class Player {
     set imageState(setImageState) { 
             if (this._image["imageState"]!==setImageState) {
                 this._image["imageState"]=setImageState; 
-                this._image[setImageState][2]=0;
+
+                // Do not reset the image animations to the zero frame for special cases
+                if ( (setImageState!=='Hidden') ) {
+                    this._image[setImageState][2]=0;
+                }
 
                 if (setImageState==="Fire Die") {
                     this.applyEffectOverlay("Flame Overlay")
@@ -1166,7 +1137,12 @@ class Bullet {
     set imageState(setImageState) { 
         if (this._image["imageState"]!==setImageState) {
             this._image["imageState"]=setImageState; 
-            this._image[setImageState][2]=0;
+
+            // Do not reset the image animations to the zero frame for special cases
+            if ( (setImageState!=='Hidden') ) {
+                this._image[setImageState][2]=0;
+            }
+
             this._lastDirChange=Number(Date.now());
         }
     }     
@@ -1726,7 +1702,7 @@ function moveBandMember(bandMember, actionType, checkDirection, collisionResults
                     const currentTime=Date.now();
                     if (bandMember.direction==='W') {
 
-                        console.log("Throwing Left");
+                        // console.log("Throwing Left");
 
                         bandMember.actionQueue.enqueue( { "state": "Fight", "imageState": "Throwing Left", "durationType": "time", "duration":  1000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
 
@@ -1746,7 +1722,7 @@ function moveBandMember(bandMember, actionType, checkDirection, collisionResults
                     }              
                     else if (bandMember.direction==='E') {
 
-                        console.log("Throwing Right");
+                        // console.log("Throwing Right");
 
                         bandMember.actionQueue.enqueue( { "state": "Fight", "imageState": "Throwing Right", "durationType": "time", "duration":  1000, "startTime": currentTime, "startFrame": levelFrameCounter,} );
 
