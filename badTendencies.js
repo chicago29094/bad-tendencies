@@ -2987,23 +2987,23 @@ function gameLevelUp() {
             <div class="bt-gameover-outer">
 
             <div class="bt-gameover-item">                    
-                 <p>LEVEL: <span class="won-value">${currentLevel}</span></p> 
+                 <p>LEVEL: <span class="game-value">${currentLevel}</span></p> 
             </div>
 
             <div class="bt-gameover-item">                    
-                 <p><nobr>PLAYER:<span class="won-value">${player1.name}</span></nobr></p>
+                 <p><nobr>PLAYER: <span class="game-value">${player1.name}</span></nobr></p>
             </div>
 
             <div class="bt-gameover-item">                    
-                 <p>SCORE: <span class="won-value">${player1ScoreStr}</span></p>
+                 <p>SCORE: <span class="game-value">${player1ScoreStr}</span></p>
             </div>
 
             <div class="bt-gameover-item">                    
-                 <p>TIME: <span class="won-value"><nobr>${timeOnCurrentLevelStr}</nobr></span></p>
+                 <p>TIME: <span class="game-value"><nobr>${timeOnCurrentLevelStr}</nobr></span></p>
             </div>
             </div>
     
-            <p>You can click below to start a new game.</p>
+            <p class="start-new-game">You can click below to start a new game.</p>
 
             <button id="startGameButton">Start New Game</button>
             
@@ -3025,7 +3025,7 @@ function gameLevelUp() {
 
         for (bandmember of [bandMember1, bandMember2, bandMember3, bandMember4]) {
             if (bandmember.state==='Dead') deadCount++;
-            if (bandmember.state==='Stage Hidden') stageCount++;
+            if ( (bandmember.state==='Stage') || (bandmember.state==='Stage Hidden') ) stageCount++;
         }
 
         if (stageCount!=1) memToken1='members'; 
@@ -3065,7 +3065,7 @@ function gameLevelUp() {
 Start Bad Tendencies Game and Initialize a New Game
 ===========================================================================*/
 
-const promptGameStartId = setTimeout(promptGameStart, 1000);
+const promptGameStartId = setTimeout(promptGameStart, 3000);
 
 // Prompt Player for Game Start
 
@@ -3529,19 +3529,19 @@ function gameOver() {
         <div class="bt-gameover-outer">
 
         <div class="bt-gameover-item">                    
-             <p>LEVEL: <span class="won-value">${currentLevel}</span></p> 
+             <p>LEVEL: <span class="game-value">${currentLevel}</span></p> 
         </div>
 
         <div class="bt-gameover-item">                    
-             <p><nobr>PLAYER:<span class="won-value">${player1.name}</span></nobr></p>
+             <p><nobr>PLAYER: <span class="game-value">${player1.name}</span></nobr></p>
         </div>
 
         <div class="bt-gameover-item">                    
-             <p>SCORE: <span class="won-value">${player1ScoreStr}</span></p>
+             <p>SCORE: <span class="game-value">${player1ScoreStr}</span></p>
         </div>
 
         <div class="bt-gameover-item">                    
-             <p>TIME: <span class="won-value"><nobr>${timeOnCurrentLevelStr}</nobr></span></p>
+             <p>TIME: <span class="game-value"><nobr>${timeOnCurrentLevelStr}</nobr></span></p>
         </div>
         </div>
 
@@ -3631,7 +3631,7 @@ if  ( (bandMember1.state==="Dead") && (bandMember2.state==="Dead") &&
 }
 
 // Check to See if All Band Members Have Entered the Stage
-if  (  (1==1) ||  ( (bandMember1.state==="Stage") || (bandMember1.state==="Dead") ) && 
+if  (    ( (bandMember1.state==="Stage") || (bandMember1.state==="Dead") ) && 
          ( (bandMember2.state==="Stage") || (bandMember2.state==="Dead") ) && 
          ( (bandMember3.state==="Stage") || (bandMember3.state==="Dead") ) && 
          ( (bandMember4.state==="Stage") || (bandMember4.state==="Dead") ) ) {
