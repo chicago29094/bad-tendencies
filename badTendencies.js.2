@@ -1405,34 +1405,22 @@ function handleSoundVolume(event) {
   Randomly select empty playfield grid square
 ===============================================*/
 
-function randomPlayfieldSquare(characterPosArray) {
+function randomPlayfieldSquare() {
 
 let tryX=0;
 let tryY=0;
-let cleanSpot=false;
 
-do {
-    tryY=(Math.round(Math.random()*(currentGameLevel.length-1)));
-    tryX=(Math.round(Math.random()*(currentGameLevel[tryY].length-1)));
-        
-    if ((currentGameLevel[tryY][tryX]!==' ') ||  
+tryY=(Math.round(Math.random()*(currentGameLevel.length-1)));
+tryX=(Math.round(Math.random()*(currentGameLevel[tryY].length-1)));
+
+while ( (currentGameLevel[tryY][tryX]!==' ') ||  
         (currentGameLevel[tryY][tryX+1]!==' ') || 
         (currentGameLevel[tryY+1][tryX]!==' ') || 
-        (currentGameLevel[tryY+1][tryX+1]!==' ')) {
-            continue; 
-    }
-
-    for (let i=0; i<characterPosArray.length; i++) {
-        let posX=characterPosArray[i][0];
-        let posY=characterPosArray[i][1];
-
-        if (collides(posX*32+16, posY*32+12, 32, 47, tryX*32+16, tryY*32+12, 32, 47)) {
-            continue;
-        }
-    }
-    cleanSpot=true;
-
-} while (cleanSpot===false)
+        (currentGameLevel[tryY+1][tryX+1]!==' ') 
+       ) {
+    tryY=Math.round(Math.random()*(currentGameLevel.length-1));
+    tryX=Math.round(Math.random()*(currentGameLevel[tryY].length-1));
+}
 
 return [tryX, tryY];
 
@@ -3181,7 +3169,7 @@ function startNewGame(event) {
     gameContainerPlayer1.setAttribute('class', 'game-container-player1');
     gameDom["gameContainerPlayer1"]=gameContainerPlayer1;
     gameContainerCharacters.appendChild(gameContainerPlayer1);
-
+    
     const gameContainerPlayfield=document.createElement('div');
     gameContainerPlayfield.setAttribute('class', 'game-container-playfield');
     gameContainerPlayfield.style.gridColumn="2 / span 2";
@@ -3195,27 +3183,21 @@ function startNewGame(event) {
 
     let randX=0;
     let randY=0;
-    let characterPosArray=[];
 
-    [randX, randY] = randomPlayfieldSquare(characterPosArray);
+    [randX, randY] = randomPlayfieldSquare();
     player1 = new Player(playerCharacters[0], player1Name, randX*32, randY*32);
-    characterPosArray.push([randX, randY]);
 
-    [randX, randY] = randomPlayfieldSquare(characterPosArray);
+    [randX, randY] = randomPlayfieldSquare();
     bandMember1 = new BandMember(bandMemberCharacters[0], randX*32, randY*32);
-    characterPosArray.push([randX, randY]);
 
-    [randX, randY] = randomPlayfieldSquare(characterPosArray);
+    [randX, randY] = randomPlayfieldSquare();
     bandMember2 = new BandMember(bandMemberCharacters[1], randX*32, randY*32);
-    characterPosArray.push([randX, randY]);
 
-    [randX, randY] = randomPlayfieldSquare(characterPosArray);
+    [randX, randY] = randomPlayfieldSquare();
     bandMember3 = new BandMember(bandMemberCharacters[2], randX*32, randY*32);
-    characterPosArray.push([randX, randY]);
 
-    [randX, randY] = randomPlayfieldSquare(characterPosArray);
+    [randX, randY] = randomPlayfieldSquare();
     bandMember4 = new BandMember(bandMemberCharacters[3], randX*32, randY*32);
-    characterPosArray.push([randX, randY]);
 
     displayCharacterStatus("initialize");
 
