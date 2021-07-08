@@ -1470,7 +1470,7 @@ function displayGameBoard(level) {
     // Game levels after level 1 need the previous game board cleared and replaced
     if (currentLevel>1) {
         const previousGamePlayfield = document.querySelector('#game-playfield');
-        gameDom["gameContainerPlayfield"].removeChild(previousGamePlayfield);
+        gameDom["gameContainerPlayfield"].removeChild(previousGamePlayField);
     }
 
     const gamePlayfield = document.createElement('div');
@@ -2981,25 +2981,20 @@ function gameLevelUp() {
         const player1ScoreStr=(player1Score).toString().padStart(6, '0');
     
         const htmlMessage = `<div class="game-instructions">
-            <h2>You Won</h2>
-            <h3>You Finished Level 5</h3>
+            <h3>You Won - You Finished Level 5</h3>
         
             <div class="bt-gameover-outer">
-
             <div class="bt-gameover-item">                    
-                 <p>LEVEL: <span class="won-value">${currentLevel}</span></p> 
+                 <p>LEVEL: <span class="scoreboard-value">${currentLevel}</span></p> 
             </div>
-
-            <div class="bt-gameover-item">                    
-                 <p><nobr>PLAYER:<span class="won-value">${player1.name}</span></nobr></p>
+            <div class="bt-gameover-item ovf">                    
+                 <p><nobr>PLAYER:<span class="scoreboard-value">${player1.name}</span></nobr></p>
             </div>
-
             <div class="bt-gameover-item">                    
-                 <p>SCORE: <span class="won-value">${player1ScoreStr}</span></p>
+                 <p>SCORE: <span class="scoreboard-value">${player1ScoreStr}</span></p>
             </div>
-
-            <div class="bt-gameover-item">                    
-                 <p>TIME: <span class="won-value"><nobr>${timeOnCurrentLevelStr}</nobr></span></p>
+            <div class="bt-gameover-item fixed">                    
+                 <p>TIME: <span class="scoreboard-value"><nobr>${timeOnCurrentLevelStr}</nobr></span></p>
             </div>
             </div>
     
@@ -3264,12 +3259,8 @@ function startNextLevel(event) {
 
     event.preventDefault();
     
-    const player1Name = player1.name;
-    
     const underModal = document.querySelector("div.under-modal");
     body.removeChild(underModal);
-    
-    currentLevel=currentLevel+1;
 
     if (currentLevel===1) currentGameLevel=gameLevel1;
     if (currentLevel===2) currentGameLevel=gameLevel2;
@@ -3279,43 +3270,52 @@ function startNextLevel(event) {
 
     displayGameBoard(currentGameLevel);
 
-    const player1Div = document.querySelector('#player1');
-    const bandMember1Div = document.querySelector('#bandMember1');
-    const bandMember2Div = document.querySelector('#bandMember2');
-    const bandMember3Div = document.querySelector('#bandMember3');
-    const bandMember4Div = document.querySelector('#bandMember4');
-    
-    gameDom["gameContainerPlayfield"].removeChild(player1Div);
-    gameDom["gameContainerPlayfield"].removeChild(bandMember1Div);
-    gameDom["gameContainerPlayfield"].removeChild(bandMember2Div);
-    gameDom["gameContainerPlayfield"].removeChild(bandMember3Div);
-    gameDom["gameContainerPlayfield"].removeChild(bandMember4Div);
+    player1.health=100;
+    player1.state=PLAYER_DEFAULT_STATE;
+    player1.imageState='Idle Right';
+
+    for (bandmember of [bandMember1, bandMember2, bandMember3, bandMember4] ) {
+        bandmember.health=100;
+        bandmember.party=0;
+        bandmember.direction='';
+        bandmember.state=BANDMEMBER_DEFAULT_STATE;
+        bandmember.lastStateChange=Number(Date.now());
+        bandmember.lastDirChange=0;
+        bandmember.lastDirection='';
+        bandmember.lastDirChangeReason='';
+        bandmember.hasLighter=0;
+        bandmember.hasBomb=0;
+        bandmember.hasGun=0;    
+        bandmember.gunBullets=0;
+        bandmember.cooldown=0;
+        bandmember.imageState='Idle Right';
+    }
 
     let randX=0;
     let randY=0;
     let characterPosArray=[];
-
+ 
     [randX, randY] = randomPlayfieldSquare(characterPosArray);
-    player1 = new Player(playerCharacters[0], player1Name, randX*32, randY*32);
+    player1.posXY = [randX*32, randY*32];
     characterPosArray.push([randX, randY]);
 
     [randX, randY] = randomPlayfieldSquare(characterPosArray);
-    bandMember1 = new BandMember(bandMemberCharacters[0], randX*32, randY*32);
+    bandMember1 = [randX*32, randY*32];
     characterPosArray.push([randX, randY]);
 
     [randX, randY] = randomPlayfieldSquare(characterPosArray);
-    bandMember2 = new BandMember(bandMemberCharacters[1], randX*32, randY*32);
+    bandMember2 = [randX*32, randY*32];
     characterPosArray.push([randX, randY]);
 
     [randX, randY] = randomPlayfieldSquare(characterPosArray);
-    bandMember3 = new BandMember(bandMemberCharacters[2], randX*32, randY*32);
+    bandMember3 = [randX*32, randY*32];
     characterPosArray.push([randX, randY]);
 
     [randX, randY] = randomPlayfieldSquare(characterPosArray);
-    bandMember4 = new BandMember(bandMemberCharacters[3], randX*32, randY*32);
+    bandMember4 = [randX*32, randY*32];
     characterPosArray.push([randX, randY]);
 
-    displayCharacterStatus("initialize");   
+    displayCharacterStatus("initialize");
 
     handleKeyboardEvents("");
 
@@ -3527,21 +3527,17 @@ function gameOver() {
         <h3>Game Over</h3>
     
         <div class="bt-gameover-outer">
-
         <div class="bt-gameover-item">                    
-             <p>LEVEL: <span class="won-value">${currentLevel}</span></p> 
+             <p>LEVEL: <span class="scoreboard-value">${currentLevel}</span></p> 
         </div>
-
         <div class="bt-gameover-item">                    
-             <p><nobr>PLAYER:<span class="won-value">${player1.name}</span></nobr></p>
+             <p>PLAYER: <span class="scoreboard-value">${player1.name}</span></p>
         </div>
-
         <div class="bt-gameover-item">                    
-             <p>SCORE: <span class="won-value">${player1ScoreStr}</span></p>
+             <p>SCORE: <span class="scoreboard-value">${player1ScoreStr}</span></p>
         </div>
-
-        <div class="bt-gameover-item">                    
-             <p>TIME: <span class="won-value"><nobr>${timeOnCurrentLevelStr}</nobr></span></p>
+        <div class="bt-gameover-item fixed">                    
+             <p>TIME: <span class="scoreboard-value"><nobr>${timeOnCurrentLevelStr}</nobr></span></p>
         </div>
         </div>
 
