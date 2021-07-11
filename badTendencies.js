@@ -27,7 +27,8 @@ let lastGoodDropTime=0;
 let lastBadDropTime=0;
 let gameOverFlag=false;
 let gameLevelUpFlag=false;
-
+let musicScore='';
+let levelModalMusic='';
 
 let gameStatus='Splash Screen';
 let mainGameLoopIntervalID;
@@ -84,7 +85,14 @@ Band Member Characters
 const mediaSoundsLibrary = [
     {
         "music_score" : {
-            "main" : './sounds/clearside_sandblaster_edit1.mp3',
+            "main1" : './sounds/clearside_sandblaster_edit1.mp3',
+            "main2" : './sounds/GIGA_METAL.mp3',
+            "main3" : './sounds/SUPER_METAL.mp3',
+            "main4" : './sounds/MAXI_METAL.mp3',
+            "main5" : './sounds/Thunderclock.mp3',
+            "level1" : './sounds/BugaBlue.mp3',
+            "level2" : './sounds/Barbara.mp3',
+            "level3" : './sounds/happy_clappy.mp3',
         }
     },
     {
@@ -1389,7 +1397,7 @@ function handleSoundVolume(event) {
 
     let volumeLevel = (volumeSlider.value/100);
 
-    soundController("play", "", "music_score", "main", volumeLevel)
+    soundController("play", "", "music_score", musicScore, volumeLevel)
 
 }
 
@@ -2973,6 +2981,11 @@ Start New Game Level
 function gameLevelUp() {
     const divSplash = document.querySelector('#outerSplash');
 
+    // Play the game modal background music
+    soundController("stop", "loop", "music_score", musicScore, 1);
+    levelModalMusic=['level1', 'level2', 'level3'][Math.round(Math.random()*2)];
+    soundController("play", "loop", "music_score", levelModalMusic, 1);
+
     //gameContainer.removeChild(divSplash);
     if (currentLevel===5) {
         
@@ -3013,7 +3026,10 @@ function gameLevelUp() {
         displayModalDialog("", body, "500px", "", htmlMessage);
 
         const starGameButton = document.querySelector('#startGameButton');
-        startGameButton.addEventListener('click', () => {window.location="index.html";} );
+        startGameButton.addEventListener('click', () => {
+            soundController("stop", "loop", "music_score", levelModalMusic, 1);
+            window.location="index.html";
+        } );
 
     }
     else {
@@ -3250,7 +3266,8 @@ function startNewGame(event) {
     gameLevelUpFlag=false;
     
     // Play the game background music
-    soundController("play", "loop", "music_score", "main", 1);
+    musicScore=['main1', 'main2', 'main3', 'main4', 'main5'][Math.round(Math.random()*4)];
+    soundController("play", "loop", "music_score", musicScore, 1);
 
     mainGameLoopIntervalId = window.setInterval(mainGameLoop, 100);
 }
@@ -3263,7 +3280,9 @@ function startNewGame(event) {
 function startNextLevel(event) {
 
     event.preventDefault();
-    
+
+    soundController("stop", "loop", "music_score", levelModalMusic, 1);    
+
     const player1Name = player1.name;
     
     const underModal = document.querySelector("div.under-modal");
@@ -3325,7 +3344,8 @@ function startNextLevel(event) {
     gameLevelUpFlag=false;
     
     // Play the game background music
-    soundController("play", "loop", "music_score", "main", 1);
+    musicScore=['main1', 'main2', 'main3', 'main4', 'main5'][Math.round(Math.random()*4)];
+    soundController("play", "loop", "music_score", musicScore, 1);
 
     mainGameLoopIntervalId = window.setInterval(mainGameLoop, 100);
 }
@@ -3518,6 +3538,11 @@ function displayCharacterStatus(action) {
 function gameOver() {
     const divSplash = document.querySelector('#outerSplash');
 
+    // Play the game modal background music
+    soundController("stop", "loop", "music_score", musicScore, 1);
+    levelModalMusic=['level1', 'level2', 'level3'][Math.round(Math.random()*2)];
+    soundController("play", "loop", "music_score", levelModalMusic, 1);    
+
     //gameContainer.removeChild(divSplash);
     const timeOnCurrentLevel=(Math.floor((Number(Date.now())-levelStartTime)/1000));
     const timeOnCurrentLevelStr=(timeOnCurrentLevel).toString().padStart(4, '0');
@@ -3553,7 +3578,10 @@ function gameOver() {
     displayModalDialog("", body, "500px", "", htmlMessage);
 
     const starGameButton = document.querySelector('#startGameButton');
-    startGameButton.addEventListener('click', () => {window.location="index.html";} );    
+    startGameButton.addEventListener('click', () => {
+        soundController("stop", "loop", "music_score", levelModalMusic, 1);    
+        window.location="index.html";
+    } );    
 }
 
 
