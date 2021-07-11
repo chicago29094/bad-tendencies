@@ -37,7 +37,7 @@ let lastPartyDropTime=0;
 let gameOverFlag=false;
 let gameLevelUpFlag=false;
 let musicScore='';
-let levelModalMusic='';
+let levelModalMusic='level3';
 
 let gameStatus='Splash Screen';
 let mainGameLoopIntervalID;
@@ -410,7 +410,7 @@ const overlayImages = {
     "Health Overlay" : './assets/health_overlay.png',
 }
 
-const gameLevel5 = [
+const gameLevel1 = [
     ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
@@ -534,7 +534,7 @@ const gameLevel4 = [
 ];
 
 
-const gameLevel1 = [
+const gameLevel5 = [
     ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
     ['W',' ',' ','W','P',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
@@ -549,10 +549,10 @@ const gameLevel1 = [
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','P','P',' ',' ','P',' ',' ','W','W','W','W','W','W','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','P','P',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ','W','W','W','W','W','W','W','W',' ',' ',' ',' ','W','W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','P','W'],
-    ['W',' ',' ','P','P',' ',' ','P',' ',' ','W',' ','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','P','W'],
-    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W',' ',' ',' ','P','W'],
-    ['W',' ',' ','W',' ',' ','W','W','W',' ','W',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','P',' ',' ',' ',' ',' ',' ',' ',' ','W'],
-    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ','W','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ','P','P',' ',' ','P',' ',' ','W',' ',' ','W','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','P','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W',' ',' ',' ','P','W'],
+    ['W',' ',' ','W',' ',' ','W','W','W',' ','W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','P',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','P',' ',' ','W'],
     ['W',' ',' ','W',' ',' ','W','T','S',' ','W',' ',' ',' ',' ','W',' ',' ',' ','W','W','W','W','W','W','W','W','W','W',' ',' ','W'],
     ['W',' ',' ','W',' ',' ','W','S','S',' ','W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
@@ -3147,6 +3147,8 @@ function startNewGame(event) {
 
     loadGameSounds();
 
+    soundController("stop", "loop", "music_score", levelModalMusic, 1);
+
     const player1TextInput = document.querySelector('.nameInput');
     let player1Name="Player 1";
 
@@ -3190,7 +3192,10 @@ function startNewGame(event) {
         </div>
     `;
     const headerStartGameButton=gameContainerHeader.querySelector('#headerStartGameButton');
-    headerStartGameButton.addEventListener('click', () => {window.location='index.html';} );
+    headerStartGameButton.addEventListener('click', () => {
+        soundController("stop", "loop", "music_score", levelModalMusic, 1);
+        window.location='index.html';
+    } );
 
     const headerQuitGameButton=gameContainerHeader.querySelector('#headerQuitGameButton');
     headerQuitGameButton.addEventListener('click', gameOver);
@@ -3311,7 +3316,7 @@ function startNextLevel(event) {
     WEAPON_PLAYFIELD_OBJECT_DROP_RATE=WEAPON_PLAYFIELD_OBJECT_DROP_RATE*.8; // milliseconds
     PARTY_PLAYFIELD_OBJECT_DROP_RATE=PARTY_PLAYFIELD_OBJECT_DROP_RATE*.8; // milliseconds
 
-    /*=== Optional Level Character Speed Adjustment ====
+    /*=== Optional Level Adjustments - Character Speed, Party Level ====
     for (bandmember of bandMemberCharacters) {
         bandmember.speed=bandmember.speed+1;
     }
@@ -3572,7 +3577,10 @@ function displayCharacterStatus(action) {
 ===========================*/
 
 function gameOver() {
+    
     const divSplash = document.querySelector('#outerSplash');
+
+    soundController("stop", "loop", "music_score", levelModalMusic, 1);
 
     // Play the game modal background music
     soundController("stop", "loop", "music_score", musicScore, 1);
