@@ -23,6 +23,11 @@ const SPLASH_SCREEN_DELAY=3000; // milliseconds
 
 let GOOD_PLAYFIELD_OBJECT_DROP_RATE=40000; // milliseconds
 let BAD_PLAYFIELD_OBJECT_DROP_RATE=20000; // milliseconds
+let GUN_CHANCE=1.0; 
+let BOMB_CHANCE=1.0;
+let BEER_CHANCE=1.0;
+let DRUGS_CHANCE=1.0;
+let WINE_CHANCE=1.0;
 let lastGoodDropTime=0;
 let lastBadDropTime=0;
 let gameOverFlag=false;
@@ -402,7 +407,7 @@ const overlayImages = {
 
 const gameLevel1 = [
     ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
-    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','P',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ','W',' ',' ','P',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W','W','W','W',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ','l',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
@@ -412,7 +417,7 @@ const gameLevel1 = [
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ','W',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ','W','W','W','W','W','W','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ','W',' ',' ','W',' ',' ','P',' ','W','W','W',' ',' ',' ',' ','W','W','W','W','W','W','W',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ','W',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ',' ','W','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
@@ -422,7 +427,7 @@ const gameLevel1 = [
     ['W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W',' ',' ',' ','W',' ',' ',' ',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W','W',' ',' ',' ','W','W','W','W',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','P',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ',' ',' ','l',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
@@ -430,7 +435,7 @@ const gameLevel1 = [
     ['W',' ','T','S',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W',' ','S','S',' ',' ',' ','W',' ',' ',' ','W','W','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','P',' ',' ','W',' ',' ',' ',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','P',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
     ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
 ];
@@ -726,7 +731,7 @@ class BandMember {
             this._image["imageState"]=setImageState; 
 
             // Do not reset the image animations to the zero frame for special cases
-            if ( (setImageState!=='Stage Hidden') || (setImageState!=='Hidden') ) {
+            if ( (setImageState!=='Stage Hidden') && (setImageState!=='Hidden') ) {
                 this._image[setImageState][2]=0;
             }
 
@@ -766,6 +771,10 @@ class BandMember {
         let newPosX=0;
         let newPosY=0;
 
+        if (this._id==='bandMember4') {
+            console.log(`1. this._imageState=${this._image["imageState"]} row=${row} maxCol=${maxCol} curCol=${curCol} lastUpdate=${lastUpdate} currenTime=${currentTime} newPosX=${newPosX} newPosY=${newPosY}`)
+        }
+
         if ( (currentTime-lastUpdate) > ANIMATION_FRAME_DELAY ) {
             this._image.lastUpdate=currentTime;
 
@@ -786,12 +795,21 @@ class BandMember {
             }
             
             this._image[this._image["imageState"]][2]=curCol;
-            
+
+            if (this._id==='bandMember4') {
+                console.log(`2. this._imageState=${this._image["imageState"]} row=${row} maxCol=${maxCol} curCol=${curCol} lastUpdate=${lastUpdate} currenTime=${currentTime} newPosX=${newPosX} newPosY=${newPosY}`)
+            }
+                
+
             // console.log(this._image["imageState"], curCol, row);
 
             newPosX=(curCol*-64);
             newPosY=(row*-64);
-            
+
+            if (this._id==='bandMember4') {
+                console.log(`3. this._imageState=${this._image["imageState"]} row=${row} maxCol=${maxCol} curCol=${curCol} lastUpdate=${lastUpdate} currenTime=${currentTime} newPosX=${newPosX} newPosY=${newPosY}`)
+            }                
+
             this._imagePtag.style.backgroundPosition=`${newPosX}px ${newPosY}px`;
         }
     }
@@ -872,6 +890,7 @@ class Player {
         this._imageDiv.style.position="absolute";
         this._imageDiv.style.left=this._posX+"px";
         this._imageDiv.style.top=this._posY+"px";
+        //this._imageDiv.style.border="1px solid #00ff00";
         this._imagePtag=document.createElement("p");
         this._imagePtag.setAttribute('class', "player-ptag");
         this._imagePtag.setAttribute('id', this._id + '-ptag');
@@ -1411,7 +1430,7 @@ let tryX=0;
 let tryY=0;
 let cleanSpot=false;
 
-do {
+doContinue: do {
     tryY=(Math.round(Math.random()*(currentGameLevel.length-1)));
     tryX=(Math.round(Math.random()*(currentGameLevel[tryY].length-1)));
         
@@ -1419,7 +1438,7 @@ do {
         (currentGameLevel[tryY][tryX+1]!==' ') || 
         (currentGameLevel[tryY+1][tryX]!==' ') || 
         (currentGameLevel[tryY+1][tryX+1]!==' ')) {
-            continue; 
+            continue doContinue; 
     }
 
     for (let i=0; i<characterPosArray.length; i++) {
@@ -1427,7 +1446,7 @@ do {
         let posY=characterPosArray[i][1];
 
         if (collides(posX*32+16, posY*32+12, 32, 47, tryX*32+16, tryY*32+12, 32, 47)) {
-            continue;
+            continue doContinue;
         }
     }
     cleanSpot=true;
@@ -1479,6 +1498,13 @@ function displayGameBoard(level) {
     if (currentLevel>1) {
         const previousGamePlayfield = document.querySelector('#game-playfield');
         gameDom["gameContainerPlayfield"].removeChild(previousGamePlayfield);
+
+        const previousGamePlayfieldObjects = document.querySelectorAll('.game-playfield-object');
+
+        // Remove the playField object matching DOM elements
+        previousGamePlayfieldObjects.forEach( (element, index) => {
+            element.remove();
+        });
     }
 
     const gamePlayfield = document.createElement('div');
@@ -1639,12 +1665,14 @@ function movePlayer1() {
 
     if (!blockMovement[0]) {
         if ( (blockMovement[1]["collisionType"]==='Pit') ) {
+        
             player1.health=0;
-            // player1.posX=blockMovement[1].collisionGridCol*32;
-            // player1.posY=blockMovement[1].collisionGridRow*32;            
-            soundController("play", "once", "player", "Die", 1);
+            player1.posX=blockMovement[1].collisionGridCol*32-16;
+            player1.posY=blockMovement[1].collisionGridRow*32-32;
+            soundController("play", "once", "player", "Die", 1);    
             player1.state="Dead";
             player1.imageState="Pit Die";
+            return;
         }
     }
 
@@ -2032,10 +2060,12 @@ function processPlayfieldInteractions(character, collision, collisionType) {
             }
         }
         else if (collisionType==="Coin") {
+            soundController("play", "once", "bandmember", "Ha Ha", 1);
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }
         else if (collisionType==="Gem") {
+            soundController("play", "once", "bandmember", "Ha Ha", 1);
             collision.collisionDomRef.remove();
             currentGameLevel[collision.collisionGridRow][collision.collisionGridCol]=' ';
         }
@@ -3606,8 +3636,6 @@ displayCharacterStatus("update");
 
 // Display the Scoreboard header
 displayScoreBoard();
-
-
 
 // Check if the player is Dead
 if (player1.health<=0) {
