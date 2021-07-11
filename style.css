@@ -184,7 +184,7 @@ div.modal-window {
 /*===========================================================================*/
 /* Game Instructions */
 
-.game-instructions p, label, input {
+.game-instructions p, .game-instructions label, .game-instructions input {
 /* font-family: 'UnifrakturCook', cursive;  */
 font-family: 'Squada One', cursive; 
 color: #000000;      
@@ -241,7 +241,56 @@ text-align: left;
         border-radius: 10%;
         padding: 5px 10px 5px 10px;
         margin: 10px 0px;
-    }    
+}    
+
+/*===========================================================================*/
+/* Game Credits */
+
+.game-credits-modal p, .game-credits-modal label, .game-credits-modal input {
+    /* font-family: 'UnifrakturCook', cursive;  */
+    font-family: 'Open Sans', cursive; 
+    color: #000000;      
+    font-size: 1.1rem;
+    text-align: left;
+    }
+
+    .game-credits-modal p.copyright-modal {
+        /* font-family: 'UnifrakturCook', cursive;  */
+        font-family: 'Open Sans', cursive; 
+        color: #000000;      
+        font-size: 0.9rem;
+        font-weight: bold;
+        text-align: left;
+        margin-top: 30px;
+        }
+
+    .game-credits-modal span.ckey {
+        font-weight: bold;
+    }
+    
+    .game-credits-modal input {
+        margin-left: 10px;
+    }
+    
+    .game-credits-modal h3 {
+        /* font-family: "Graveblade-Regular"; */
+        font-family: "Hedgerow-Regular"; 
+        /* font-family: 'Squada One', cursive; */
+        color: #6a0b0b;      
+        font-size: 3rem;
+        text-align: center;
+        margin: 0px 0px 40px 0px;
+        }
+     
+    .game-credits-modal h2 {
+        /* font-family: "Graveblade-Regular"; */
+        font-family: "Hedgerow-Regular"; 
+        /* font-family: 'Squada One', cursive; */
+        color: #6a0b0b;      
+        font-size: 1.4rem;
+        text-align: center;
+        margin: 0px 0px 20px 0px;
+    }   
 
 
 /*===========================================================================*/
@@ -321,6 +370,17 @@ span.game-value, span.won-value {
     text-align: left;
     flex: 1 0;
     text-shadow: 2px 2px rgba(255, 255, 255, 0.7);    
+}
+
+.game-credits-link a,  p.game-credits-link, .game-credits-link a:link, .game-credits-link a:visited, .game-credits-link 
+a:-webkit-any-link {
+    font-family: "Hedgerow-Regular"; 
+    color: #000000;      
+    font-size: 1.0rem;
+    margin: 20px auto 0px auto;
+    text-align: center;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px rgba(255, 255, 255, 0.7);    
 }
 
 p.start-new-game {

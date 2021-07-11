@@ -41,6 +41,7 @@ let currentGameLevel="";
 let currentLevel=1;
 let player1Score=0;
 let levelStartTime=0;
+let gameStartTime=0;
 let levelFrameCounter=0;
 
 // Keyboard key press data structure
@@ -408,16 +409,16 @@ const overlayImages = {
 const gameLevel1 = [
     ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','P',' ',' ',' ',' ',' ',' ','W'],
-    ['W',' ',' ','W',' ',' ','P',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W','W','W','W',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
     ['W',' ',' ','W',' ',' ',' ',' ',' ','l',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
-    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','P',' ','p',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W',' ',' ','W'],
+    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','P',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W',' ',' ','W'],
     ['W',' ',' ','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W','W','W','W',' ',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ','W',' ',' ','W',' ',' ','P',' ','W','W','W',' ',' ',' ',' ','W','W','W','W','W','W','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ','W',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ','W','W','W','W','W','W','W',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ','W',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ',' ','W','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
@@ -427,15 +428,15 @@ const gameLevel1 = [
     ['W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W',' ',' ',' ','W',' ',' ',' ',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W','W',' ',' ',' ','W','W','W','W',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','P',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ',' ',' ','l',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W',' ','T','S',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
     ['W',' ','S','S',' ',' ',' ','W',' ',' ',' ','W','W','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','P',' ',' ','W',' ',' ',' ',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','P',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
     ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
     ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
 ];
@@ -443,36 +444,36 @@ const gameLevel1 = [
 
 const gameLevel2 = [
     ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
-    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
-    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
-    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W','W','W','W',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
-    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ',' ','W'],
-    ['W',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W','W',' ','W'],
-    ['W',' ',' ','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W','W','W','W','W',' ',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ','W',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ','W','W','W','W','W','W','W',' ','W','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ','W',' ','W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
-    ['W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W','W'],
-    ['W',' ',' ','W','W','W',' ',' ',' ','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W'],
-    ['W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W',' ','W','W','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W'],
-    ['W',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W',' ','W',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ','W'],
-    ['W',' ',' ',' ',' ','W','W','W',' ',' ',' ',' ',' ',' ','W',' ','W',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W',' ','W',' ',' ',' ','W','W','W','W',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
-    ['W','W','W','W','W','W','W',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W','W','W','W','W',' ',' ','W',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ','W','W','W','W','W','W','W','W',' ',' ',' ','S','S',' ','W',' ',' ','W',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','S','S',' ','W',' ',' ',' ',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
-    ['W',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
+    ['W',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','W'],
     ['W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W','W'],
 ];
 
@@ -771,10 +772,6 @@ class BandMember {
         let newPosX=0;
         let newPosY=0;
 
-        if (this._id==='bandMember4') {
-            console.log(`1. this._imageState=${this._image["imageState"]} row=${row} maxCol=${maxCol} curCol=${curCol} lastUpdate=${lastUpdate} currenTime=${currentTime} newPosX=${newPosX} newPosY=${newPosY}`)
-        }
-
         if ( (currentTime-lastUpdate) > ANIMATION_FRAME_DELAY ) {
             this._image.lastUpdate=currentTime;
 
@@ -796,19 +793,10 @@ class BandMember {
             
             this._image[this._image["imageState"]][2]=curCol;
 
-            if (this._id==='bandMember4') {
-                console.log(`2. this._imageState=${this._image["imageState"]} row=${row} maxCol=${maxCol} curCol=${curCol} lastUpdate=${lastUpdate} currenTime=${currentTime} newPosX=${newPosX} newPosY=${newPosY}`)
-            }
-                
-
             // console.log(this._image["imageState"], curCol, row);
 
             newPosX=(curCol*-64);
-            newPosY=(row*-64);
-
-            if (this._id==='bandMember4') {
-                console.log(`3. this._imageState=${this._image["imageState"]} row=${row} maxCol=${maxCol} curCol=${curCol} lastUpdate=${lastUpdate} currenTime=${currentTime} newPosX=${newPosX} newPosY=${newPosY}`)
-            }                
+            newPosY=(row*-64);      
 
             this._imagePtag.style.backgroundPosition=`${newPosX}px ${newPosY}px`;
         }
@@ -1475,12 +1463,14 @@ function displayModalDialog(style, target, width, height, htmlMessage) {
 
     if (width!==0)  modalWindow.style.width=width;
     if (height!==0) modalWindow.style.height=height;
+
+    const randomKey = Math.round(Math.random()*100000000);
     
-    modalWindow.innerHTML = `<div class="close-modal"><img src="./assets/skull_04.png"></div>`;
+    modalWindow.innerHTML = `<div class="close-modal close-key-${randomKey}"><img src="./assets/skull_04.png"></div>`;
     modalWindow.innerHTML = modalWindow.innerHTML + htmlMessage;
     underModal.appendChild(modalWindow);
 
-    const closeWindow = document.querySelector('.close-modal');
+    const closeWindow = document.querySelector(`.close-modal.close-key-${randomKey}`);
     closeWindow.addEventListener('click', (event) => {
             // console.log(event.target);
             body.removeChild(underModal);
@@ -3019,8 +3009,8 @@ function gameLevelUp() {
     //gameContainer.removeChild(divSplash);
     if (currentLevel===5) {
         
-        const timeOnCurrentLevel=(Math.floor((Number(Date.now())-levelStartTime)/1000));
-        const timeOnCurrentLevelStr=(timeOnCurrentLevel).toString().padStart(4, '0');
+        const timeOnCurrentGame=(Math.floor((Number(Date.now())-levelStartTime)/1000));
+        const timeOnCurrentGameStr=(timeOnCurrentGame).toString().padStart(4, '0');
         const player1ScoreStr=(player1Score).toString().padStart(6, '0');
     
         const htmlMessage = `<div class="game-instructions">
@@ -3042,7 +3032,7 @@ function gameLevelUp() {
             </div>
 
             <div class="bt-gameover-item">                    
-                 <p>TIME: <span class="game-value"><nobr>${timeOnCurrentLevelStr}</nobr></span></p>
+                 <p>TIME: <span class="game-value"><nobr>${timeOnCurrentGameStr}</nobr></span></p>
             </div>
             </div>
     
@@ -3291,6 +3281,7 @@ function startNewGame(event) {
     handleKeyboardEvents("");
 
     levelStartTime=Number(Date.now());
+    gameStartTime=levelStartTime;
     levelFrameCounter=0;
     gameOverFlag=false;
     gameLevelUpFlag=false;
@@ -3388,8 +3379,8 @@ function startNextLevel(event) {
 function displayScoreBoard() {
 
     let localPlayer1Name="";
-    const timeOnCurrentLevel=(Math.floor((Number(Date.now())-levelStartTime)/100));
-    const timeOnCurrentLevelStr=(timeOnCurrentLevel).toString().padStart(4, '0');
+    const timeOnCurrentGame=(Math.floor((Number(Date.now())-gameStartTime)/100));
+    const timeOnCurrentGameStr=(timeOnCurrentGame).toString().padStart(4, '0');
     const player1ScoreStr=(player1Score).toString().padStart(5, '0');
 
     gameDom["gameContainerScoreboard"].innerHTML = `
@@ -3404,7 +3395,7 @@ function displayScoreBoard() {
              <p>SCORE: <span class="scoreboard-value">${player1ScoreStr}</span></p>
         </div>
         <div class="bt-scoreboard-item-time">                    
-             <p>TIME: <span class="scoreboard-value"><nobr>${timeOnCurrentLevelStr}</nobr></span></p>
+             <p>TIME: <span class="scoreboard-value"><nobr>${timeOnCurrentGameStr}</nobr></span></p>
         </div>
     </div>`;
 }
@@ -3574,8 +3565,8 @@ function gameOver() {
     soundController("play", "loop", "music_score", levelModalMusic, 1);    
 
     //gameContainer.removeChild(divSplash);
-    const timeOnCurrentLevel=(Math.floor((Number(Date.now())-levelStartTime)/1000));
-    const timeOnCurrentLevelStr=(timeOnCurrentLevel).toString().padStart(4, '0');
+    const timeOnCurrentGame=(Math.floor((Number(Date.now())-levelStartTime)/1000));
+    const timeOnCurrentGameStr=(timeOnCurrentGame).toString().padStart(4, '0');
     const player1ScoreStr=(player1Score).toString().padStart(6, '0');
 
     const htmlMessage = `<div class="game-instructions">
@@ -3596,11 +3587,12 @@ function gameOver() {
         </div>
 
         <div class="bt-gameover-item">                    
-             <p>TIME: <span class="game-value"><nobr>${timeOnCurrentLevelStr}</nobr></span></p>
+             <p>TIME: <span class="game-value"><nobr>${timeOnCurrentGameStr}</nobr></span></p>
         </div>
         </div>
 
         <button id="startGameButton">Start New Game</button>
+        <p class="game-credits-link"><a href="#" id="gameCreditsLink">Bad Tendencies Game Credits</a></p>
         
     </div>
     `;
@@ -3611,10 +3603,66 @@ function gameOver() {
     startGameButton.addEventListener('click', () => {
         soundController("stop", "loop", "music_score", levelModalMusic, 1);    
         window.location="index.html";
-    } );    
+    } );   
+    
+    const displayCredits = document.querySelector('#gameCreditsLink');
+    displayCredits.addEventListener('click', displayGameCredits);
 }
 
+/*==========================
+    Game Credits
+===========================*/
 
+function displayGameCredits(event) {
+
+    const htmlMessage = `<div class="game-credits-modal">
+    <h3>Game Credits</h3>
+
+    <p>
+        <span class="ckey">Developer:</span> 
+        <span class="cvalue">Harry Anastopoulos</span>
+    </p>
+
+    <p>
+        <span class="ckey">Technologies Used:</span> 
+        <span class="cvalue">HTML 5, CSS2/3, JavaScript ES6</span>
+    </p>
+
+    <p>
+        <span class="ckey">Graphics and Audio Tools:</span> 
+        <span class="cvalue">Adobe Photoshop, Audacity</span>
+    </p>
+
+    <p>
+        <span class="ckey">Fonts:</span> 
+        <span class="cvalue">MyFonts: Graveblade-Regular, Hedgerow-Regular; Google Fonts: Bevan, Saira Stencil, UniFraktur;
+        Webfont: Graveblade-Regular by Typodermic
+        URL: <a href="https://www.myfonts.com/fonts/typodermic/graveblade/regular/" target="_blank">https://www.myfonts.com/fonts/typodermic/graveblade/regular/</a>
+        Copyright: Copyright (c) 2008-2010 Typodermic Fonts. This font is not freely distributable. Visit typodermic.com for more info.
+        Webfont: Hedgerow-Regular by Typodermic
+        URL: <a href="https://www.myfonts.com/fonts/typodermic/hedgerow/regular/" target="_blank">https://www.myfonts.com/fonts/typodermic/hedgerow/regular/</a>
+        Copyright: Copyright (c) 2008-2021 Typodermic Fonts Inc. All rights reserved.</span>
+    </p>
+
+    <p>
+        <span class="ckey">Sprites and Graphic Media:</span> 
+        <span class="cvalue">OpenGameArt.org <a href="https://www.opengameart.org" target="_blank">https://www.opengameart.org</a>, PARPG on OpenGameArt.org, MedicineStorm on OpenGameArt.org, Tin Tachyon on OpenGameArt.org;</span>
+    </p>
+
+    <p>
+        <span class="ckey">Sound Effects and Music:</span> 
+        <span class="cvalue">Chosic, Loyalty Freak Music: 
+        <a href="https://www.chosic.com/" target="_blank">https://www.chosic.com/</a></span>; Clearside, <a href="https://www.clearsidemusic.com/" target="_blank">https://www.clearsidemusic.com/</a>, <a href="" target="_blank">https://www.soundcloud.com/clearside</a>, Clearside Sandblaster; "The Essential Retro Video Game Sound Effects Collection" by Juhani Junkala <a href="https://www.youtube.com/watch?v=dbACpSy9FWY" target="_blank">https://www.youtube.com/watch?v=dbACpSy9FWY</a>, juhani.junkala@musician.org;</span>
+    </p>
+
+    <p class="copyright-modal">&copy; Copyright 2021, Harry Anastopoulos, All RIghts Reserved.  No claim is made against the copyright rights of any of the respective copyright holders for the Creative Commons audio, media, music, sound effects, sprites, or graphics utilized in this open source game project.</p>
+
+    </div>
+    `;
+
+    displayModalDialog("", body, "700px", "", htmlMessage);
+
+}
 
 
 /*==================================================================================================
