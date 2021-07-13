@@ -1,7 +1,9 @@
+
+
 # Bad Tendencies
 *An irreverent arcade game dedicated to the excesses of the Rock-n-Roll lifestyle.*  
 ___
-![Band Tendencies Title Page](https://chicago29094.github.io/bad-tendencies/Bad_Tendensies_Title_Screen_Small.png)
+![Band_Tendencies](https://user-images.githubusercontent.com/84363576/125518350-228cb060-93f7-4d28-a62c-63e1dcd80bc3.png)
 ___
 
 You are the band member for the rock band Bad Tendencies. Your job is to get the band members on stage and to keep them out of trouble. If you get close to a band member they will follow you to the stage, unless they are distracted or under the influence. You can collect money as you move along, otherwise the band members will grab it and likely waste it to support their Rock-n-Roll lifestyle. Use the keyboard arrow keys to move around. Good Luck!!!.
