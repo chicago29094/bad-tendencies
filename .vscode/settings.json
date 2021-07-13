@@ -22,5 +22,10 @@
         "set",
         "sfx",
         "unsober"
-    ]
+    ],
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#2D2D32",
+        "titleBar.activeBackground": "#3F3F46",
+        "titleBar.activeForeground": "#FAFAFA"
+    }
 }

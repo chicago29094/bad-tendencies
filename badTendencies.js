@@ -6,7 +6,7 @@ Global Game Settings
 const BANDMEMBER_DEFAULT_STATE="Wander";
 const BANDMEMBER_STATE_CHANGE_DELAY=4000;
 const BANDMEMBER_DIR_CHANGE_DELAY=8000;
-const BANDMEMBER_FOLLOW_CHANGE_DELAY=500;
+const BANDMEMBER_FOLLOW_CHANGE_DELAY=1000;
 const BANDMEMBER_MOVE_MAXHISTORY=20;  
 const BANDMEMBER_HEALTH_RECOVERY=0.1;
 const BANDMEMBER_PARTY_RECOVERY=0.05;
@@ -584,7 +584,8 @@ class BandMember {
         this._id=bandMemberCharacter.id;
         this._health=bandMemberCharacter.health;
         this._party=bandMemberCharacter.party;
-        this._speed=bandMemberCharacter.speed;
+        this._currentSpeed=1;
+        this._maxSpeed=bandMemberCharacter.speed;
         this._direction='';
         this._posX=positionX;
         this._posY=positionY;
@@ -659,8 +660,11 @@ class BandMember {
     get party() { return this._party; }
     set party(setParty) { this._party=setParty; }
 
-    get speed() { return this._speed; }
-    set speed(setSpeed) { this._speed=setSpeed; }
+    get currentSpeed() { return this._currentSpeed; }
+    set currentSpeed(setCurrentSpeed) { 
+        if (setCurrentSpeed>this._maxSpeed) this._currentSpeed=this._maxSpeed;
+        else this._currentSpeed=setCurrentSpeed; 
+    }
 
     get lastDirection() { return this._lastDirection; }
     set lastDirection(setLastDirection) {
@@ -672,6 +676,9 @@ class BandMember {
 
     get direction() { return this._direction; }
     set direction(setDirection) {
+            if (this._lastDirection!==this._direction) {
+                this._currentSpeed=1;
+            }
             this._lastDirection=this._direction;
             this._direction=setDirection; 
     }
@@ -680,13 +687,24 @@ class BandMember {
     set posX(setPosX) { 
         this._posX=setPosX; 
         this._imageDiv.style.left=this._posX+"px";
-
+        if ( (this._currentSpeed) < (this._maxSpeed) ) {
+            this._currentSpeed=this._maxSpeed;
+        }
+        else {
+            this._currentSpeed=this._maxSpeed;
+        }
     }
         
     get posY() { return this._posY; }
     set posY(setPosY) { 
         this._posY=setPosY; 
         this._imageDiv.style.top=this._posY+"px";
+        if ( (this._currentSpeed) < (this._maxSpeed) ) {
+            this._currentSpeed=this._maxSpeed;
+        }
+        else {
+            this._currentSpeed=this._maxSpeed;
+        }                
     }
 
     get posXY() { return [this._posX, this.posY];}
@@ -694,6 +712,12 @@ class BandMember {
         this._posX=setPosX; this._posY=setPosY; 
         this._imageDiv.style.left=this._posX+"px";
         this._imageDiv.style.top=this._posY+"px";
+        if ( (this._currentSpeed) < (this._maxSpeed) ) {
+            this._currentSpeed=this._maxSpeed;
+        }
+        else {
+            this._currentSpeed=this._maxSpeed;
+        }                
     }
     
     get state() { return this._state; }
@@ -789,7 +813,7 @@ class BandMember {
         this._effectLayer=document.createElement("img");
         this._effectLayer.setAttribute('class', 'effect-layer-character-overlay');
         this._effectLayer.setAttribute('id', this._id);
-        console.log(overlayImages[overlay]);
+        // console.log(overlayImages[overlay]);
         this._effectLayer.setAttribute('src', overlayImages[overlay]);
         this._effectLayer.style.position="absolute";
         this._effectLayer.style.left=this._posX+"px";
@@ -798,10 +822,12 @@ class BandMember {
         // this._effectLayer.style.height="64px";
         gameDom["gameContainerPlayfield"].appendChild(this._effectLayer);
 
+        let thisEffectLayer=this._effectLayer;
+
         setTimeout( ()=> {
-            console.log(this._effectLayer);
-            gameDom["gameContainerPlayfield"].removeChild(this._effectLayer);
-            this._effectLayer="";
+            //console.log(this._effectLayer);            
+            gameDom["gameContainerPlayfield"].removeChild(thisEffectLayer);
+            thisEffectLayer="";
         }, 3000);
     }
 
@@ -847,7 +873,8 @@ class Player {
         this._id=playerCharacter.id;
         this._health=playerCharacter.health;
         this._party=playerCharacter.party;
-        this._speed=playerCharacter.speed;
+        this._currentSpeed=1;
+        this._maxSpeed=playerCharacter.speed;
         this._direction="";
         this._posX=positionX;
         this._posY=positionY;
@@ -884,22 +911,44 @@ class Player {
     get health() { return this._health; }
     set health(setHealth) { this._health=setHealth; }
 
-    get speed() { return this._speed; }
-    set speed(setSpeed) { this._speed=setSpeed; }
+    get currentSpeed() { return this._currentSpeed; }
+    set currentSpeed(setCurrentSpeed) { 
+        if (setCurrentSpeed>this._maxSpeed) this._currentSpeed=this._maxSpeed;
+        else this._currentSpeed=setCurrentSpeed; 
+    }
 
     get direction() { return this._direction; }
-    set direction(setDirection) { this._direction=setDirection; }
-
+    set direction(setDirection) {
+        if (this._lastDirection!==this._direction) {
+            this._currentSpeed=1;
+        }
+        this._lastDirection=this._direction;
+        this._direction=setDirection; 
+    }    
+    
     get posX() { return this._posX; }
     set posX(setPosX) { 
         this._posX=setPosX; 
         this._imageDiv.style.left=this._posX+"px";
+        // console.log(`${this._imageDiv.style.left}`);
+        if ( (this._currentSpeed) < (this._maxSpeed) ) {
+            this._currentSpeed=this._maxSpeed;
+        }
+        else {
+            this._currentSpeed=this._maxSpeed;
+        }        
     }
 
     get posY() { return this._posY; }
     set posY(setPosY) { 
         this._posY=setPosY; 
         this._imageDiv.style.top=this._posY+"px";
+        if ( (this._currentSpeed) < (this._maxSpeed) ) {
+            this._currentSpeed=this._maxSpeed;
+        }
+        else {
+            this._currentSpeed=this._maxSpeed;
+        }                
     }
 
     get posXY() { return [this._posX, this.posY];}
@@ -950,10 +999,12 @@ class Player {
         // this._effectLayer.style.height="64px";
         gameDom["gameContainerPlayfield"].appendChild(this._effectLayer);
 
+        let thisEffectLayer = this._effectLayer;
+
         setTimeout( ()=> {
-            console.log(this._effectLayer);
-            gameDom["gameContainerPlayfield"].removeChild(this._effectLayer);
-            this._effectLayer="";
+            // console.log(this._effectLayer);
+            gameDom["gameContainerPlayfield"].removeChild(thisEffectLayer);
+            thisEffectLayer="";
         }, 3000);
     }    
 
@@ -1048,7 +1099,8 @@ class Player {
 class Bullet {
     constructor (bullet, direction, positionX, positionY) {
         this._id=`${bullet.id}-${levelFrameCounter}+${Math.round(Math.random()*100000)}`;
-        this._speed=bullet.speed;
+        this._currentSpeed=bullet.speed;
+        this._maxSpeed=bullet.speed;
         this._direction=direction;
         this._posX=positionX;
         this._posY=positionY;
@@ -1084,14 +1136,20 @@ class Bullet {
 
     get id() { return this._id; }
 
-    get speed() { return this._speed; }
-    set speed(setSpeed) { this._speed=setSpeed; }
+    get currentSpeed() { return this._currentSpeed; }
+    set currentSpeed(setCurrentSpeed) { 
+        if (setCurrentSpeed>this._maxSpeed) this._currentSpeed=this._maxSpeed;
+        else this._currentSpeed=setCurrentSpeed; 
+    }
 
     get direction() { return this._direction; }
     set direction(setDirection) {
-            this._lastDirection=this._direction;
-            this._direction=setDirection; 
-    }
+        if (this._lastDirection!==this._direction) {
+            this._currentSpeed=1;
+        }
+        this._lastDirection=this._direction;
+        this._direction=setDirection; 
+    }    
 
     get posX() { return this._posX; }
     set posX(setPosX) { 
@@ -1149,10 +1207,12 @@ class Bullet {
         // this._effectLayer.style.height="64px";
         gameDom["gameContainerPlayfield"].appendChild(this._effectLayer);
 
+        let thisEffectLayer = this._effectLayer;
+
         setTimeout( ()=> {
-            console.log(this._effectLayer);
-            gameDom["gameContainerPlayfield"].removeChild(this._effectLayer);
-            this._effectLayer="";
+            // console.log(this._effectLayer);
+            gameDom["gameContainerPlayfield"].removeChild(thisEffectLayer);
+            thisEffectLayer="";
         }, 3000);
     }    
 
@@ -1631,10 +1691,12 @@ function movePlayer1() {
     let newPosX = currentPosX;
     let newPosY = currentPosY;
 
-    if (player1.direction==='N') newPosY = player1.posY - player1.speed;
-    if (player1.direction==='S') newPosY = player1.posY + player1.speed;
-    if (player1.direction==='W') newPosX = player1.posX - player1.speed;
-    if (player1.direction==='E') newPosX = player1.posX + player1.speed;
+    // console.log(`movePlayer1 ${player1.currentSpeed}`);
+
+    if (player1.direction==='N') newPosY = player1.posY - player1.currentSpeed;
+    if (player1.direction==='S') newPosY = player1.posY + player1.currentSpeed;
+    if (player1.direction==='W') newPosX = player1.posX - player1.currentSpeed;
+    if (player1.direction==='E') newPosX = player1.posX + player1.currentSpeed;
     
     stepwiseCollisionXY[0]=currentPosX;
     stepwiseCollisionXY[1]=currentPosY;
@@ -1712,16 +1774,16 @@ function moveBandMember(bandMember, actionType, checkDirection, collisionResults
     let bounceBack=false;
 
     if (actionType!=="CheckOnly") {
-        if (bandMember.direction==='N') newPosY = bandMember.posY - bandMember.speed;
-        if (bandMember.direction==='S') newPosY = bandMember.posY + bandMember.speed;
-        if (bandMember.direction==='W') newPosX = bandMember.posX - bandMember.speed;
-        if (bandMember.direction==='E') newPosX = bandMember.posX + bandMember.speed;
+        if (bandMember.direction==='N') newPosY = bandMember.posY - bandMember.currentSpeed;
+        if (bandMember.direction==='S') newPosY = bandMember.posY + bandMember.currentSpeed;
+        if (bandMember.direction==='W') newPosX = bandMember.posX - bandMember.currentSpeed;
+        if (bandMember.direction==='E') newPosX = bandMember.posX + bandMember.currentSpeed;
     }
     else {
-        if (checkDirection==='N') newPosY = bandMember.posY - bandMember.speed;
-        if (checkDirection==='S') newPosY = bandMember.posY + bandMember.speed;
-        if (checkDirection==='W') newPosX = bandMember.posX - bandMember.speed;
-        if (checkDirection==='E') newPosX = bandMember.posX + bandMember.speed;        
+        if (checkDirection==='N') newPosY = bandMember.posY - bandMember.currentSpeed;
+        if (checkDirection==='S') newPosY = bandMember.posY + bandMember.currentSpeed;
+        if (checkDirection==='W') newPosX = bandMember.posX - bandMember.currentSpeed;
+        if (checkDirection==='E') newPosX = bandMember.posX + bandMember.currentSpeed;        
     }
 
     stepwiseCollisionXY[0]=currentPosX;
@@ -1813,10 +1875,10 @@ function moveBandMember(bandMember, actionType, checkDirection, collisionResults
 
     if ( (actionType!=="CheckOnly") && (bounceBack) ) {
             
-        if (bandMember.direction==='S') newPosY = bandMember.posY - bandMember.speed*BOUNCEBACK_FACTOR;
-        if (bandMember.direction==='N') newPosY = bandMember.posY + bandMember.speed*BOUNCEBACK_FACTOR;
-        if (bandMember.direction==='E') newPosX = bandMember.posX - bandMember.speed*BOUNCEBACK_FACTOR;
-        if (bandMember.direction==='W') newPosX = bandMember.posX + bandMember.speed*BOUNCEBACK_FACTOR;
+        if (bandMember.direction==='S') newPosY = bandMember.posY - bandMember.currentSpeed*BOUNCEBACK_FACTOR;
+        if (bandMember.direction==='N') newPosY = bandMember.posY + bandMember.currentSpeed*BOUNCEBACK_FACTOR;
+        if (bandMember.direction==='E') newPosX = bandMember.posX - bandMember.currentSpeed*BOUNCEBACK_FACTOR;
+        if (bandMember.direction==='W') newPosX = bandMember.posX + bandMember.currentSpeed*BOUNCEBACK_FACTOR;
         
         stepwiseCollisionXY[0]=currentPosX;
         stepwiseCollisionXY[1]=currentPosY;
@@ -2407,10 +2469,10 @@ function moveBullet(bullet, actionType, checkDirection, collisionResults) {
     let newPosX = currentPosX;
     let newPosY = currentPosY;
 
-    if (bullet.direction==='N') newPosY = bullet.posY - bullet.speed;
-    if (bullet.direction==='S') newPosY = bullet.posY + bullet.speed;
-    if (bullet.direction==='W') newPosX = bullet.posX - bullet.speed;
-    if (bullet.direction==='E') newPosX = bullet.posX + bullet.speed;
+    if (bullet.direction==='N') newPosY = bullet.posY - bullet.currentSpeed;
+    if (bullet.direction==='S') newPosY = bullet.posY + bullet.currentSpeed;
+    if (bullet.direction==='W') newPosX = bullet.posX - bullet.currentSpeed;
+    if (bullet.direction==='E') newPosX = bullet.posX + bullet.currentSpeed;
   
     stepwiseCollisionXY[0]=currentPosX;
     stepwiseCollisionXY[1]=currentPosY;
@@ -3316,17 +3378,7 @@ function startNextLevel(event) {
     GOOD_PLAYFIELD_OBJECT_DROP_RATE=GOOD_PLAYFIELD_OBJECT_DROP_RATE*1.2; // milliseconds
     WEAPON_PLAYFIELD_OBJECT_DROP_RATE=WEAPON_PLAYFIELD_OBJECT_DROP_RATE*.8; // milliseconds
     PARTY_PLAYFIELD_OBJECT_DROP_RATE=PARTY_PLAYFIELD_OBJECT_DROP_RATE*.8; // milliseconds
-
-    /*=== Optional Level Adjustments - Character Speed, Party Level ====
-    for (bandmember of bandMemberCharacters) {
-        bandmember.speed=bandmember.speed+1;
-    }
-    for (player of playerCharacters) {
-        player.speed=player.speed+1;
-        
-    }
-    =============================*/
-    
+   
     const underModal = document.querySelector("div.under-modal");
     body.removeChild(underModal);
     
@@ -3337,6 +3389,23 @@ function startNextLevel(event) {
     if (currentLevel===3) currentGameLevel=gameLevel3;
     if (currentLevel===4) currentGameLevel=gameLevel4;
     if (currentLevel===5) currentGameLevel=gameLevel5;
+
+   /*=== Optional Level Adjustments - Character Speed, Party Level ====*/
+
+   for (bandmember of bandMemberCharacters) {
+        // bandmember.currentSpeed=bandmember.currentSpeed+1;
+        if (currentLevel===2) bandmember.party=20;
+        if (currentLevel===3) bandmember.party=30;
+        if (currentLevel===4) bandmember.party=40;
+        if (currentLevel===5) bandmember.party=50;
+    }
+
+    for (player of playerCharacters) {
+        // player.currentSpeed=player.currentSpeed+1;
+    }
+
+/*=============================*/
+
 
     displayGameBoard(currentGameLevel);
 
