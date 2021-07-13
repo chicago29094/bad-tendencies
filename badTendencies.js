@@ -336,7 +336,7 @@ const bulletTypes =[
     {
         "name" : 'Standard Bullet',
         "id" : "bullet1",
-        "speed" : 60,
+        "speed" : 45,
         "image" : {
                     "src": './assets/bullet_001_32x32.png',
                     "Shoot Left": [0, 4, 0],  // Sprite Row, Total Frames, Current Frame
@@ -2070,6 +2070,8 @@ function processPlayfieldInteractions(character, collision, collisionType) {
             bandMember.actionQueue.enqueue( { custom: () => { 
                     character.posX=-5000;
                     character.posY=-5000;
+                    character.state="Stage";
+                    character.imageState='Stage Hidden';                    
                 } } );
     
             character.state='Stage';   
@@ -3897,6 +3899,8 @@ for (let bandMember of [bandMember1, bandMember2, bandMember3, bandMember4] ) {
         bandMember.actionQueue.enqueue( { custom: () => { 
                 bandMember.posX=-5000;
                 bandMember.posY=-5000;
+                bandMember.state='Dead';
+                bandMember.imageState="Die";
         } } );
 
 
