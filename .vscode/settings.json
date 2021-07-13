@@ -24,8 +24,20 @@
         "unsober"
     ],
     "workbench.colorCustomizations": {
-        "activityBar.background": "#2D2D32",
-        "titleBar.activeBackground": "#3F3F46",
-        "titleBar.activeForeground": "#FAFAFA"
-    }
+        "activityBar.background": "#2d2d32",
+        "titleBar.activeBackground": "#151517",
+        "titleBar.activeForeground": "#e7e7e7",
+        "activityBar.activeBackground": "#2d2d32",
+        "activityBar.activeBorder": "#a73838",
+        "activityBar.foreground": "#e7e7e7",
+        "activityBar.inactiveForeground": "#e7e7e799",
+        "activityBarBadge.background": "#a73838",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "statusBar.background": "#151517",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#2d2d32",
+        "titleBar.inactiveBackground": "#15151799",
+        "titleBar.inactiveForeground": "#e7e7e799"
+    },
+    "peacock.color": "#151517"
 }
